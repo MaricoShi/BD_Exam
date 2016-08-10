@@ -1,0 +1,448 @@
+﻿<!DOCTYPE html>
+@{
+    Layout = null;
+}
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页</title>
+
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="~/favicon.ico">
+    <!--[if lte IE 7]>
+        <style>
+            i.fa { margin-right: 5px; }
+            hr { border-color: #dadada; }
+        </style>
+        <![endif]-->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        //当前网站路径
+        document.weburl = "@(Url.Content("~/"))";
+    </script>
+
+    @Scripts.Render("~/Scripts/app.js")
+
+</head>
+<body>
+    <!--Header-part-->
+    <div class="sa_header">
+        <h1 style="left:0px;margin-top:10px;">
+            <a href="javascript:;" target="_blank" style="font-size:17px;text-align:center;line-height:22px;">
+                @*上海海关缉私信息<br/><span class="cl_teal">共享平台</span>*@
+                
+            </a>
+        </h1>
+    </div>
+    <!--close-Header-part-->
+    <!--top-Header-menu-->
+    <div class="navbar sa_user_nav">
+        <ul class="nav">
+            <li>
+                <a title="平台维护" class="tip-bottom" data-original-title="平台维护" href="">
+                    <i class="fa fa-cog"></i>
+                    <span class="text">平台维护</span>
+                </a>
+            </li>
+            <li>
+                <a title="帮助中心" class="tip-bottom" data-original-title="帮助中心" href="javascript:;" target="_blank">
+                    <i class="fa fa-question-circle"></i>
+                    <span class="text">帮助中心</span>
+                </a>
+            </li>
+            <li>
+                <a title="在线客服" class="tip-bottom" data-original-title="在线客服" href="javascript:;" target="_blank">
+                    <i class="fa fa-comment"></i>
+                    <span class="text">在线客服</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="navbar sa_user_nav_rg">
+        <ul class="nav">
+
+            <li>
+                <a href="javascript:;">
+                    <i class="fa fa-user"></i>
+                    <span class="text">&nbsp;系统管理员</span>
+                </a>
+            </li>
+            <li>
+                <a title="退出" class="tip-bottom" data-original-title="退出"
+                   href="javascript:confirm('确认退出系统吗?',function(){window.location.href='admin.php?c=login.logout'})">
+                    <i class="fa fa-mail-forward"></i>
+                    <span class="text">退出</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!--close-top-Header-menu-->
+    <!--top-bread-crumb-->
+    <div class="sa_bread_crumb">
+        <a href="javascript:;" class="tip-bottom" data-original-title="首页">
+            <i class="fa fa-home"></i> 首页
+        </a>
+        <i class="fa fa-angle-right"></i>
+        <a href="javascript:;" class="tip-bottom" data-original-title="专线互动">
+            <i class="fa fa-comment"></i> 专线互动
+        </a>
+        <i class="fa fa-angle-right"></i>
+        <a href="javascript:;" class="tip-bottom current" data-original-title="专线报表">
+            <i class="fa fa-thumbs-o-up"></i> 专线报表
+        </a>
+    </div>
+    <!--close-top-bread-crumb-->
+    <!--sidebar-menu-->
+    <div class="sa_sidebar">
+        <ul class="nav_list">
+            <li class="submenu">
+                <a href="javascript:;">
+                    <i class="fa fa-picture-o"></i>
+                    <span>法律规章</span>
+
+                </a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> <span>法律服务</span></a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 总署规定</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 沪关制度</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 部门合作</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="submenu active open">
+                <a href="javascript:;">
+                    <i class="fa fa-comment"></i> <span>专线互动</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 来文办理</a>
+                    </li>
+                    <li class="active">
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 专线报表</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 信息反馈</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 督办纪要</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 需求定制</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="submenu ">
+                <a href="javascript:;"><i class="fa fa-reorder"></i> <span>线索进展</span></a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 线索汇总</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 成案情况</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 月度反馈</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="submenu ">
+                <a href="javascript:;"><i class="fa fa-credit-card"></i> <span>缉私信息</span></a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 本关缉私信息</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 全国缉私信息</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="submenu ">
+                <a href="javascript:;"><i class="fa fa-asterisk"></i> <span>成果反馈</span></a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 案件要素查询</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 典型案例</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 重要会议</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 一案双查</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="submenu ">
+                <a href="javascript:;"><i class="fa fa-globe"></i> <span>业务指标</span></a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 关区业务指标</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 全国业务指标</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 重点走私商品</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="submenu ">
+                <a href="javascript:;"><i class="fa fa-book"></i> <span>走私形式</span></a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 线索联合研判</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 关区反走私形式分析</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 全国反走私形式分析</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 走私手法分析</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 专项商品分析</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="submenu ">
+                <a href="javascript:;"><i class="fa fa-keyboard-o"></i> <span>反走私绩效评估</span></a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 绩效评估展示</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 关警奖励</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="submenu ">
+                <a href="javascript:;"><i class="fa fa-umbrella"></i> <span>反走私综合治理</span></a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 政策法规</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 合作备忘</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 联合工作</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 情况通报</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="submenu ">
+                <a href="javascript:;"><i class="fa fa-cab"></i> <span>执法联动</span></a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 关区捆绑作业</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 经验体会</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="submenu ">
+                <a href="javascript:;"><i class="fa fa-tablet"></i> <span>反哺成效</span></a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 价格参数</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 单耗标准</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 更改归类</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 企业管理</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 风险布控</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 风险参数</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 专项稽查</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 纪检监察</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 制度完善</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="submenu ">
+                <a href="javascript:;"><i class="fa fa-cog"></i> <span>平台维护</span></a>
+                <ul>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 用户管理</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 访问统计</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 模块调整</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 联系人表</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"><i class="fa fa-thumbs-o-up"></i> 相关链接</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!--close-sidebar-menu-->
+    <!--main-container-part-->
+    <div class="sa_content">
+        <a href="javascript:;" class="i_bn_fold"></a>
+        <div class="container-fluid" id="LoyoutContent">
+            @RenderBody()
+
+            <div style="height:20px;"></div>
+        </div>
+        
+    </div>
+    <!--close-main-container-part-->
+
+    <script>
+
+        $(window).resize(function () {
+            $('.container-fluid', $('.sa_content'))
+                .height($(window).height() - 77 - $('.fixed_bottom').outerHeight());
+            $('.sa_content').height($('.container-fluid',
+                $('.sa_content')).height() + 10 + $('.fixed_bottom').outerHeight());
+
+            var slimScrollHeight = ($(window).height() - 77) + 'px';
+            $('.sa_sidebar > .slimScrollDiv').css({ height: slimScrollHeight });
+            $('.sa_sidebar > .slimScrollDiv > ul').css({ height: slimScrollHeight });
+        });
+        $(window).resize();
+
+        $('body').blockUI();
+        $('body').unblockUI();
+
+        if ($.fn.slimscroll) {
+            $('.sa_sidebar > ul').slimscroll({
+                height: ($(window).height() - 77) + 'px',
+                width: "190px"
+            });
+        }
+
+        function fnAjaxInit(i, e) {
+            var opts1 = {
+                'data-ajax': 'true',
+                'data-ajax-update': '#LoyoutContent',
+                'data-ajax-failure': 'fnAjaxError',
+                'data-ajax-begin': 'BlockUI',
+                'data-ajax-complete': 'UnBlockUI',
+                'data-ajax-success': 'fnAjaxSuccess'
+            };
+
+            opts1 = $.extend(opts1, {
+                'data-ajax': e.getAttribute("data-ajax") || undefined,
+                'data-ajax-update': e.getAttribute("data-ajax-update") || undefined,
+                'data-ajax-failure': e.getAttribute("data-ajax-failure") || undefined,
+                'data-ajax-begin': e.getAttribute("data-ajax-begin") || undefined,
+                'data-ajax-complete': e.getAttribute("data-ajax-complete") || undefined,
+                'data-ajax-success': e.getAttribute("data-ajax-success") || undefined,
+            });
+            $(e).attr(opts1);
+        }
+
+        function fnInitTag() {
+            $("a[data-opts=opts1]").each(fnAjaxInit);
+        }
+
+
+        function fnAjaxError(xhr, status, error) {
+            //alert("404");
+        }
+
+        function fnAjaxSuccess(data, status, xhr) {
+            try {
+
+                var _id = $(this)[0].getAttribute("data-ajax-id");
+
+                var $selectli = $('li > a[data-ajax-id=' + _id + ']', $('.sa_sidebar')).parent("li");
+
+                $(".sub-menu li.active").removeClass("active");
+
+                if ($selectli.hasClass("submenu")) {
+                    $selectli.siblings("li.active").removeClass("active");
+
+                    var submenu = $selectli.siblings("li.open").find(".sub-menu");
+                    if (($(window).width() > 768) || ($(window).width() < 479)) {
+                        submenu.slideUp();
+                    } else {
+                        submenu.fadeOut(250);
+                    }
+                    $selectli.siblings("li.open").removeClass('open');
+                }
+
+                $selectli.addClass('active');
+
+                $("a[data-opts=opts1]").each(fnAjaxInit);
+
+            } catch (e) { }
+        }
+
+        $('.submenu > a').click(function (e) {
+            //e.preventDefault();
+            var submenu = $(this).siblings('ul');
+            var li = $(this).parents('li');
+            var submenus = $('.sa_sidebar li.submenu ul');
+            var submenus_parents = $('.sa_sidebar li.submenu');
+            if (li.hasClass('open')) {
+                if (($(window).width() > 768) || ($(window).width() < 479)) {
+                    submenu.slideUp();
+                } else {
+                    submenu.fadeOut(250);
+                }
+                li.removeClass('open');
+            } else {
+                if (($(window).width() > 768) || ($(window).width() < 479)) {
+                    submenus.slideUp();
+                    submenu.slideDown();
+                } else {
+                    submenus.fadeOut(250);
+                    submenu.fadeIn(250);
+                }
+                submenus_parents.removeClass('open');
+                li.addClass('open');
+
+                submenus_parents.removeClass('active');
+                li.addClass('active');
+            }
+
+            //return false;
+        });
+
+        fnInitTag();
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
