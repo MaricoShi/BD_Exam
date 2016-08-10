@@ -5,6 +5,10 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exam.Websites", "Exam.Websites\Exam.Websites.csproj", "{D4AF1CEB-AE22-4306-B3C6-FA463DBD8C87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exam.Data", "Exam.Data\Exam.Data.csproj", "{048983F5-9A07-4117-B159-43FC5C253EC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exam.Common", "Exam.Common\Exam.Common.csproj", "{8A74C4A3-C510-48F6-A8F1-AC2F336A9ED1}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -19,6 +23,14 @@ Global
 		{D4AF1CEB-AE22-4306-B3C6-FA463DBD8C87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4AF1CEB-AE22-4306-B3C6-FA463DBD8C87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4AF1CEB-AE22-4306-B3C6-FA463DBD8C87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{048983F5-9A07-4117-B159-43FC5C253EC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{048983F5-9A07-4117-B159-43FC5C253EC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{048983F5-9A07-4117-B159-43FC5C253EC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{048983F5-9A07-4117-B159-43FC5C253EC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A74C4A3-C510-48F6-A8F1-AC2F336A9ED1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A74C4A3-C510-48F6-A8F1-AC2F336A9ED1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A74C4A3-C510-48F6-A8F1-AC2F336A9ED1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A74C4A3-C510-48F6-A8F1-AC2F336A9ED1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
