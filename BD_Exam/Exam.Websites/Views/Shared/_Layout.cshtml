@@ -12,7 +12,16 @@
     @Styles.Render("~/Content/exam.ui.css")
     <link href="~/Content/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Content/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" />
-    @Scripts.Render("~/bundles/modernizr")
+
+    <script>
+        //当前网站路径
+        document.weburl = "@(Url.Content("~/"))";
+    </script>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/app.js")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
 
 </head>
 <body>
@@ -42,42 +51,79 @@
             </div>
         </div>
     </div>
-    <div class="navbar seekask-navbar">
+    <div class="navbar seekask-navbar my-manager">
         <div class="navbar-header">
             <a class="navbar-brand seekask-navbar-title" href="javascript:;">我的管理</a>
         </div>
         <div class="collapse navbar-collapse bs-navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="ng-scope active">
-                    <a class="ng-binding" href="javascript:;">首页</a>
+                    <a href="@(Url.Content("~/"))"
+                       data-ajax-id="web_home"
+                       data-ajax-update="#seekask-body-content"
+                       data-ajax="true" data-ajax-failure="fnAjaxError"
+                       data-ajax-success="fnAjaxSuccess">首页</a>
                 </li>
                 <li class="ng-scope">
-                    <a class="ng-binding" href="javascript:;">训练档案</a>
+                    <a href="@(Url.Content("~/Home/Test1"))"
+                       data-ajax-id="Test1"
+                       data-ajax-update="#seekask-body-content"
+                       data-ajax="true" data-ajax-failure="fnAjaxError"
+                       data-ajax-success="fnAjaxSuccess">训练档案</a>
                 </li>
                 <li class="ng-scope">
-                    <a class="ng-binding" href="javascript:;">基础管理</a>
+                    <a href="@(Url.Content("~/Home/Test2"))"
+                       data-ajax-id="Test2"
+                       data-ajax-update="#seekask-body-content"
+                       data-ajax="true" data-ajax-failure="fnAjaxError"
+                       data-ajax-success="fnAjaxSuccess">基础管理</a>
                 </li>
                 <li class="ng-scope">
-                    <a class="ng-binding" href="javascript:;">系统管理</a>
+                    <a href="@(Url.Content("~/Home/Test3"))"
+                       data-ajax-id="Test3"
+                       data-ajax-update="#seekask-body-content"
+                       data-ajax="true" data-ajax-failure="fnAjaxError"
+                       data-ajax-success="fnAjaxSuccess">系统管理</a>
                 </li>
             </ul>
             <div class="pull-right seekask-navbar-links"></div>
         </div>
     </div>
 
-    <div class="body-content pd_lr_15 clearfix">
+    <div id="seekask-body-content" class="body-content pd_lr_15 clearfix">
         @RenderBody()
     </div>
+
     <div class="pd_lr_15">
         <hr class="mg_0" />
         <footer class="text-center pd_tb_10">
-            <p>&copy; 2016 - 我的 ASP.NET 应用程序</p>
+            <p>&copy; 2016 - 我的应用程序</p>
         </footer>
     </div>
     
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+
+        function fnAjaxError(xhr, status, error) {
+            alert("404");
+        }
+
+        function fnAjaxSuccess(data, status, xhr) {
+            try {
+
+                var _id = $(this)[0].getAttribute("data-ajax-id");
+
+                var $selectli = $('li > a[data-ajax-id=' + _id + ']', $('.my-manager')).parent("li");
+                if ($selectli.length > 0) {
+                    $("li.active", $('.my-manager')).removeClass("active");
+                    $selectli.addClass('active');
+                }
+                
+
+            } catch (e) { }
+        }
+    </script>
     @RenderSection("scripts", required: false)
+
 </body>
 </html>
