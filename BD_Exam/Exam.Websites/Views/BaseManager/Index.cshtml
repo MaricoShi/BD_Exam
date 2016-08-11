@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "基础管理";
+
+    string _ActionName = ViewBag.ActionName;
+}
+
+
+<div class="col-sm-2 pd_lr_0">
+    <div class="seekask-sidebar">
+        <ul class="nav">
+            <li>
+                <a href="javascript:;">
+                    <span class="fa fa-caret-right"></span> 成绩档案管理
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <span class="fa fa-caret-right"></span> 基础数据维护
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="col-sm-10 scp-main-cont pd_tb_10">
+    <div style="min-height:400px;">
+        @{Html.RenderAction(_ActionName ?? "PersonQuery", "BaseManager", null);}
+    </div>
+</div>
+
+

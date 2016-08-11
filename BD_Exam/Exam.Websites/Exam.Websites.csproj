@@ -140,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="Controllers\BaseManagerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -226,6 +227,8 @@
     <Content Include="Views\Home\Test1.cshtml" />
     <Content Include="Views\Home\Test2.cshtml" />
     <Content Include="Views\Home\Test3.cshtml" />
+    <Content Include="Views\BaseManager\Index.cshtml" />
+    <Content Include="Views\BaseManager\PersonQuery.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

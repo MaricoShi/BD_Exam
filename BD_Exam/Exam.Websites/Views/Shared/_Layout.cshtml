@@ -11,7 +11,13 @@
     @Styles.Render("~/Content/bootstrap.min.css")
     @Styles.Render("~/Content/exam.ui.css")
     <link href="~/Content/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="~/Content/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" />
+    <!--[if lte IE 7]>
+        <link href="~/Content/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" />
+        <style>
+            i.fa { margin-right: 5px; }
+            hr { border-color: #dadada; }
+        </style>
+        <![endif]-->
 
     <script>
         //当前网站路径
@@ -72,7 +78,7 @@
                        data-ajax-success="fnAjaxSuccess">训练档案</a>
                 </li>
                 <li class="ng-scope">
-                    <a href="@(Url.Content("~/Home/Test2"))"
+                    <a href="@(Url.Content("~/BaseManager/Index"))"
                        data-ajax-id="Test2"
                        data-ajax-update="#seekask-body-content"
                        data-ajax="true" data-ajax-failure="fnAjaxError"
