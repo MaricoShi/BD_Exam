@@ -97,23 +97,42 @@
             cache: !!element.getAttribute("data-ajax-cache"),
             beforeSend: function (xhr) {
                 var result;
-                asyncOnBeforeSend(xhr, method);
-                result = getFunction(element.getAttribute("data-ajax-begin"), ["xhr"]).apply(element, arguments);
-                if (result !== false) {
-                    loading.show(duration);
+                try {
+                    $('body').blockUI();
+                    asyncOnBeforeSend(xhr, method);
+                    result = getFunction(element.getAttribute("data-ajax-begin"), ["xhr"]).apply(element, arguments);
+                    if (result !== false) {
+                        loading.show(duration);
+                    }
+                } catch (e) {
+
                 }
+                
                 return result;
             },
             complete: function () {
-                loading.hide(duration);
-                getFunction(element.getAttribute("data-ajax-complete"), ["xhr", "status"]).apply(element, arguments);
+                try {
+                    $('body').unblockUI();
+                    loading.hide(duration);
+                    getFunction(element.getAttribute("data-ajax-complete"), ["xhr", "status"]).apply(element, arguments);
+                } catch (e) {
+
+                }
             },
             success: function (data, status, xhr) {
-                asyncOnSuccess(element, data, xhr.getResponseHeader("Content-Type") || "text/html");
-                getFunction(element.getAttribute("data-ajax-success"), ["data", "status", "xhr"]).apply(element, arguments);
+                try {
+                    asyncOnSuccess(element, data, xhr.getResponseHeader("Content-Type") || "text/html");
+                    getFunction(element.getAttribute("data-ajax-success"), ["data", "status", "xhr"]).apply(element, arguments);
+                } catch (e) {
+
+                }
             },
             error: function () {
-                getFunction(element.getAttribute("data-ajax-failure"), ["xhr", "status", "error"]).apply(element, arguments);
+                try {
+                    getFunction(element.getAttribute("data-ajax-failure"), ["xhr", "status", "error"]).apply(element, arguments);
+                } catch (e) {
+
+                }
             }
         });
 
