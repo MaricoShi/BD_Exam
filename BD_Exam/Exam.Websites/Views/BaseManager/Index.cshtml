@@ -1,7 +1,7 @@
 ﻿@{
     ViewBag.Title = "基础管理";
 
-    string _ActionName = ViewBag.ActionName;
+    string _ActionName = ViewBag.ActionName ?? "PersonQuery";
 }
 
 
@@ -9,22 +9,47 @@
     <div class="seekask-sidebar">
         <ul class="nav">
             <li>
+                <a href="@(Url.Content("~/BaseManager/PersonQuery"))"
+                   data-ajax-id="PersonQuery"
+                   data-ajax-update="#BaseManager_Layout_Content"
+                   data-ajax="true" data-ajax-failure="fnAjaxError"
+                   data-ajax-success="fnAjaxSuccess">
+                    <span class="fa fa-caret-right"></span> 人员档案室
+                </a>
+            </li>
+            <li>
+                <a href="@(Url.Content("~/BaseManager/OrgQuery"))"
+                   data-ajax-id="OrgQuery"
+                   data-ajax-update="#BaseManager_Layout_Content"
+                   data-ajax="true" data-ajax-failure="fnAjaxError"
+                   data-ajax-success="fnAjaxSuccess">
+                    <span class="fa fa-caret-right"></span> 单位档案室
+                </a>
+            </li>
+            <li>
                 <a href="javascript:;">
-                    <span class="fa fa-caret-right"></span> 成绩档案管理
+                    <span class="fa fa-caret-right"></span> 专业科目室
                 </a>
             </li>
             <li>
                 <a href="javascript:;">
                     <span class="fa fa-caret-right"></span> 基础数据维护
                 </a>
+                <ul class="nav">
+                    <li>
+                        <a href="javascript:;">
+                            静态数据维护
+                        </a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </div>
 </div>
 
 <div class="col-sm-10 scp-main-cont pd_tb_10">
-    <div style="min-height:400px;">
-        @{Html.RenderAction(_ActionName ?? "PersonQuery", "BaseManager", null);}
+    <div style="min-height:400px;" id="BaseManager_Layout_Content">
+        @{Html.RenderAction(_ActionName, "BaseManager", null);}
     </div>
 </div>
 

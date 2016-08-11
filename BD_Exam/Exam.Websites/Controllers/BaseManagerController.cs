@@ -18,10 +18,19 @@ namespace Exam.Websites.Controllers
         }
 
         /// <summary>
-        /// 人员查询
+        /// 人员档案室
         /// </summary>
         /// <returns></returns>
         public ActionResult PersonQuery()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 单位档案室
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult OrgQuery() 
         {
             return View();
         }
