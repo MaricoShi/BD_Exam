@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Exam.Websites.Help.Filter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -21,6 +22,7 @@ namespace Exam.Websites.Controllers
         /// 人员档案室
         /// </summary>
         /// <returns></returns>
+        [IsAjaxRedirectFilter(_RedirectUrl = "~/BaseManager/Index")]
         public ActionResult PersonQuery()
         {
             return View();
@@ -30,6 +32,7 @@ namespace Exam.Websites.Controllers
         /// 单位档案室
         /// </summary>
         /// <returns></returns>
+        [IsAjaxRedirectFilter(_RedirectUrl = "~/BaseManager/Index")]
         public ActionResult OrgQuery() 
         {
             return View();

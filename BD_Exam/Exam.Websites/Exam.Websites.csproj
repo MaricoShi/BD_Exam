@@ -146,6 +146,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Help\Filter\ExceFilterAttribute.cs" />
+    <Compile Include="Help\Filter\IsAjaxRedirectFilterAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
