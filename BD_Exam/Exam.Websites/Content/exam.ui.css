@@ -169,7 +169,7 @@ i.fa { font-size: 14px; }
 .seekask-sidebar .nav li a span.fa { position: absolute; left: 5px; top: 8px; font-size: 14px; color: #999; }
 .seekask-sidebar .nav li a:hover { border-left: 2px solid #F90; }
 .seekask-sidebar .nav .nav li { border-bottom: 0px; }
-.seekask-sidebar .nav .nav li a { text-indent: 12px; }
+.seekask-sidebar .nav .nav li a { padding-left: 28px; }
 
 .scp-main-cont { padding-right: 0px; padding-left: 20px; padding-bottom: 50px; border-left: solid 1px #ddd; margin-left: -1px; }
 .seekask-title h1, .seekask-title h2, .seekask-title h3, .seekask-title h4, 
