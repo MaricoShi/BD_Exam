@@ -3,22 +3,30 @@
     Layout = null;
 }
 
-<div >
-    <div class="seekask-title clearfix">
-        <h4>人员档案室</h4>
-    </div>
-    <div id="dvPersonQuerySearch">
-        <label class="control-label col-sm-1 text-right">日期：</label>
-        <div class="col-sm-3">
-            <input type="text" class="form-control">
+<style type="text/css">
+    #btPersonQuerySearch {
+        word-spacing: 5px;
+    }
+</style>
+
+<div>
+    <div class="search_box_bar">
+        <div class="row">
+            <div class="col-sm-6"><span>机构：</span><input type="text" placeholder="" /></div>
+            <div class="col-sm-6"><span>包含子集单位信息：</span><span id="ChildrenOrg"></span></div>
         </div>
-        
-        <button class="btn btn-info" id="btPersonQuerySearch" style="outline:0;">
-            &nbsp;<i class="fa fa-search"></i> 搜&nbsp;索&nbsp;
-        </button>
+        <div class="row">
+            <div class="col-sm-6"><span>人员工号：</span><input type="text" placeholder="可输入人员工号进行筛选" /></div>
+            <div class="col-sm-6"><span>人员姓名：</span><input type="text" placeholder="可输入人员姓名进行筛选" /></div>
+        </div>
+        <div class="row">
+            <button class="btn btn-info pull-right" id="btPersonQuerySearch"><i class="fa fa-search"></i> 搜索</button>
+        </div>
     </div>
+
+
     <div id="tbPersonQuery">
-        
+
     </div>
 </div>
 
@@ -50,7 +58,7 @@
 
 
     var columns = [
-      { title: '姓名', dataIndex: 'name', key: 'name', width: 100},
+      { title: '姓名', dataIndex: 'name', key: 'name', width: 100 },
       { title: '年龄', dataIndex: 'age', key: 'age', width: 100 },
       { title: '列1', dataIndex: 'address', key: '1', width: 150 },
       { title: '列2', dataIndex: 'address', key: '2', width: 150 },
@@ -79,11 +87,12 @@
         data.push({
             key: i,
             name: '李大嘴' + i,
-            age: 32,
+            age: Math.floor(Math.random() * 100),
             address: '西湖区湖底公园' + i + '号',
         });
     }
-    data = [];
+    //data = [];
+
 
 
     // 通过 rowSelection 对象表明需要行选择
@@ -99,17 +108,77 @@
         },
     };
 
+    // 范围日期选择框
+    //function fncreateRangePicker() {
 
-    function InitPersonQueryPage() {
-        var _table = React.createElement(antd.Table, {
-            rowSelection: rowSelection,
-            columns: columns,
-            dataSource: data,
-            scroll: { x:1 }
-        });
-        ReactDOM.render(_table, document.getElementById('tbPersonQuery'));
+    //    var RangePicker = antd.DatePicker.RangePicker;
+    //    var _rangePicker = React.createElement(RangePicker, {
+    //        style: { width: 184 },
+    //        onChange: function (value, dateString) {
+    //            //console.log('From: ', value[0], ', to: ', value[1]);
+    //            //console.log('From: ', dateString[0], ', to: ', dateString[1]);
+    //        },
+    //    });
+
+    //    ReactDOM.render(_rangePicker, document.getElementById('dateRangePiker'));
+    //}
+
+    function fnSearchBox() {
+        //初始化 antd组件
+        //var antdInput = antd.Input,
+        //    antdForm = antd.Form,
+        //    antdFormItem = antdForm.Item,
+        //    antdRow = antd.Row,
+        //    antdCol = antd.Col,
+        //    antdOption = antd.Select.Option,
+        //    antdRadio = antd.Radio,
+        //    antdRadioButton = antdRadio.Button,
+        //    antdRadioGroup = antdRadio.Group;
+
     }
 
-    InitPersonQueryPage();
+    function fncreateChildrenOrg() {
+        var antdRadio = antd.Radio,
+            antdRadioButton = antdRadio.Button,
+            antdRadioGroup = antdRadio.Group;
+
+        var _RadioButtonY = React.createElement(antdRadioButton, {
+            value: "Y"
+        }, "是"),
+        _RadioButtonN = React.createElement(antdRadioButton, {
+            value: "N"
+        }, "否"),
+            _RadioGroup = React.createElement(antdRadioGroup, {
+                defaultValue: "Y"
+            }, _RadioButtonY, _RadioButtonN
+        );
+
+        ReactDOM.render(_RadioGroup, document.getElementById('ChildrenOrg'));
+    }
+
+
+    //人员tabel数据
+    function fncreateDataTable() {
+        var antdTable = antd.Table,
+            _table = React.createElement(antdTable, {
+                rowSelection: rowSelection,
+                columns: columns,
+                dataSource: data,
+                scroll: { x: 1 }
+            });
+        //_Input = React.createElement(antdInput, null);
+        var _div = React.createElement('div', null, _table);
+        ReactDOM.render(_div, document.getElementById('tbPersonQuery'));
+    }
+
+    function InitPersonQueryPage() {
+        fncreateChildrenOrg();//是否包含子集单位信息
+        fncreateDataTable();//人员tabel数据
+    }
+
+    InitPersonQueryPage();//初始化
+
+
+
 </script>
 
