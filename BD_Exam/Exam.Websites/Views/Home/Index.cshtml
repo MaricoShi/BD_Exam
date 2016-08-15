@@ -3,7 +3,7 @@
 }
 
 
-<div class="pd_lr_15 pd_tb_10">
+@*<div class="pd_lr_15 pd_tb_10">
     <div style="min-height:400px;">
         <div style="min-height:100px;">
             <div class="seekask-title">
@@ -16,4 +16,145 @@
             </div>
         </div>
     </div>
-</div>
+</div>*@
+
+
+    <style type="text/css">
+        #container>[class^='col-ms']{
+            
+        }
+        .widget-box {
+            background: none repeat scroll 0 0 #F9F9F9;
+            border-left: 1px solid #CDCDCD;
+            border-top: 1px solid #CDCDCD;
+            border-right: 1px solid #CDCDCD;
+            clear: both;
+            margin-top: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .widget-title h5 {
+            color: #666;
+            float: left;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 12px;
+            line-height: 12px;
+            margin: 0;
+        }
+        .widget-title span.icon {
+            padding: 9px 10px 7px 11px;
+            float: left;
+            border-right: 1px solid #dadada;
+        }
+        .widget-title, .modal-header, .table th, div.dataTables_wrapper .ui-widget-header {
+            background: #efefef;
+            border-bottom: 1px solid #CDCDCD;
+            height: 36px;
+        }
+        .widget-content {
+            padding: 15px;
+            border-bottom: 1px solid #cdcdcd;
+        }
+        #userinfo_bar .widget-content {
+            display: flex;
+            align-items: center;
+        }
+        #userinfo_bar .user_imgbox>img{
+            max-width:100%;
+            width: 12rem;
+            height: 12rem;
+        }
+        #todo_bar .todo li {
+            border-bottom: 1px solid #EBEBEB;
+            margin-bottom: 0;
+            padding: 10px 0;
+        }
+        #todo_bar .todo li .fa{color:#666;}
+        #todo_bar li .by {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        #notice_bar .new-update {
+            line-height: 25px;
+            height: 25px;
+        }
+    </style>
+
+
+<section id="container" class="container-fluid">
+    <!--个人信息-->
+    <div class="col-sm-6" id="userinfo_bar">
+        <div class="widget-box">
+            <div class="widget-title bg_lo" data-toggle="collapse" href="#collapseG3">
+                <span class="icon"> <i class="fa fa-user"></i> </span>
+                <h5>个人信息</h5>
+            </div>
+            <div class="widget-content clearfix">
+                <div class="user_imgbox col-sm-3">
+                    <img src="../Content/Images/default_user.png" alt="用户头像">
+                </div>
+                <ul class="user_imgbox col-sm-9 list-group">
+                    <li class="list-group-item">姓名：***</li>
+                    <li class="list-group-item">工号：***</li>
+                    <li class="list-group-item">性别：***</li>
+                    <li class="list-group-item">年龄：***</li>
+                    <li class="list-group-item">岗位：***</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--个人信息-->
+
+    <!--个人待办-->
+    <div class="col-sm-6" id="todo_bar"><div class="widget-box">
+    <div class="widget-title">
+        <span class="icon"><i class="fa fa-check"></i></span>
+        <h5>个人待办</h5>
+    </div>
+    <div class="widget-content">
+        <div class="todo">
+            <ul>
+                <li class="clearfix">
+                    <div class="txt pull-left"> 我的待办我的待办我的待办我的待办我的待办<span class="date badge badge-info">测试</span></div>
+                    <div class="pull-right"> <a class="tip" href="#" data-original-title="Edit Task"><i class="fa fa-pencil"></i></a> <a class="tip" href="#" data-original-title="Delete"><i class="fa fa-close"></i></a> </div>
+                </li>
+                <li class="clearfix">
+                    <div class="txt pull-left">我的待办我的待办我的待办我的待办我的待办 <span class="date badge badge-warning">测试</span> </div>
+                    <div class="pull-right"> <a class="tip" href="#" data-original-title="Edit Task"><i class="fa fa-pencil"></i></a> <a class="tip" href="#" data-original-title="Delete"><i class="fa fa-close"></i></a> </div>
+                </li>
+                <li class="clearfix">
+                    <div class="txt pull-left"> 我的待办我的待办我的待办我的待办我的待办 <span class="date badge badge-info">测试</span></div>
+                    <div class="pull-right"> <a class="tip" href="#" data-original-title="Edit Task"><i class="fa fa-pencil"></i></a> <a class="tip" href="#" data-original-title="Delete"><i class="fa fa-close"></i></a> </div>
+                </li>
+                <li class="clearfix">
+                    <div class="txt pull-left"> 我的待办我的待办我的待办我的待办我的待办 <span class="date badge badge-info">测试</span> </div>
+                    <div class="pull-right"> <a class="tip" href="#" data-original-title="Edit Task"><i class="fa fa-pencil"></i></a> <a class="tip" href="#" data-original-title="Delete"><i class="fa fa-close"></i></a> </div>
+                </li>
+                <li class="clearfix">
+                    <div class="txt pull-left"> 我的待办我的待办我的待办我的待办我的待办 <span class="date badge badge-important">测试</span> </div>
+                    <div class="pull-right"> <a class="tip" href="#" data-original-title="Edit Task"><i class="fa fa-pencil"></i></a> <a class="tip" href="#" data-original-title="Delete"><i class="fa fa-close"></i></a> </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div></div>
+    <!--个人待办-->
+
+    <!--notice_bar 系统公告-->
+    <section class="col-sm-12" id="notice_bar">
+        <div class="widget-box">
+            <div class="widget-title bg_lo" data-toggle="collapse" href="#collapseG3">
+                <span class="icon"> <i class="fa fa-bell"></i> </span>
+                <h5>系统公告</h5>
+            </div>
+            <div class="widget-content nopadding updates in collapse" id="collapseG3" style="height: auto;">
+                <div class="new-update clearfix"> <i class="icon-gift"></i> <a href="javascript:;" class="update-notice">公众平台自定义菜单功能优化上线</a> <span class="update-date pull-right cl_normal">2015-04-23</span> </div>
+                <div class="new-update clearfix"> <i class="icon-gift"></i> <a href="javascript:;" class="update-notice">公众平台带参数二维码皆苦更新</a> <span class="update-date pull-right cl_normal">2015-04-22</span> </div>
+                <div class="new-update clearfix"> <i class="icon-gift"></i> <a href="javascript:;" class="update-notice">新增或群自动回复和自定义菜单配置接口，对所有公众号开放</a> <span class="update-date pull-right cl_normal">2015-04-14</span> </div>
+                <div class="new-update clearfix"> <i class="icon-gift"></i> <a href="javascript:;" class="update-notice">微信公众平台新增摇一摇周边功能</a> <span class="update-date pull-right cl_normal">2015-04-14</span> </div>
+            </div>
+        </div>
+    </section>
+    <!--notice_bar-->
+</section>
