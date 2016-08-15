@@ -4,9 +4,12 @@
     string _ActionName = ViewBag.ActionName ?? "PersonQuery";
 }
 
+<style type="text/css">
+    #left_bar.seekask-sidebar > .nav > li.active > a {border-left-color: #F90;}
+</style>
 
 <div class="col-sm-2 pd_lr_0">
-    <div class="seekask-sidebar">
+    <div class="seekask-sidebar" id="left_bar">
         <ul class="nav">
             <li>
                 <a href="@(Url.Content("~/BaseManager/PersonQuery"))"
@@ -14,7 +17,7 @@
                    data-ajax-update="#BaseManager_Layout_Content"
                    data-ajax="true" data-ajax-failure="fnAjaxError"
                    data-ajax-success="fnAjaxSuccess">
-                    <span class="fa fa-caret-right"></span> 人员档案室
+                    <span class="fa fa-user"></span> 人员档案室
                 </a>
             </li>
             <li>
@@ -23,12 +26,12 @@
                    data-ajax-update="#BaseManager_Layout_Content"
                    data-ajax="true" data-ajax-failure="fnAjaxError"
                    data-ajax-success="fnAjaxSuccess">
-                    <span class="fa fa-caret-right"></span> 单位档案室
+                    <span class="fa fa-building"></span> 单位档案室
                 </a>
             </li>
             <li>
                 <a href="javascript:;">
-                    <span class="fa fa-caret-right"></span> 专业科目室
+                    <span class="fa fa-building-o"></span> 专业科目室
                 </a>
             </li>
             <li>
@@ -54,3 +57,8 @@
 </div>
 
 
+<script type="text/javascript">
+    $("#left_bar>ul>li").click(function () {
+        $(this).addClass("active").siblings(".active").removeClass("active");
+    });
+</script>
