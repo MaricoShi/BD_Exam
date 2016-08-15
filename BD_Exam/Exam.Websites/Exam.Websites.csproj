@@ -153,9 +153,11 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Content\antd.min.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\font-antd\font_1461567603_8950496.svg" />
     <Content Include="Content\font-awesome\css\font-awesome-ie7.min.css" />
     <Content Include="Content\font-awesome\css\font-awesome.css" />
     <Content Include="Content\font-awesome\css\font-awesome.min.css" />
@@ -191,9 +193,14 @@
     <Content Include="Images\Upload\.png\ee8b9e0b001c4f90b88ca2a4de505192.png" />
     <Content Include="Images\Upload\.txt\1d87135f7cf2480799d70d56f0ba16d7.txt" />
     <Content Include="Images\Upload\.txt\55e146aff7cd464ea0713723183419f7.txt" />
+    <Content Include="Scripts\antd.js" />
+    <Content Include="Scripts\antd.min.js" />
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\font-antd\font_1461567603_8950496.eot" />
+    <Content Include="Content\font-antd\font_1461567603_8950496.ttf" />
+    <Content Include="Content\font-antd\font_1461567603_8950496.woff" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -205,6 +212,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\react-dom.min.js" />
+    <Content Include="Scripts\react.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <None Include="Scripts\_references.js" />

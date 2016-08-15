@@ -17,19 +17,19 @@ namespace Exam.Websites.Controllers
 
         public ActionResult Test1()
         {
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(500);
             return View();
         }
 
         public ActionResult Test2()
         {
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(500);
             return View();
         }
 
         public ActionResult Test3()
         {
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(500);
             return View();
         }
 

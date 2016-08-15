@@ -8,6 +8,7 @@
     <link rel="shortcut icon" href="~/favicon.ico">
 
     <title>@ViewBag.Title </title>
+    @Styles.Render("~/Content/antd.min.css")
     @Styles.Render("~/Content/bootstrap.min.css")
     @Styles.Render("~/Content/exam.ui.css")
     <link href="~/Content/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
@@ -28,6 +29,9 @@
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/Scripts/app.js")
     @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+    @Scripts.Render("~/Scripts/react.min.js")
+    @Scripts.Render("~/Scripts/react-dom.min.js")
+    @Scripts.Render("~/Scripts/antd.min.js")
 
 </head>
 <body>
@@ -118,7 +122,11 @@
     <script>
 
         function fnAjaxError(xhr, status, error) {
-            alert("404");
+            antd.notification[type]({
+                message: '您的请求出现异常',
+                duration: 4,
+                description: '异常：',
+            });
         }
 
         function fnAjaxSuccess(data, status, xhr) {

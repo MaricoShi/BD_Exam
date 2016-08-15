@@ -3,6 +3,113 @@
     Layout = null;
 }
 
-<div class="seekask-title">
-    <h4>人员档案室</h4>
+<div >
+    <div class="seekask-title clearfix">
+        <h4>人员档案室</h4>
+    </div>
+    <div id="dvPersonQuerySearch">
+        <label class="control-label col-sm-1 text-right">日期：</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control">
+        </div>
+        
+        <button class="btn btn-info" id="btPersonQuerySearch" style="outline:0;">
+            &nbsp;<i class="fa fa-search"></i> 搜&nbsp;索&nbsp;
+        </button>
+    </div>
+    <div id="tbPersonQuery">
+        
+    </div>
 </div>
+
+<script>
+    function success() {
+        antd.Modal.success({
+            title: '编辑成功',
+            content: '成功编辑1条信息！',
+        });
+    }
+
+    function msgSuccess() {
+        antd.message.success('这是一条成功的提示,并将于5秒后消失', 5);
+    };
+
+    function openNotificationWithIcon(type) {
+        antd.notification[type]({
+            message: '这是标题',
+            duration: 4,
+            description: '这是提示框的文案这是提示框示框的文案这是提示是提示框的文案这是提示框的文案',
+        });
+    };
+
+    $('#btPersonQuerySearch').on('click', function () {
+        success();
+        msgSuccess();
+        openNotificationWithIcon('success');
+    });
+
+
+    var columns = [
+      { title: '姓名', dataIndex: 'name', key: 'name', width: 100},
+      { title: '年龄', dataIndex: 'age', key: 'age', width: 100 },
+      { title: '列1', dataIndex: 'address', key: '1', width: 150 },
+      { title: '列2', dataIndex: 'address', key: '2', width: 150 },
+      { title: '列3', dataIndex: 'address', key: '3', width: 150 },
+      { title: '列4', dataIndex: 'address', key: '4', width: 150 },
+      { title: '列5', dataIndex: 'address', key: '5', width: 150 },
+      { title: '列6', dataIndex: 'address', key: '6', width: 150 },
+      { title: '列7', dataIndex: 'address', key: '7', width: 150 },
+      { title: '列8', dataIndex: 'address', key: '8', width: 150 },
+      {
+          title: '操作',
+          key: 'operation',
+          fixed: 'right',
+          width: 120,
+          render: function () {
+              var _edit = React.createElement('a', { href: 'javascript:;' }, '编辑');
+              var _delete = React.createElement('a', { href: 'javascript:;', className: 'mg_l_10' }, '删除');
+              var _select = React.createElement('a', { href: 'javascript:;', className: 'mg_l_10' }, '查看');
+              return React.createElement('div', null, _edit, _delete, _select);;
+          }
+      }
+    ];
+
+    var data = [];
+    for (var i = 0; i < 100; i++) {
+        data.push({
+            key: i,
+            name: '李大嘴' + i,
+            age: 32,
+            address: '西湖区湖底公园' + i + '号',
+        });
+    }
+    data = [];
+
+
+    // 通过 rowSelection 对象表明需要行选择
+    var rowSelection = {
+        onChange: function (selectedRowKeys, selectedRows) {
+            console.log('selectedRowKeys: ${selectedRowKeys}', 'selectedRows: ', selectedRows);
+        },
+        onSelect: function (record, selected, selectedRows) {
+            console.log(record, selected, selectedRows);
+        },
+        onSelectAll: function (selected, selectedRows, changeRows) {
+            console.log(selected, selectedRows, changeRows);
+        },
+    };
+
+
+    function InitPersonQueryPage() {
+        var _table = React.createElement(antd.Table, {
+            rowSelection: rowSelection,
+            columns: columns,
+            dataSource: data,
+            scroll: { x:1 }
+        });
+        ReactDOM.render(_table, document.getElementById('tbPersonQuery'));
+    }
+
+    InitPersonQueryPage();
+</script>
+
