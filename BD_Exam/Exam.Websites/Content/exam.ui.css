@@ -71,6 +71,7 @@ i.fa { font-size: 14px; }
 .mg_l_15 { margin-left: 15px; }
 .mg_l_20 { margin-left: 20px; }
 .mg_l_25 { margin-left: 25px; }
+.mg_r_5 { margin-right: 5px; }
 .mg_r_10 { margin-right: 10px; }
 .mg_r_15 { margin-right: 15px; }
 .mg_r_20 { margin-right: 20px; }
@@ -83,6 +84,7 @@ i.fa { font-size: 14px; }
 .mg_b_15 { margin-bottom: 15px; }
 .mg_b_20 { margin-bottom: 20px; }
 .mg_b_25 { margin-bottom: 25px; }
+.mg_lr_0{ margin: 0px !important; }
 
 /* Padding size class */
 .pd_0 { padding: 0px !important; }
@@ -180,10 +182,18 @@ i.fa { font-size: 14px; }
 .seekask-sidebar .nav { margin-right: 4px; }
 .seekask-sidebar .nav li { padding: 4px 0px; border-bottom: 1px solid #DDD; position: relative; line-height: 1.428571429; }
 .seekask-sidebar .nav li a { color: #333; padding: 6px 16px; border-left: 2px solid #FFF; }
-.seekask-sidebar .nav li a span.fa { position: absolute; left: 5px; top: 8px; font-size: 14px; color: #999; }
+.seekask-sidebar .nav li a span.fa { position: absolute; left: 0; top: 8px; font-size: 14px; color: #999; }
 .seekask-sidebar .nav li a:hover { border-left: 2px solid #F90; }
 .seekask-sidebar .nav .nav li { border-bottom: 0px; }
 .seekask-sidebar .nav .nav li a { padding-left: 28px; }
+
+/*******begin of search_box_bar***********/
+.search_box_bar{background-color: #F9F9F9;padding: 10px;border-radius: 5px;margin: 0 0 10px 0;}
+.search_box_bar > .row {margin: 10px 0;}
+.search_box_bar > .row > .col-sm-6 > *:first-child {width: 30%;display: inline-block;text-align: right;}
+.search_box_bar > .row > .col-sm-6 > *:nth-child(2) {width: 70%;}
+/******end of search_box_bar*********/
+
 
 .scp-main-cont { padding-right: 0px; padding-left: 20px; padding-bottom: 50px; border-left: solid 1px #ddd; margin-left: -1px; }
 .seekask-title h1, .seekask-title h2, .seekask-title h3, .seekask-title h4, 
