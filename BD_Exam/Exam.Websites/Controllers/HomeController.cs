@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Exam.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +13,18 @@ namespace Exam.Websites.Controllers
         // GET: /Home/
         public ActionResult Index()
         {
+            try
+            {
+                using (ExamEntities _db = new ExamEntities())
+                {
+                    var _Org = _db.EBasOrg.ToList();
+                }
+            }
+            catch (Exception)
+            {
+                
+            }
+            
             return View();
         }
 
