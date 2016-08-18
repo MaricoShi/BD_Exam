@@ -39,11 +39,21 @@ namespace Exam.Websites.Controllers
         }
 
         /// <summary>
-        /// 单位档案室
+        /// 人员新增修改查看
         /// </summary>
         /// <returns></returns>
         [IsAjaxRedirectFilter(_RedirectUrl = "~/BaseManager/Index")]
         public ActionResult PerSonDetail()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 机构数据
+        /// </summary>
+        /// <returns></returns>
+        [IsAjaxRedirectFilter(_RedirectUrl = "~/BaseManager/Index")]
+        public ActionResult OrgDatas()
         {
             return View();
         }
