@@ -21,6 +21,8 @@ input[type="search"], input[type="tel"], input[type="color"], .uneditable-input 
 
 hr { border-top-color: #dadada; border-bottom: 1px solid #fff; }
 
+textarea{resize:none;}
+
 i.fa { font-size: 14px; }
 .nav > li > a:focus, .nav > li > a:hover { background-color: transparent; }
 .shadow { -moz-box-shadow: 3px 3px 4px #000; -webkit-box-shadow: 3px 3px 4px #000; box-shadow: 3px 3px 4px #000;
@@ -84,8 +86,8 @@ i.fa { font-size: 14px; }
 .mg_b_15 { margin-bottom: 15px; }
 .mg_b_20 { margin-bottom: 20px; }
 .mg_b_25 { margin-bottom: 25px; }
-.mg_lr_0{ margin: 0px !important; }
-
+.mg_lr_0{ margin-left: 0px !important; margin-right: 0px !important;}
+.mg_tb_10{ margin-top: 10px !important; margin-bottom: 10px !important;}
 /* Padding size class */
 .pd_0 { padding: 0px !important; }
 .pd_l_10 { padding-left: 10px; }
@@ -109,6 +111,12 @@ i.fa { font-size: 14px; }
 .pd_lr_15 { padding-left: 10px; padding-right: 10px; }
 .pd_tb_10 { padding-top: 10px; padding-bottom: 10px; }
 
+/*******字体粗细*********/
+.text-bold {font-weight:bold;}
+.text-normal {font-weight:normal;}
+.text-top{vertical-align:top!important;}
+.text-middle{vertical-align:middle!important;}
+.text-bottom{vertical-align:bottom!important;}
 
 .i_bn_fold { background-image: url("Images/icon.png?v=20151124"); background-repeat: no-repeat; background-position: -269px 0; overflow: hidden; width: 12px; height: 78px; position: absolute; left: 0; top: 50%; cursor: pointer; text-indent: -1000em; margin-top: -40px; }
 .i_bn_fold:hover { background-position: -269px -87px; }
