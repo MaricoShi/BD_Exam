@@ -60,44 +60,65 @@
 
     //fnCreateOrgList();
 
-    function getTree() {
-        var tree = [
-  {
-      text: "Parent 1",
-      nodes: [
-        {
-            text: "Child 1..",
-            state: {
-                orgcode: "BGTA",
-                text: "Child 1.........."
-            },
-            nodes: [
-              {
-                  text: "Grandchild 1"
-              },
-              {
-                  text: "Grandchild 2"
-              }
-            ]
+    function getTree(Pcode) {
+        var _option = {
+            url: "@Url.Content("~/BaseManager/getOrgDataList")?ParentCode=" + (Pcode || "")
         },
-        {
-            text: "Child 2"
-        }
-      ]
-  },
-  {
-      text: "Parent 2"
-  },
-  {
-      text: "Parent 3"
-  },
-  {
-      text: "Parent 4"
-  },
-  {
-      text: "Parent 5"
-  }
-        ];
+        tree = [];
+        $.web.get(_option, {
+            OnSuccess: function (xhrData) {
+                if (xhrData) {
+                    $.each(xhrData.Data, function(_i,_t) {
+                        tree.push(
+                            {
+                                text: _t.OrgName,
+                                state: {
+                                    orgcode: _t.OrgCode
+                                }
+                            }
+                            );
+                    });
+                }
+            }
+        });
+
+  //      var tree = [
+  //{
+  //    text: "Parent 1",
+  //    nodes: [
+  //      {
+  //          text: "Child 1..",
+  //          state: {
+  //              orgcode: "BGTA",
+  //              text: "Child 1.........."
+  //          },
+  //          nodes: [
+  //            {
+  //                text: "Grandchild 1"
+  //            },
+  //            {
+  //                text: "Grandchild 2"
+  //            }
+  //          ]
+  //      },
+  //      {
+  //          text: "Child 2"
+  //      }
+  //    ]
+  //},
+  //{
+  //    text: "Parent 2"
+  //},
+  //{
+  //    text: "Parent 3"
+  //},
+  //{
+  //    text: "Parent 4"
+  //},
+  //{
+  //    text: "Parent 5"
+  //}
+  //      ];
         return tree;
     }
 

@@ -1,0 +1,67 @@
+﻿@{
+    ViewBag.Title = "机构选择";
+}
+
+@Scripts.Render(Url.Content("~/Scripts/bootstrap-treeview.min.js"))
+@Styles.Render(Url.Content("~/Content/bootstrap-treeview.min.css"))
+<style type="text/css">
+    #orgList{max-height: 500px;overflow:auto;}
+</style>
+
+<div id="orgList"></div>
+
+
+<script type="text/javascript">
+    function getTree() {
+        
+
+        var tree = [
+  {
+      text: "Parent 1",
+      nodes: [
+        {
+            text: "Child 1..",
+            state: {
+                orgcode: "BGTA",
+                text: "Child 1.........."
+            },
+            nodes: [
+              {
+                  text: "Grandchild 1"
+              },
+              {
+                  text: "Grandchild 2"
+              }
+            ]
+        },
+        {
+            text: "Child 2"
+        }
+      ]
+  },
+  {
+      text: "Parent 2"
+  },
+  {
+      text: "Parent 3"
+  },
+  {
+      text: "Parent 4"
+  },
+  {
+      text: "Parent 5"
+  }
+        ];
+        return tree;
+    }
+
+    $(function () {
+        $("#orgList")
+            .treeview({ data: getTree() })
+            .on("nodeSelected", function (e, d) {
+                var $selectedNode = $("#orgList>ul>li[data-nodeid='" + d.nodeId + "']"),
+                    _X = $selectedNode.offset().left + $selectedNode.width() + 50,
+                    _Y = $selectedNode.offset().top;
+            });
+    });
+</script>
