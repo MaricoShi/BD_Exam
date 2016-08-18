@@ -176,39 +176,40 @@
                 $.web.RemoveLoading();
             }, _time || 1000);
         },
-        get: function (_url, successFnback, failFnback) {
-            $.ajax({
-                url: encodeURI(_url),
-                async: false,
-                type: "GET",
-                dataType: "json"
-            })
+        get: function (_option, _funobj) {
+            var ajaxconfig =
+                {
+                    type: "GET",
+                    contentType: "application/json;application/x-www-form-urlencoded;charset=utf-8",
+                    dataType: 'json',
+                    async: false
+                },
+                funconfig = {
+                    OnSuccess: function () {
+
+                    },
+                    onFailure: function () {
+
+                    },
+                    OnComplete: function () {
+
+                    }
+                };
+            _option.url = encodeURI(_option.url);//地址栏里转码
+            $.extend(ajaxconfig, _option);
+            if (_funobj) {
+                $.extend(funconfig, _funobj);
+            }
+
+            $.ajax(ajaxconfig)
             .done(function (xhr) {
-                if (successFnback) {
-                    successFnback(xhr);
-                }
+                funconfig.OnSuccess(xhr);
             })
             .fail(function (err) {
-                if (failFnback) {
-                    failFnback(err);
-                }
-            });
-        },
-        getAsync: function (_url, successFnback, failFnback) {
-            $.ajax({
-                url: encodeURI(_url),
-                type: "GET",
-                dataType: "json"
+                funconfig.onFailure(err);
             })
-            .done(function (xhr) {
-                if (successFnback) {
-                    successFnback(xhr);
-                }
-            })
-            .fail(function (err) {
-                if (failFnback) {
-                    failFnback(err);
-                }
+            .always(function() {
+                funconfig.OnComplete();
             });
         },
         post: function (_url, _data, successFnback, failFnback) {
