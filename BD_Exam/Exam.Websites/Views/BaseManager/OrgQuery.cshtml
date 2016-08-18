@@ -18,7 +18,7 @@
     #orgList_Menu>li{cursor:pointer;}
 </style>
 
-<div id="orgList"></div>
+<div id="orgList" class="col-sm-4"></div>
 
 <script type="text/javascript">
     //function fnCreateOrgList() {
@@ -66,7 +66,11 @@
       text: "Parent 1",
       nodes: [
         {
-            text: "Child 1",
+            text: "Child 1..",
+            state: {
+                orgcode: "BGTA",
+                text: "Child 1.........."
+            },
             nodes: [
               {
                   text: "Grandchild 1"
@@ -103,27 +107,27 @@
             _left = $("#orgList").offset().left;
             _X -= _left;
             _Y -= _top;
-
+        
         $("#orgList").before(
             $("<ul>", { "class": "list-group", "id": "orgList_Menu" })
             .append(
-            $("<li>", { "class": "list-group-item" }).text("菜单一").click(function() {
-                console.log("你点击了菜单一");
-                antd.message.info('你点击了菜单一');
+            $("<li>", { "class": "list-group-item" }).text("新增子节点").click(function() {
+                console.log("你点击了新增子节点");
+                antd.message.info('你点击了新增子节点');
                 $(this).parent().remove();
             })
             )
             .append(
-            $("<li>", { "class": "list-group-item" }).text("菜单二").click(function () {
-                console.log("你点击了菜单二");
-                antd.message.info('你点击了菜单二');
+            $("<li>", { "class": "list-group-item" }).text("修改").click(function () {
+                console.log("你点击了修改");
+                antd.message.info('你点击了修改');
                 $(this).parent().remove();
             })
             )
             .append(
-            $("<li>", { "class": "list-group-item" }).text("菜单三").click(function () {
-                console.log("你点击了菜单三");
-                antd.message.info('你点击了菜单三');
+            $("<li>", { "class": "list-group-item" }).text("删除").click(function () {
+                console.log("你点击了删除");
+                antd.message.info('你点击了删除');
                 $(this).parent().remove();
             })
             ).css({"left":_X,"top":_Y})
@@ -132,24 +136,31 @@
 
     $(function () {
 
-        //$(document).bind("contextmenu", function () { return false; });
+        //$(document).bind("contextmenu", function () { console.log("右键菜单");  return false; });
 
         $("#orgList")
-            .bind("contextmenu", function () { return false; })
             .mousedown(function (e) {
                 $("#orgList_Menu").remove();
-            switch (e.which) {
-                case 1://左键
-                    console.log('这 是左键单击事件');
-                    break;
-                case 3://右键键
-                    e.preventDefault();
-                    console.log('这 是右键单击事件x:' + e.clientX + ',y:' + e.clientY);
-                    RightMouseMenu(e.clientX, e.clientY);
-                    break;
-                default:
+            //switch (e.which) {
+            //    case 1://左键
+            //        console.log('这 是左键单击事件');
+            //        RightMouseMenu(e.clientX, e.clientY);
+            //        break;
+            //    case 3://右键键
+            //        e.preventDefault();
+            //        console.log('这 是右键单击事件x:' + e.clientX + ',y:' + e.clientY);
+            //        RightMouseMenu(e.clientX, e.clientY);
+            //        break;
+            //    default:
 
-            }
-        }).treeview({ data: getTree() });
+            //}
+            })
+            .treeview({ data: getTree() })
+            .on("nodeSelected", function (e, d) {
+                var $selectedNode = $("#orgList>ul>li[data-nodeid='" + d.nodeId + "']"),
+                    _X = $selectedNode.offset().left + $selectedNode.width()+50,
+                    _Y = $selectedNode.offset().top;
+                RightMouseMenu(_X, _Y);
+            });
     });
 </script>
