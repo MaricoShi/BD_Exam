@@ -27,7 +27,7 @@ namespace Exam.Data.Models
         public string OrgCode { get; set; }
         public string OrgName { get; set; }
         public string ShortName { get; set; }
-        public int? SortCode { get; set; }
+        public int SortCode { get; set; }
         public string StatusC { get; set; }
         public string ParentCode { get; set; }
         public int NextOrgNum { get; set; }
