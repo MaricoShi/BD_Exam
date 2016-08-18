@@ -199,7 +199,8 @@ i.fa { font-size: 14px; }
 .search_box_bar{background-color: #F9F9F9;padding: 10px;border-radius: 5px;margin: 0 0 10px 0;}
 .search_box_bar > .row {margin: 10px 0;}
 .search_box_bar > .row > .col-sm-6 > *:first-child {width: 30%;display: inline-block;text-align: right;}
-.search_box_bar > .row > .col-sm-6 > *:nth-child(2) {width: 70%;}
+.search_box_bar > .row > .col-sm-6 > *:nth-child(2) {width: 50%;}
+.search_box_bar > .row > .col-sm-6 > *:nth-child(3) {width: 20%;}
 /******end of search_box_bar*********/
 
 
