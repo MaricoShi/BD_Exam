@@ -1,11 +1,21 @@
 ﻿@{
     ViewBag.Title = "人员档案室";
     Layout = null;
+    //string _ActionName = ViewBag.ActionName ?? "PerSonDetail";
 }
 
 <style type="text/css">
-    #btPersonQuerySearch {
-        word-spacing: 5px;
+    #btPersonQuerySearch {word-spacing: 5px;}
+    .modal-PersonAdd table.table td{line-height:30px;padding:0;}
+    .modal-PersonAdd table.table td.text-left {line-height:20px;}
+    .modal-PersonAdd table.table input,
+    .modal-PersonAdd table.table select,
+    .modal-PersonAdd table.table textarea {
+        margin: 0;
+        padding: 0;
+        width:100%;
+        height:100%;
+        border:none;
     }
 </style>
 
@@ -24,11 +34,115 @@
         </div>
     </div>
 
-
+    <div class="row mg_tb_10 mg_lr_0">
+        @*<a class="btn btn-info" data-toggle="modal" data-target=".modal-PersonAdd" id="btPersonAdd"
+           href="@(Url.Content("~/BaseManager/PerSonDetail"))"
+           data-ajax-id="PerSonDetail"
+           data-ajax-update="#modal-PersonAdd"
+           data-ajax="true"><i class="fa fa-plus"></i>新增</a>*@
+    </div>
     <div id="tbPersonQuery">
 
     </div>
 </div>
+
+<div class="modal fade modal-PersonAdd">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增用户</h4>
+            </div>
+            <div class="modal-body" id="modal-PersonAdd">
+                @*@{Html.RenderAction(_ActionName, "BaseManager", null);}*@
+                @*<table class="table table-bordered text-center text-middle" cellpadding="0" cellspacing="0">
+                    <tr class="text-bold">
+                        <td>姓名</td>
+                        <td>职务</td>
+                        <td>军衔</td>
+                        <td>专业</td>
+                        <td>名族</td>
+                        <td>籍贯</td>
+                        <td colspan="2">单位</td>
+                    </tr>
+                    <tr>
+                        <td>测试</td>
+                        <td>测试</td>
+                        <td>
+                            <select>
+                                <option>上校</option>
+                                <option>中校</option>
+                                <option>少校</option>
+                            </select>
+                        </td>
+                        <td>测试</td>
+                        <td>测试</td>
+                        <td>测试</td>
+                        <td colspan="2">测试</td>
+                    </tr>
+                    <tr class="text-bold">
+                        <td>学历</td>
+                        <td colspan="2">入伍时间</td>
+                        <td colspan="2">从事专业时间</td>
+                        <td>是否到期</td>
+                        <td>建档时间</td>
+                        <td>退档时间</td>
+                    </tr>
+                    <tr>
+                        <td>测试</td>
+                        <td colspan="2">测试</td>
+                        <td colspan="2">测试</td>
+                        <td>测试</td>
+                        <td>测试</td>
+                        <td>测试</td>
+                    </tr>
+                    <tr class="text-bold">
+                        <td>政治面貌</td>
+                        <td>党团时间</td>
+                        <td>训练提纲</td>
+                        <td>训练等级</td>
+                        <td>申报等级</td>
+                        <td>性别</td>
+                        <td colspan="2">士兵证号</td>
+                    </tr>
+                    <tr>
+                        <td>测试</td>
+                        <td>测试</td>
+                        <td>测试</td>
+                        <td>测试</td>
+                        <td>测试</td>
+                        <td>测试</td>
+                        <td colspan="2" class="text-left"><input type="text" /></td>
+                    </tr>
+                    <tr>
+                        <td class="text-bold text-middle">工作简历</td>
+                        <td colspan="7" class="text-left"><textarea></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="text-bold text-middle">参加集训情况</td>
+                        <td colspan="7" class="text-left"><textarea></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="text-bold text-middle">加重演戏演</td>
+                        <td colspan="7" class="text-left"><textarea></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="text-bold text-middle">参加比武情况</td>
+                        <td colspan="7" class="text-left"><textarea></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="text-bold text-middle">参加比武情况</td>
+                        <td colspan="7" class="text-left"><textarea></textarea></td>
+                    </tr>
+                </table>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <script>
     function success() {
@@ -50,6 +164,12 @@
         });
     };
 
+    //新增
+    $("#btPersonAdd").click(function () {
+       
+    });
+
+    //查询
     $('#btPersonQuerySearch').on('click', function () {
         success();
         msgSuccess();

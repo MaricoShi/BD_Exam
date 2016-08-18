@@ -38,5 +38,14 @@ namespace Exam.Websites.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 单位档案室
+        /// </summary>
+        /// <returns></returns>
+        [IsAjaxRedirectFilter(_RedirectUrl = "~/BaseManager/Index")]
+        public ActionResult PerSonDetail()
+        {
+            return View();
+        }
     }
 }

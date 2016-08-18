@@ -7,46 +7,149 @@
     <h4>单位档案室</h4>
 </div>*@
 
+@Scripts.Render(Url.Content("~/Scripts/bootstrap-treeview.min.js"))
+@Styles.Render(Url.Content("~/Content/bootstrap-treeview.min.css"))
+<style type="text/css">
+    #orgList_Menu {
+        position:absolute;
+        width:10rem;
+        z-index:20;
+    }
+    #orgList_Menu>li{cursor:pointer;}
+</style>
+
 <div id="orgList"></div>
 
+<script type="text/javascript">
+    //function fnCreateOrgList() {
+    //    var antdTree=antd.Tree,
+    //        antdTreeNode = antdTree.TreeNode;
 
-<script>
-    function fnCreateOrgList() {
-        var antdTree=antd.Tree,
-            antdTreeNode = antdTree.TreeNode;
-
-        var _treenodes = getTreeNodes(antdTreeNode),
-            _tree = React.createElement(antdTree, {
-             onSelect:function() {
+    //    var _treenodes = getTreeNodes(antdTreeNode),
+    //        _tree = React.createElement(antdTree, {
+    //         onSelect:function() {
     
-             },
-             loadData:function() {
+    //         },
+    //         loadData:function() {
     
-             }
-            }, _treenodes);
+    //         }
+    //        }, _treenodes);
 
-        ReactDOM.render(_tree, $("#orgList").get(0));
+    //    ReactDOM.render(_tree, $("#orgList").get(0));
+    //}
+
+    //function getTreeNodes(node) {
+    //    var _array = [], _children = [];
+    //    for (var i = 0; i < 10; i++) {
+    //        var _node = React.createElement(node, {
+    //            title: "单位"+(i+1),
+    //            key: "" + Math.floor(Math.random() * 10000)
+    //        });
+    //        _children.push(_node);
+    //    }
+
+    //    for (var i = 0; i < 10; i++) {
+    //        var _node = React.createElement(node, {
+    //            title: "单位" + (i + 1),
+    //            key: "" + Math.floor(Math.random() * 10000)
+    //        }, _children);
+    //        _array.push(_node);
+    //    }
+    //    return _array;
+    //}
+
+    //fnCreateOrgList();
+
+    function getTree() {
+        var tree = [
+  {
+      text: "Parent 1",
+      nodes: [
+        {
+            text: "Child 1",
+            nodes: [
+              {
+                  text: "Grandchild 1"
+              },
+              {
+                  text: "Grandchild 2"
+              }
+            ]
+        },
+        {
+            text: "Child 2"
+        }
+      ]
+  },
+  {
+      text: "Parent 2"
+  },
+  {
+      text: "Parent 3"
+  },
+  {
+      text: "Parent 4"
+  },
+  {
+      text: "Parent 5"
+  }
+        ];
+        return tree;
     }
 
-    function getTreeNodes(node) {
-        var _array = [], _children = [];
-        for (var i = 0; i < 10; i++) {
-            var _node = React.createElement(node, {
-                title: "单位"+(i+1),
-                key: "" + Math.floor(Math.random() * 10000)
-            });
-            _children.push(_node);
-        }
+    //右键菜单
+    function RightMouseMenu(_X, _Y) {
+        var _top = $("#orgList").offset().top,
+            _left = $("#orgList").offset().left;
+            _X -= _left;
+            _Y -= _top;
 
-        for (var i = 0; i < 10; i++) {
-            var _node = React.createElement(node, {
-                title: "单位" + (i + 1),
-                key: "" + Math.floor(Math.random() * 10000)
-            }, _children);
-            _array.push(_node);
-        }
-        return _array;
+        $("#orgList").before(
+            $("<ul>", { "class": "list-group", "id": "orgList_Menu" })
+            .append(
+            $("<li>", { "class": "list-group-item" }).text("菜单一").click(function() {
+                console.log("你点击了菜单一");
+                antd.message.info('你点击了菜单一');
+                $(this).parent().remove();
+            })
+            )
+            .append(
+            $("<li>", { "class": "list-group-item" }).text("菜单二").click(function () {
+                console.log("你点击了菜单二");
+                antd.message.info('你点击了菜单二');
+                $(this).parent().remove();
+            })
+            )
+            .append(
+            $("<li>", { "class": "list-group-item" }).text("菜单三").click(function () {
+                console.log("你点击了菜单三");
+                antd.message.info('你点击了菜单三');
+                $(this).parent().remove();
+            })
+            ).css({"left":_X,"top":_Y})
+            );
     }
 
-    fnCreateOrgList();
+    $(function () {
+
+        //$(document).bind("contextmenu", function () { return false; });
+
+        $("#orgList")
+            .bind("contextmenu", function () { return false; })
+            .mousedown(function (e) {
+                $("#orgList_Menu").remove();
+            switch (e.which) {
+                case 1://左键
+                    console.log('这 是左键单击事件');
+                    break;
+                case 3://右键键
+                    e.preventDefault();
+                    console.log('这 是右键单击事件x:' + e.clientX + ',y:' + e.clientY);
+                    RightMouseMenu(e.clientX, e.clientY);
+                    break;
+                default:
+
+            }
+        }).treeview({ data: getTree() });
+    });
 </script>
