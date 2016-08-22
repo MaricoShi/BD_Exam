@@ -82,6 +82,7 @@ namespace Exam.Websites.Controllers
                         :
                         context.EBasOrg.Where(o => o.IsDeleted == false && o.ParentCode == ParentCode).OrderBy(s => s.SortCode).ToList();
 
+
                 }
             }
             catch (Exception)
