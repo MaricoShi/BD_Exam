@@ -7,7 +7,7 @@
     <h4>单位档案室</h4>
 </div>*@
 
-@Scripts.Render(Url.Content("~/Scripts/bootstrap-treeview.min.js"))
+@Scripts.Render(Url.Content("~/Scripts/bootstrap-treeview.js"))
 @Styles.Render(Url.Content("~/Content/bootstrap-treeview.min.css"))
 <style type="text/css">
     #orgList_Menu {
@@ -60,6 +60,9 @@
 
     //fnCreateOrgList();
 
+    var TreeNodes;
+
+
     function getTree(Pcode) {
         debugger
         var _option = {
@@ -69,57 +72,24 @@
         $.web.get(_option, {
             OnSuccess: function (xhrData) {
                 if (xhrData) {
-                    $.each(xhrData.Data, function(_i,_t) {
+                    $.each(xhrData, function(_i,_t) {
                         tree.push(
                             {
                                 text: _t.OrgName,
                                 state: {
                                     orgcode: _t.OrgCode
-                                }
+                                },
+                                nodes:[]
                             }
                             );
                     });
                 }
-            }
-        });
-
- tree = [
-  {
-      text: "Parent 1",
-      nodes: [
-        {
-            text: "Child 1..",
-            state: {
-                orgcode: "BGTA",
-                text: "Child 1.........."
             },
-            nodes: [
-              {
-                  text: "Grandchild 1"
-              },
-              {
-                  text: "Grandchild 2"
-              }
-            ]
-        },
-        {
-            text: "Child 2"
-        }
-      ]
-  },
-  {
-      text: "Parent 2"
-  },
-  {
-      text: "Parent 3"
-  },
-  {
-      text: "Parent 4"
-  },
-  {
-      text: "Parent 5"
-  }
-        ];
+            onFailure: function(err) {
+                console.log(err);
+            }
+            
+        });
         return tree;
     }
 
@@ -156,12 +126,20 @@
             );
     }
 
+    function getNode(nId) {
+        return $('#orgList').treeview('getNode', nId);
+    }
+
+    function addNode(nId,option) {
+        $("#orgList").treeview("addNode", [nId,option ]);
+    }
+
+
     $(function () {
 
         //$(document).bind("contextmenu", function () { console.log("右键菜单");  return false; });
 
-        $("#orgList")
-            .mousedown(function (e) {
+        $("#orgList").mousedown(function (e) {
                 $("#orgList_Menu").remove();
             //switch (e.which) {
             //    case 1://左键
@@ -183,6 +161,21 @@
                     _X = $selectedNode.offset().left + $selectedNode.width()+50,
                     _Y = $selectedNode.offset().top;
                 RightMouseMenu(_X, _Y);
+            })
+            .on("nodeExpanded", function (e, node) {
+                if (!node.state.IsLoaded) {
+                    var $node = getNode(node.nodeId);
+                    $node.state["IsLoaded"] = !0;
+                    console.log("加载数据");
+                    var treeData = getTree($node.state.orgcode);
+                    $.each(treeData, function (_i, _t) {
+                        addNode(node.nodeId, { "node": _t });
+                    });
+                    $node.nodes =treeData.length==0?null:treeData;
+                }
+                else {
+                    console.log("已经加载过数据");
+                }
             });
     });
 </script>
