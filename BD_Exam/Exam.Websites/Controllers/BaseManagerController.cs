@@ -6,11 +6,19 @@ using System.Web;
 using System.Web.Mvc;
 using Exam.Data;
 using Exam.Data.Models;
+using Exam.Websites.Models;
 
 namespace Exam.Websites.Controllers
 {
     public class BaseManagerController : Controller
     {
+        ExamEntities _DB = new ExamEntities();
+        public new void Dispose() {
+            if (_DB != null)
+                _DB.Dispose();
+        }
+
+
         //
         // GET: /BaseManager/
 
@@ -71,19 +79,28 @@ namespace Exam.Websites.Controllers
         [HttpGet]
         public JsonResult getOrgDataList(string ParentCode)
         {
-            List<EBasOrg> _list = new List<EBasOrg>();
+            List<OrgViewModel> _list = new List<OrgViewModel>();
             try
             {
-                using (ExamEntities context = new ExamEntities())
-                {
 
-                    _list = string.IsNullOrEmpty(ParentCode) ?
-                        context.EBasOrg.Where(o => o.IsDeleted == false && string.IsNullOrEmpty(o.ParentCode)).OrderBy(s => s.SortCode).ToList()
-                        :
-                        context.EBasOrg.Where(o => o.IsDeleted == false && o.ParentCode == ParentCode).OrderBy(s => s.SortCode).ToList();
+                _list = string.IsNullOrEmpty(ParentCode) ?
+                    _DB.EBasOrg.Where(o => o.IsDeleted == false && string.IsNullOrEmpty(o.ParentCode)).OrderBy(s => s.SortCode)
+                    .Select(p=>new OrgViewModel {
+                    OrgCode=p.OrgCode,
+                    OrgName=p.OrgName,
+                    HasChildren=_DB.EBasOrg.Any(o=>o.ParentCode==p.OrgCode&&p.IsDeleted==false)
+                    }).ToList()
+                    :
+                    _DB.EBasOrg.Where(o => o.IsDeleted == false && o.ParentCode == ParentCode).OrderBy(s => s.SortCode)
+                    .Select(p => new OrgViewModel
+                    {
+                        OrgCode = p.OrgCode,
+                        OrgName = p.OrgName,
+                        HasChildren = _DB.EBasOrg.Any(o => o.ParentCode == p.OrgCode && p.IsDeleted == false)
+                    })
+                    .ToList();
 
 
-                }
             }
             catch (Exception)
             {
