@@ -154,6 +154,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\EAbsentPersonInfoController.cs" />
+    <Compile Include="Api\EScoreProjectInputController.cs" />
+    <Compile Include="Api\EScoreFileDetailController.cs" />
+    <Compile Include="Api\EConfigProfessionProjectController.cs" />
+    <Compile Include="Api\EBasProfessionInfoController.cs" />
+    <Compile Include="Api\EBasOrgController.cs" />
+    <Compile Include="Api\EScoreFileController.cs" />
+    <Compile Include="Api\EBasPersonInfoController.cs" />
     <Compile Include="Api\ESysController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\ODataConfig.cs" />
@@ -164,6 +172,8 @@
     </Compile>
     <Compile Include="Help\Filter\ExceFilterAttribute.cs" />
     <Compile Include="Help\Filter\IsAjaxRedirectFilterAttribute.cs" />
+    <Compile Include="Models\KeyValue.cs" />
+    <Compile Include="Models\OrgViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +226,7 @@
     <Content Include="Scripts\antd.min.js" />
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\base.js" />
+    <Content Include="Scripts\bootstrap-treeview.js" />
     <Content Include="Scripts\bootstrap-treeview.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -268,7 +279,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

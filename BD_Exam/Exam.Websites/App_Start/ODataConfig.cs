@@ -19,6 +19,14 @@ namespace Exam.Websites
             builder.ContainerName = "DefaultContainer";
 
             builder.EntitySet<ESys>("ESys");
+            builder.EntitySet<EBasOrg>("EBasOrg");
+            builder.EntitySet<EBasPersonInfo>("EBasPersonInfo");
+            builder.EntitySet<EAbsentPersonInfo>("EAbsentPersonInfo");
+            builder.EntitySet<EBasProfessionInfo>("EBasProfessionInfo");
+            builder.EntitySet<EConfigProfessionProject>("EConfigProfessionProject");
+            builder.EntitySet<EScoreFile>("EScoreFile");
+            builder.EntitySet<EScoreFileDetail>("EScoreFileDetail");
+            builder.EntitySet<EScoreProjectInput>("EScoreProjectInput");
 
             return builder.GetEdmModel();
 
