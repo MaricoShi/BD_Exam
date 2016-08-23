@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+@model Exam.Websites.Models.LoginModel
+@{
+    Layout = null;
+}
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="~/favicon.ico">
+
+    <title>登录</title>
+
+    @Styles.Render("~/Content/antd.min.css")
+    @Styles.Render("~/Content/bootstrap.min.css")
+    @Styles.Render("~/Content/exam.ui.css")
+    <link href="~/Content/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!--[if lte IE 7]>
+        <link href="~/Content/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" />
+        <style>
+            i.fa { margin-right: 5px; }
+            hr { border-color: #dadada; }
+        </style>
+        <![endif]-->
+    <style>
+        #loginForm .btn, #loginForm input.form-control {
+            padding: 6px 12px;
+            height: 34px;
+        }
+    </style>
+
+    <script>
+        //当前网站路径
+        document.weburl = "@(Url.Content("~/"))";
+    </script>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/app.js")
+</head>
+<body>
+    <div class="seekask-topbar bg_c6">
+        <div class="seekask-topbar-logo">
+            <a class="seekask-header-logo-icon" href="javascript:;"></a>
+            <a href="javascript:;" class="seekask-header-logo-text" target="_self"><em>海军雷达兵第一旅成绩管理系统</em></a>
+        </div>
+    </div>
+
+    <div id="seekask-body-content" class="body-content clearfix mg_t_25 mg_b_25 container">
+        <div class="seekask-title">
+            <h4>账户登录</h4>
+        </div>
+        <hr class="mg_t_10" />
+        @using (Html.BeginForm("Login", "Account", new { returnUrl = ViewBag.ReturnUrl }, FormMethod.Post,
+            new { id = "loginForm", @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            
+            <div class="container pd_t_25 pd_b_25" style="max-width:700px">
+                <div class="text-center cl_cc00">@Html.ValidationSummary(true)</div>
+                <div class="form-group">
+                    <label for="UserName" class="col-sm-3 control-label"><em>* </em>用户名：</label>
+                    <div class="col-sm-7">
+                        @Html.TextBoxFor(p => p.UserName, new { @placeholder = "请输入用户名", @class = "form-control" })
+                        @*<input type="email" class="form-control" id="inputEmail3" placeholder="个人用户名">*@
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Password" class="col-sm-3 control-label"><em>* </em>密码：</label>
+                    <div class="col-sm-7">
+                        @Html.PasswordFor(p => p.Password, new { @placeholder = "请输入密码", @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group checkbox">
+                    <label class="col-sm-offset-3 col-sm-3">
+                        <span class="pd_l_15"></span>
+                        @Html.CheckBoxFor(model => model.RememberMe)
+                        @Html.LabelFor(model => model.RememberMe, new { @class = "pd_0" })
+                    </label>
+                    <p>忘记密码？ <a href="#">点击我.</a></p>
+                </div>
+                <div class="form-group mg_b_10">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-danger col-sm-9"> 登 录 </button>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <div class="pd_lr_15">
+        <hr class="mg_0" />
+        <footer class="text-center pd_tb_10">
+            <p>&copy; 2016 - 海军雷达兵第一旅</p>
+        </footer>
+    </div>
+</body>
+</html>
