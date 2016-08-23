@@ -109,6 +109,41 @@ namespace Exam.Websites.Controllers
             return Json(_list, JsonRequestBehavior.AllowGet);
         }
         #endregion
+
+        #region 获取机构数据
+        [HttpPost]
+        public ActionResult OrgOperate(string type, EBasOrg data)
+        {
+            bool ret = false;
+            try
+            {
+                if (!string.IsNullOrEmpty(type))
+                {
+                    using (ExamEntities _db = _DB)
+                    {
+                        switch (type)
+                        {
+                            case "add":
+                                data.IsDeleted = false;
+                                data.CreateTime = DateTime.Now;
+                                //data.CreateBy=当前用户
+                                //data.CreateBy=当前用户
+                                break;
+                            case "modify":
+                                break;
+                            case "delete":
+                                break;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return Json(ret);
+        }
+        #endregion
         #endregion
       
     }
