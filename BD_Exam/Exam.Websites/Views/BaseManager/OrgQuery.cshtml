@@ -20,51 +20,75 @@
 
 <div id="orgList" class="col-sm-4"></div>
 
+<div class="modal fade madal-addorg">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">机构维护</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">机构代码</button>
+                            </span>
+                            <input type="text" class="form-control" data-title="机构代码" id="txtOrgCode" placeholder="请输入机构代码">
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">机构全称</button>
+                            </span>
+                            <input type="text" class="form-control" data-title="机构全称" id="txtOrgName" placeholder="请输入机构全称">
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+
+
+                </div><!-- /.row -->
+                <br/>
+                <div class="row">
+
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">机构简称</button>
+                            </span>
+                            <input type="text" class="form-control" data-title="机构简称" id="txtShortName" placeholder="请输入机构简称">
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">排序号码</button>
+                            </span>
+                            <input type="text" class="form-control" id="txtSortCode" placeholder="请输入排序号码(整数)">
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                </div><!-- /.row -->
+                
+            </div>
+            <div class="modal-footer">
+                <p class="errmsg pull-left text-danger"></p>
+                <button type="button" class="btn btn-primary" id="btnOrgSave">保存</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <script type="text/javascript">
-    //function fnCreateOrgList() {
-    //    var antdTree=antd.Tree,
-    //        antdTreeNode = antdTree.TreeNode;
-
-    //    var _treenodes = getTreeNodes(antdTreeNode),
-    //        _tree = React.createElement(antdTree, {
-    //         onSelect:function() {
-    
-    //         },
-    //         loadData:function() {
-    
-    //         }
-    //        }, _treenodes);
-
-    //    ReactDOM.render(_tree, $("#orgList").get(0));
-    //}
-
-    //function getTreeNodes(node) {
-    //    var _array = [], _children = [];
-    //    for (var i = 0; i < 10; i++) {
-    //        var _node = React.createElement(node, {
-    //            title: "单位"+(i+1),
-    //            key: "" + Math.floor(Math.random() * 10000)
-    //        });
-    //        _children.push(_node);
-    //    }
-
-    //    for (var i = 0; i < 10; i++) {
-    //        var _node = React.createElement(node, {
-    //            title: "单位" + (i + 1),
-    //            key: "" + Math.floor(Math.random() * 10000)
-    //        }, _children);
-    //        _array.push(_node);
-    //    }
-    //    return _array;
-    //}
-
-    //fnCreateOrgList();
-
-    var TreeNodes;
+    var TreeNodes,
+        oprateType,
+        _ParentCode;
 
 
     function getTree(Pcode) {
-        debugger
         var _option = {
             url: "@Url.Content("~/BaseManager/getOrgDataList")?ParentCode=" + (Pcode || "")
         },
@@ -101,18 +125,23 @@
             _Y -= _top;
         
         $("#orgList").before(
-            $("<ul>", { "class": "list-group", "id": "orgList_Menu" })
+            $("<ul>", { "class": "list-group", "id": "orgList_Menu"})
             .append(
             $("<li>", { "class": "list-group-item" }).text("新增子节点").click(function() {
-                console.log("你点击了新增子节点");
-                antd.message.info('你点击了新增子节点');
+                //console.log("你点击了新增子节点");
+                //antd.message.info('你点击了新增子节点');
+                oprateType = "add";
+                $(".errmsg").empty();
+                $(".madal-addorg").modal("show");
+
                 $(this).parent().remove();
             })
             )
             .append(
             $("<li>", { "class": "list-group-item" }).text("修改").click(function () {
-                console.log("你点击了修改");
-                antd.message.info('你点击了修改');
+                oprateType = "modify";
+                $(".errmsg").empty();
+                $(".madal-addorg").modal("show");
                 $(this).parent().remove();
             })
             )
@@ -122,7 +151,8 @@
                 antd.message.info('你点击了删除');
                 $(this).parent().remove();
             })
-            ).css({"left":_X,"top":_Y})
+            )
+            .css({ "left": _X, "top": _Y })
             );
     }
 
@@ -134,6 +164,25 @@
         $("#orgList").treeview("addNode", [nId,option ]);
     }
 
+    function Orgoperate() {
+        $.web.postWithOption({
+            url:"@Url.Content("~/BaseManager/getOrgDataList")",
+            data:{
+                "type":oprateType,
+                "data": {
+                    "OrgCode": $("#txtOrgCode").val(),
+                    "OrgName": $("#txtOrgName").val(),
+                    "SortCode": $("#txtSortCode").val(),
+                    "ShortName": $("#txtShortName").val(),
+                    "ParentCode": _ParentCode
+                }
+            }
+        }, {
+            OnSuccess: function (xhr) {
+
+            }
+        });
+    }
 
     $(function () {
 
@@ -160,6 +209,7 @@
                 var $selectedNode = $("#orgList>ul>li[data-nodeid='" + d.nodeId + "']"),
                     _X = $selectedNode.offset().left + $selectedNode.width()+50,
                     _Y = $selectedNode.offset().top;
+                _ParentCode=d.state.orgcode
                 RightMouseMenu(_X, _Y);
             })
             .on("nodeExpanded", function (e, node) {
@@ -177,5 +227,27 @@
                     console.log("已经加载过数据");
                 }
             });
+
+        $("#btnOrgSave").click(function () {
+            var _err = [];
+            for (var i = 0, _l = $("[data-title]").length; i < _l; i++) {
+                var $this = $("[data-title]").eq(i);
+                if (!$this.val()) { _err.push($this.attr("data-title") + "不可为空"); }
+            }
+            if ($("#txtSortCode").val()) {
+                if (!$.isNumeric($("#txtSortCode").val())) {
+                    _err.push("排序号码应为整数");
+                }
+            }
+            else {
+                _err.push("排序号码不可为空");
+            }
+                
+            if (_err.length > 0) {
+                $(".errmsg").text(_err.join(";"));
+                return;
+            }
+            Orgoperate();
+        });
     });
 </script>
