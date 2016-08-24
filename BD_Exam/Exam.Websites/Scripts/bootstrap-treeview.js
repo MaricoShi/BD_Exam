@@ -101,7 +101,11 @@
 			remove: $.proxy(this.remove, this),
 
 		    //添加节点
-            addNode:$.proxy(this.addNode,this),
+			addNode: $.proxy(this.addNode, this),
+		    //修改节点
+			editNode: $.proxy(this.editNode, this),
+		    //修改节点
+			deleteNode: $.proxy(this.deleteNode, this),
 			// Get methods
 			getNode: $.proxy(this.getNode, this),
 			getParent: $.proxy(this.getParent, this),
@@ -174,10 +178,11 @@
 		$('#' + this.styleId).remove();
 	};
 
+    //新增节点
 	Tree.prototype.addNode = function (identifiers, options) {
 
 	    this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
-	        this.setAddNode(node, options);
+	        this.setOperateNode(node, options,"add");
 	    }, this));
 
 	    this.setInitialStates({ nodes: this.tree }, 0);
@@ -187,11 +192,62 @@
     /** 
     *  添加子节点 
     */
-	Tree.prototype.setAddNode = function (node, options) {
-	    if (node.nodes == null) node.nodes = [];
-	    if (options.node) {
-	        node.nodes.push(options.node);
-	    };
+	//Tree.prototype.setAddNode = function (node, options) {
+	//    if (node.nodes == null) node.nodes = [];
+	//    if (options.node) {
+	//        node.nodes.push(options.node);
+	//    };
+    //};
+
+    //修改节点
+	Tree.prototype.editNode = function (identifiers, options) {
+
+	    this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
+	        this.setOperateNode(node, options, "modify");
+	    }, this));
+
+	    this.setInitialStates({ nodes: this.tree }, 0);
+	    this.render();
+	}
+
+    //删除节点
+	Tree.prototype.deleteNode = function (identifiers, options) {
+
+	    this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
+	        this.setOperateNode(node, options, "delete");
+	    }, this));
+
+	    this.setInitialStates({ nodes: this.tree }, 0);
+	    this.render();
+	}
+
+    /** 
+    *  操作节点 
+    */
+	Tree.prototype.setOperateNode = function (node, options, type) {
+	    if (!type) return;
+	    switch (type) {
+	        case "add":
+	            if (node.nodes == null) node.nodes = [];
+	            if (options.node) {
+	                node.nodes.push(options.node);
+	            };
+	            break;
+	        case "modify":
+	            break;
+	        case "delete":
+	            var nodeparent = this.getNode(node.parentId)
+	            if (nodeparent.nodes) {
+	                for (var i = 0, _l = nodeparent.nodes.length; i < _l; i++) {
+	                    if (nodeparent.nodes[i].nodeId == node.nodeId) {
+	                        nodeparent.nodes.splice(i, 1);
+	                        break;
+	                    }
+	                }
+	            };
+	            break;
+	    }
+	    
 	};
 
 	Tree.prototype.destroy = function () {
