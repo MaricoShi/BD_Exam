@@ -10,6 +10,7 @@ using Exam.Data;
 
 namespace Exam.Websites.Controllers
 {
+    [AppAuth]
     [ExceFilter]
     public class AccountController : Controller
     {
@@ -19,9 +20,6 @@ namespace Exam.Websites.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
-            Response.Cookies.Clear();
-            FormsAuthentication.SignOut();
-
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -39,24 +37,38 @@ namespace Exam.Websites.Controllers
 
             using (ExamEntities _db = new ExamEntities())
             {
+                var _User = _db.ESysUser.FirstOrDefault(p => p.UserCode.ToUpper() == model.UserName.Trim().ToUpper());
+                if (_User == null) {
+                    ModelState.AddModelError("", "当前用户不存在。");
+                    return View(model);
+                }
+                if (_User.UserPwd != model.Password) {
+                    ModelState.AddModelError("", "密码错误，请输入正确密码。");
+                    return View(model);
+                }
 
+                _User.UserPwd = null;
+
+                FormsAuthentication.SetAuthCookie(_User.UserID, true);
+                var _UserData = Newtonsoft.Json.JsonConvert.SerializeObject(_User);
+
+                FormsAuthenticationTicket _Ticket = new FormsAuthenticationTicket(1,
+                    _User.UserID, DateTime.Now, DateTime.Now.AddMonths(1), true, _UserData);
+                HttpCookie Cookie = new HttpCookie(FormsAuthentication.FormsCookieName,
+                    FormsAuthentication.Encrypt(_Ticket));//加密身份信息，保存至Cookie
+
+                Cookie.Expires = DateTime.Now.AddMonths(1);
+                Response.Cookies.Add(Cookie);
             }
-
-            //var cookie = new HttpCookie("Exam.Websites.Login");
-            //var cv = Newtonsoft.Json.JsonConvert.SerializeObject(car);
-            //cookie.Value = cv.AESEncrypt(AESKey, AESIV);
-            //cookie.Expires = DateTime.Now.AddMonths(1);
-            //Response.Cookies.Add(cookie);
-            //FormsAuthentication.SetAuthCookie(car.CarId, true);
 
             return RedirectToLocal(returnUrl);
 
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public ActionResult Logout()
         {
+            Response.Cookies.Clear();
             FormsAuthentication.SignOut();
 
             return Redirect(Url.Content("~/Account/Login"));
