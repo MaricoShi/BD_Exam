@@ -10,7 +10,7 @@ using Exam.Websites.Models;
 
 namespace Exam.Websites.Controllers
 {
-    public class BaseManagerController : Controller
+    public class BaseManagerController : BaseController
     {
         ExamEntities _DB = new ExamEntities();
         public new void Dispose() {

@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace Exam.Websites.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         //
         // GET: /Home/
@@ -18,7 +18,7 @@ namespace Exam.Websites.Controllers
             {
                 using (ExamEntities _db = new ExamEntities())
                 {
-                    var kl = _db.EBasOrg.ToList();
+
                 }
             }
             catch (Exception)
