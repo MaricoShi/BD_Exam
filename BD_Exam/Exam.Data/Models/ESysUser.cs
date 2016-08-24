@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
+﻿
 namespace Exam.Data.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     [Table("ESysUser")]
     public class ESysUser
     {
         [Key, Display(Name = "用户ID"), MaxLength(32)]
         public string UserID { get; set; }
 
-        [Required,Display(Name = "用户账户"), MaxLength(50)]
+        [Required, Display(Name = "用户账户"), MaxLength(50)]
         public string UserCode { get; set; }
 
-        [Required,Display(Name = "用户密码"), MaxLength(100)]
+        [Required, Display(Name = "用户密码"), MaxLength(100)]
         public string UserPwd { get; set; }
 
         [Display(Name = "用户姓名"), MaxLength(100)]
