@@ -47,6 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExamEntities.cs" />
+    <Compile Include="Migrations\201608240450559_Init.cs" />
+    <Compile Include="Migrations\201608240450559_Init.Designer.cs">
+      <DependentUpon>201608240450559_Init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\EAbsentPersonInfo.cs" />
     <Compile Include="Models\EBasOrg.cs" />
     <Compile Include="Models\EBasPersonInfo.cs" />
@@ -71,6 +76,11 @@
       <Project>{8a74c4a3-c510-48f6-a8f1-ac2f336a9ed1}</Project>
       <Name>Exam.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201608240450559_Init.resx">
+      <DependentUpon>201608240450559_Init.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
