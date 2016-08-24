@@ -15,7 +15,14 @@ namespace Exam.Websites
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            base.OnActionExecuting(filterContext);
+            ///验证过的请求直接放行
+            if (filterContext.RequestContext.HttpContext.Request.IsAuthenticated)
+            {
+                base.OnActionExecuting(filterContext);
+                return;
+            }
+
+            filterContext.HttpContext.Response.Redirect("~/Account/Login", true);
 
         }
 

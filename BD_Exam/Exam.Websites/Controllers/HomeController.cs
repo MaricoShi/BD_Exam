@@ -1,4 +1,5 @@
 ﻿using Exam.Data;
+using Exam.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Exam.Websites.Controllers
             {
                 using (ExamEntities _db = new ExamEntities())
                 {
-                    var _Org = _db.EBasOrg.ToList();
+                    var kl = _db.EBasOrg.ToList();
                 }
             }
             catch (Exception)
