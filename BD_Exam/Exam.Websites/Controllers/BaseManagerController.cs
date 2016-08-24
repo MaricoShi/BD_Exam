@@ -114,34 +114,118 @@ namespace Exam.Websites.Controllers
         [HttpPost]
         public ActionResult OrgOperate(string type, EBasOrg data)
         {
-            bool ret = false;
+            KeyValue _ret = new KeyValue() { Key = "error",Value="未做修改"};
             try
             {
                 if (!string.IsNullOrEmpty(type))
                 {
                     using (ExamEntities _db = _DB)
                     {
-                        switch (type)
+                        var _parentorg=_db.EBasOrg.FirstOrDefault(org=>org.OrgCode==data.ParentCode);
+                        if (_parentorg != null)
                         {
-                            case "add":
-                                data.IsDeleted = false;
-                                data.CreateTime = DateTime.Now;
-                                //data.CreateBy=当前用户
-                                //data.CreateBy=当前用户
-                                break;
-                            case "modify":
-                                break;
-                            case "delete":
-                                break;
-                        }
+                            switch (type)
+                            {
+                                #region 新增
+                                case "add":
+                                    if (_db.EBasOrg.Any(o => o.OrgCode == data.OrgCode))
+                                    {
+                                        _ret.Key = "error";
+                                        _ret.Value = "系统已经存在机构码：" + data.OrgCode;
+                                    }
+                                    else
+                                    {
+                                        data.IsDeleted = false;
+                                        data.CreateTime = DateTime.Now;
+                                       string _orgcode=_db.EBasOrg.Where(g => g.ParentCode == data.ParentCode).Max(k => k.OrgCode);
+                                       #region 存在最大子集机构码
+                                       if (!string.IsNullOrEmpty(_orgcode))
+                                       {
+                                           _orgcode = _orgcode.Replace(data.ParentCode, "");
+                                           int _n;
+                                           if (int.TryParse(_orgcode, out _n))
+                                           {
+                                               if (_n < 999)
+                                               {
+                                                   data.OrgCode = data.ParentCode + (++_n + "").PadLeft(3, '0');
+                                                   data.HierarchyCode = _parentorg.HierarchyCode + @"|" + data.OrgCode;
+                                                   data.HierarchyName = _parentorg.HierarchyName + @"|" + data.OrgName;
+                                                   data.CreateByCode = "111111";
+                                                   data.CreateByName = "系统管理员";
+                                                   _db.EBasOrg.Add(data);
+                                                   _ret.Key = "success";
+                                               }
+                                               else
+                                               {
+                                                   _ret.Key = "error";
+                                                   _ret.Value = "子集机构不能超过999";
+                                               }
+                                           }
+                                           else
+                                           {
+                                               _ret.Key = "error";
+                                               _ret.Value = "机构代码异常";
+                                           }
+                                       }
+                                       #endregion
+                                       #region 不存在
+                                       else
+                                       {
+                                           data.OrgCode = data.ParentCode + "001";
+                                           data.HierarchyCode = _parentorg.HierarchyCode + @"|" + data.OrgCode;
+                                           data.HierarchyName = _parentorg.HierarchyName + @"|" + data.OrgName;
+                                           data.CreateByCode = "111111";
+                                           data.CreateByName = "系统管理员";
+                                           _db.EBasOrg.Add(data);
+                                           _ret.Key = "success";
+                                       }
+                                       #endregion
+                                    }
+                                    break;
+                                #endregion
+                                #region 修改
+                                case "modify":
+                                        var _org = _db.EBasOrg.FirstOrDefault(o => o.OrgCode == data.OrgCode);
+                                        if (_org != null)
+                                        {
+                                            _org.ModifyTime = DateTime.Now;
+                                            _org.ModifyByCode = "111111";
+                                            _org.ModifyByName = "系统管理员";
+                                            _org.HierarchyCode = _parentorg.HierarchyCode + @"|" + data.OrgCode;
+                                            _org.HierarchyName = _parentorg.HierarchyName + @"|" + data.OrgName;
+                                            _org.SortCode = data.SortCode;
+                                            _org.OrgCode = data.OrgCode;
+                                            _org.OrgName = data.OrgName;
+                                            _ret.Key = "success";
+                                        }
+                                    break;
+                                #endregion
+                                #region 删除/伪删除
+                                case "delete":
+                                        var Delorg = _db.EBasOrg.FirstOrDefault(o => o.OrgCode == data.OrgCode);
+                                        if (Delorg != null)
+                                        {
+                                            Delorg.ModifyTime = DateTime.Now;
+                                            Delorg.ModifyByCode = "111111";
+                                            Delorg.ModifyByName = "系统管理员";
+                                            Delorg.IsDeleted = true;
+                                            _ret.Key = "success";
+                                        }
+                                    break;
+                                #endregion
+                            }
+                            _db.SaveChanges();
+                        }                            
+                                
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _ret.Key = "error";
+                _ret.Value = ex.Message;
             }
-            return Json(ret);
+            return Json(_ret);
         }
         #endregion
         #endregion
