@@ -132,8 +132,8 @@
                 //antd.message.info('你点击了新增子节点');
                 oprateType = "add";
                 $(".errmsg").empty();
+                $("#txtSortCode").val("999")
                 $(".madal-addorg").modal("show");
-
                 $(this).parent().remove();
             })
             )
@@ -164,9 +164,9 @@
         $("#orgList").treeview("addNode", [nId,option ]);
     }
 
-    function Orgoperate() {
+    function SaveData() {
         $.web.postWithOption({
-            url:"@Url.Content("~/BaseManager/getOrgDataList")",
+            url:"@Url.Content("~/BaseManager/OrgOperate")",
             data:{
                 "type":oprateType,
                 "data": {
@@ -178,8 +178,12 @@
                 }
             }
         }, {
-            OnSuccess: function (xhr) {
+            OnSuccess: function (xhr)
+            {
 
+            },
+            OnComplete: function() {
+                debugger;
             }
         });
     }
@@ -244,10 +248,10 @@
             }
                 
             if (_err.length > 0) {
-                $(".errmsg").text(_err.join(";"));
+                $(".errmsg").text("警告："+_err.join(";"));
                 return;
             }
-            Orgoperate();
+            SaveData();
         });
     });
 </script>
