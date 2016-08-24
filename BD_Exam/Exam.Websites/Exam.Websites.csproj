@@ -166,11 +166,13 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\ODataConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BaseManagerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Help\Filter\AppAuthAttribute.cs" />
     <Compile Include="Help\Filter\ExceFilterAttribute.cs" />
     <Compile Include="Help\Filter\IsAjaxRedirectFilterAttribute.cs" />
     <Compile Include="Models\AccountModels.cs" />
