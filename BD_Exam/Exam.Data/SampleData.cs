@@ -27,7 +27,7 @@ namespace Exam.Data
 
             var esysuser = new List<ESysUser>
             {
-                new ESysUser(){ UserID = Guid.NewGuid().ToString("N"),UserCode = "exam",
+                new ESysUser(){ UserID = Guid.NewGuid().ToString("N"),UserCode = "admin",
                     UserPwd = "szx001",UserName="系统管理员",UserStatus = "00",UserLevel = 1,CreateTime=DateTime.Now}
             };
             esysuser.ForEach(a => context.ESysUser.Add(a));
