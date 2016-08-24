@@ -31,6 +31,7 @@ namespace Exam.Data.Models
         public string StatusC { get; set; }
         public string ParentCode { get; set; }
         public int NextOrgNum { get; set; }
+        public int NextOrgCode { get; set; }
         public string HierarchyCode { get; set; }
         public string HierarchyName { get; set; }
         public string Remark { get; set; }
