@@ -14,8 +14,8 @@ namespace Exam.Data
         static ExamEntities()
         {
             //System.Data.Entity.Database.SetInitializer(new SampleData());
-            //Database.SetInitializer<ExamEntities>(null);
-            Database.SetInitializer(new CreateDatabaseIfNotExists<ExamEntities>());
+            Database.SetInitializer<ExamEntities>(null);
+            //Database.SetInitializer(new CreateDatabaseIfNotExists<ExamEntities>());
         }
         public ExamEntities()
             : base("name=ExamEntities")
