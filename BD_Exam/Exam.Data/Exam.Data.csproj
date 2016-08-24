@@ -58,6 +58,7 @@
     <Compile Include="Models\ESys.cs" />
     <Compile Include="Models\ESysData.cs" />
     <Compile Include="Models\ESysDataType.cs" />
+    <Compile Include="Models\ESysUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleData.cs" />
   </ItemGroup>

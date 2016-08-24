@@ -14,7 +14,7 @@ namespace Exam.Data
         static ExamEntities()
         {
             //System.Data.Entity.Database.SetInitializer(new SampleData());
-            //Database.SetInitializer<ExamEntities>(null);
+            Database.SetInitializer<ExamEntities>(null);
         }
         public ExamEntities()
             : base("name=ExamEntities")
@@ -37,6 +37,8 @@ namespace Exam.Data
         public virtual DbSet<ESysDataType> ESysDataType { get; set; }
 
         public virtual DbSet<ESys> ESys { get; set; }
+
+        public virtual DbSet<ESysUser> ESysUser { get; set; }
 
     }
 }

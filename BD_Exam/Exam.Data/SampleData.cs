@@ -25,6 +25,15 @@ namespace Exam.Data
             context.SaveChanges();
             Exam.Common.Log.WriteLogFile("机构表初始化完毕");
 
+            var esysuser = new List<ESysUser>
+            {
+                new ESysUser(){ UserID = Guid.NewGuid().ToString("N"),UserCode = "exam",
+                    UserPwd = "szx001",UserName="系统管理员",UserStatus = "00",UserLevel = 1,CreateTime=DateTime.Now}
+            };
+            esysuser.ForEach(a => context.ESysUser.Add(a));
+            context.SaveChanges();
+            Exam.Common.Log.WriteLogFile("系统用户初始化完毕");
+
             var esys = new List<ESys>
             {
                 new ESys(){ID="1",VersionCode="1",VersionName="1",IsUsed=true}
