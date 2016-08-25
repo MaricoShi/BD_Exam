@@ -50,17 +50,17 @@
                         </div><!-- /input-group -->
                     </div><!-- /.col-lg-6 -->
                 </div>
-                <br />
-                <div class="row">
+                
+                @*<div class="row">
                     <div class="col-lg-12">
                         <div class="input-group">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button">排序号码</button>
                             </span>
                             <input type="text" class="form-control" id="txtSortCode" placeholder="请输入排序号码(整数)">
-                        </div><!-- /input-group -->
-                    </div><!-- /.col-lg-6 -->
-                </div><!-- /.row -->
+                        </div>
+                    </div>
+                </div>*@
                 
             </div>
             <div class="modal-footer">
@@ -77,7 +77,7 @@
         oprateType,
         _ParentCode;
 
-
+    //获取数据
     function getTree(Pcode) {
         var _option = {
             url: "@Url.Content("~/BaseManager/getOrgDataList")?ParentCode=" + (Pcode || "")
@@ -103,31 +103,123 @@
                 }
             },
             onFailure: function(err) {
-                console.log(err);
+
             }
-            
+
         });
         return tree;
+    }
+
+    //上移下移
+    function SortNode(tp) {
+        var option = {
+            url: "@Url.Content("~/BaseManager/SortNode")?orgcode=" + _ParentCode+ "&tp=" + tp,
+            cache:false
+        },
+        fnBack={
+            OnSuccess: function (xhr) {
+                debugger
+                if (xhr.Key == "success")
+                {
+                    switch (tp)
+                    {
+                        case "up":
+                            var node = getSelectedNode(),
+                                prenode = getNode(node.nodeId - 1),
+                                temp = prenode,
+                                parentnode = getNode(node.parentId);
+                            for (var i = 0, _l = parentnode.nodes.length; i < _l; i++)
+                            {
+                                    if (parentnode.nodes[i].nodeId == prenode.nodeId)
+                                    {
+                                        parentnode.nodes[i] = node;
+                                        parentnode.nodes[i + 1] = temp;
+                                        break;
+                                    }
+                                }
+                            editNode(parentnode.nodeId, { node: parentnode });
+                            //var $node = $(".node-selected", $("#orgList>ul")),
+                            //    $nodeClone = $node.clone(true);
+                            //$node.prev().before($nodeClone).end().remove();
+                            break;
+                        case "down":
+                            var node = getSelectedNode(),
+                                nextnode = getNode(node.nodeId + 1),
+                                temp = node,
+                                parentnode = getNode(node.parentId);
+                            for (var i = 0, _l = parentnode.nodes.length; i < _l; i++) {
+                                if (parentnode.nodes[i].nodeId == node.nodeId) {
+                                    parentnode.nodes[i] = nextnode;
+                                    parentnode.nodes[i + 1] = temp;
+                                    break;
+                                }
+                            }
+                            editNode(parentnode.nodeId, { node: parentnode });
+                            //var $node = $(".node-selected", $("#orgList>ul")),
+                            //    $nodeClone = $node.clone(true);
+                            //$node.next().after($nodeClone).end().remove();
+                            break;
+                    }
+                    var $selectedNode = $(".node-selected", $("#orgList")),
+                        _X = $selectedNode.offset().left + $selectedNode.width() + 50,
+                         _Y = $selectedNode.offset().top;
+                    RightMouseMenu(_X, _Y);
+
+                    antd.message.success("操作成功！");
+                }
+                else {
+                    antd.message.error(xhr.Value);
+                }
+            },
+            onFailure: function (err) {
+                $("#orgList_Menu").remove();
+                antd.message.error(err);
+            }
+        };
+        $.web.get(option, fnBack);
     }
 
     //右键菜单
     function RightMouseMenu(_X, _Y) {
         var _top = $("#orgList").offset().top,
             _left = $("#orgList").offset().left;
-            _X -= _left;
-            _Y -= _top;
-        
+        _X -= _left;
+        _Y -= _top;
+        if ($("#orgList_Menu").length > 0) { $("#orgList_Menu").remove();}
+
         $("#orgList").before(
-            $("<ul>", { "class": "list-group", "id": "orgList_Menu"})
+            $("<ul>", { "class": "list-group", "id": "orgList_Menu" })
+            .append(
+            $("<li>", { "class": "list-group-item" }).text("上移").click(function () {
+                debugger
+                var node = getSelectedNode(),
+                    nodes = node.parentId ?getNode(node.parentId).nodes:[];
+                if (nodes.length == 0 || nodes[0].nodeId == node.nodeId) {
+                    antd.message.warning("已经是第一个了！");
+                    $(this).parent().remove();
+                    return;
+                }
+                SortNode("up");
+            })
+            )
+            .append(
+            $("<li>", { "class": "list-group-item" }).text("下移").click(function () {
+                debugger
+                var node = getSelectedNode(),
+                    nodes = node.parentId ? getNode(node.parentId).nodes : [];
+                if (nodes.length == 0 || nodes[nodes.length-1].nodeId == node.nodeId) {
+                    antd.message.warning("已经是最后一个了！");
+                    $(this).parent().remove();
+                    return;
+                }
+                SortNode("down");
+            })
+            )
             .append(
             $("<li>", { "class": "list-group-item" }).text("新增子节点").click(function() {
-                //console.log("你点击了新增子节点");
-                //antd.message.info('你点击了新增子节点');
                 oprateType = "add";
                 $(".errmsg").empty();
-                $("#txtSortCode").val("999")
                 $(".madal-addorg").modal("show");
-                //$(this).parent().remove();
             })
             )
             .append(
@@ -175,7 +267,7 @@
         return $("#orgList").treeview("getSelected")[0];
     }
 
-    
+
 
     function SaveData(_code) {
         $.web.postWithOption({
@@ -184,7 +276,7 @@
                 "type":oprateType,
                 "data": {
                     "OrgName": $("#txtOrgName").val(),
-                    "SortCode": $("#txtSortCode").val(),
+                    //"SortCode": $("#txtSortCode").val(),
                     "ShortName": $("#txtShortName").val(),
                     "ParentCode": _ParentCode,
                     "OrgCode": _code||null
@@ -199,10 +291,10 @@
                     switch (xhr.Key)
                     {
                         case "success":
-                            
+
                             switch (oprateType) {
                                 case "add":
-                                    $("#txtOrgName,#txtSortCode,#txtShortName").val("");
+                                    $("#txtOrgName,#txtShortName").val("");
                                     $(".madal-addorg").modal("hide");
                                     var _obj = $.parseJSON(xhr.Value);
 
@@ -221,7 +313,7 @@
                                         });
                                     break;
                                 case "modify":
-                                    $("#txtOrgName,#txtSortCode,#txtShortName").val("");
+                                    $("#txtOrgName,#txtShortName").val("");
                                     $(".madal-addorg").modal("hide");
 
                                     var _obj = $.parseJSON(xhr.Value),
@@ -235,10 +327,10 @@
                                             }
                                         });
 
-                                    editNode(_node.nodeId,{node: _node});
+                                    editNode(_node.nodeId, { node: _node });
+                                    antd.message.success('修改成功！');
                                     break;
                                 case "delete":
-                                    
                                     deleteNode(getSelectedNode().nodeId, { node: {} });
                                     console.log("删除成功");
                                     break;
@@ -262,7 +354,7 @@
         //$(document).bind("contextmenu", function () { console.log("右键菜单");  return false; });
 
         $("#orgList").mousedown(function (e) {
-                $("#orgList_Menu").remove();
+            $("#orgList_Menu").remove();
             //switch (e.which) {
             //    case 1://左键
             //        console.log('这 是左键单击事件');
@@ -276,7 +368,7 @@
             //    default:
 
             //}
-            })
+        })
             .treeview({ data: getTree() })
             .on("nodeSelected", function (e, d) {
                 var $selectedNode = $("#orgList>ul>li[data-nodeid='" + d.nodeId + "']"),
@@ -307,15 +399,15 @@
                 var $this = $("[data-title]").eq(i);
                 if (!$this.val()) { _err.push($this.attr("data-title") + "不可为空"); }
             }
-            if ($("#txtSortCode").val()) {
-                if (!$.isNumeric($("#txtSortCode").val())) {
-                    _err.push("排序号码应为整数");
-                }
-            }
-            else {
-                _err.push("排序号码不可为空");
-            }
-                
+            //if ($("#txtSortCode").val()) {
+            //    if (!$.isNumeric($("#txtSortCode").val())) {
+            //        _err.push("排序号码应为整数");
+            //    }
+            //}
+            //else {
+            //    _err.push("排序号码不可为空");
+            //}
+
             if (_err.length > 0) {
                 $(".errmsg").text("警告："+_err.join(";"));
                 return;
