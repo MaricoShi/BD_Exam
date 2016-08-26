@@ -99,7 +99,8 @@
 			// Initialize / destroy methods
 			init: $.proxy(this.init, this),
 			remove: $.proxy(this.remove, this),
-
+            //交换节点
+			exchangeNode: $.proxy(this.exchangeNode, this),
 		    //添加节点
 			addNode: $.proxy(this.addNode, this),
 		    //修改节点
@@ -178,6 +179,36 @@
 		$('#' + this.styleId).remove();
 	};
 
+    //交换节点
+	Tree.prototype.exchangeNode = function (identifiers, options, nodeId1, nodeId2) {
+        debugger
+	    this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
+	        this.setExchangeNode(node, nodeId1, nodeId2);
+	    }, this));
+	    this.setInitialStates({ nodes: this.tree }, 0);
+	    this.render();
+	}
+
+    //交换节点
+	Tree.prototype.setExchangeNode =function (node, nId1,nId2) {
+	    var _in1, _in2,n1,n2;
+	    if (nId1 > nId2) {
+	        nId1 ^= nId2;
+	        nId2 ^= nId1;
+	        nId1 ^= nId2;
+	    }
+
+	    for (var i = 0, _l = node.nodes.length; i < _l; i++) {
+	        if (node.nodes[i].nodeId == nId1) { _in1 = i; n1 = node.nodes[i];}
+	        else if (node.nodes[i].nodeId == nId2) { _in2 = i; n2 = node.nodes[i]; }
+	        if (n1 && n2) { break; }
+	    }
+
+	    node.nodes.splice(_in1, 1, n2);
+	    node.nodes.splice(_in2, 1, n1);
+
+	    };
+
     //新增节点
 	Tree.prototype.addNode = function (identifiers, options) {
 
@@ -201,7 +232,7 @@
 
     //修改节点
 	Tree.prototype.editNode = function (identifiers, options) {
-
+        debugger
 	    this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
 	        this.setOperateNode(node, options, "modify");
 	    }, this));
@@ -234,6 +265,7 @@
 	            };
 	            break;
 	        case "modify":
+	            $.extend(node, options.node || {});
 	            break;
 	        case "delete":
 	            var nodeparent = this.getNode(node.parentId)
