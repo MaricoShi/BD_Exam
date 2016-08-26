@@ -7,7 +7,7 @@
     <h4>单位档案室</h4>
 </div>*@
 
-@Scripts.Render(Url.Content("~/Scripts/bootstrap-treeview.js"))
+@Scripts.Render(Url.Content("~/Scripts/bootstrap-treeview.min.js"))
 @Styles.Render(Url.Content("~/Content/bootstrap-treeview.min.css"))
 <style type="text/css">
     #orgList_Menu {
@@ -121,45 +121,40 @@
                 debugger
                 if (xhr.Key == "success")
                 {
-                    switch (tp)
-                    {
-                        case "up":
-                            var node = getSelectedNode(),
-                                prenode = getNode(node.nodeId - 1),
-                                temp = prenode,
-                                parentnode = getNode(node.parentId);
-                            for (var i = 0, _l = parentnode.nodes.length; i < _l; i++)
-                            {
-                                    if (parentnode.nodes[i].nodeId == prenode.nodeId)
-                                    {
-                                        parentnode.nodes[i] = node;
-                                        parentnode.nodes[i + 1] = temp;
-                                        break;
-                                    }
-                                }
-                            editNode(parentnode.nodeId, { node: parentnode });
-                            //var $node = $(".node-selected", $("#orgList>ul")),
-                            //    $nodeClone = $node.clone(true);
-                            //$node.prev().before($nodeClone).end().remove();
-                            break;
-                        case "down":
-                            var node = getSelectedNode(),
-                                nextnode = getNode(node.nodeId + 1),
-                                temp = node,
-                                parentnode = getNode(node.parentId);
-                            for (var i = 0, _l = parentnode.nodes.length; i < _l; i++) {
-                                if (parentnode.nodes[i].nodeId == node.nodeId) {
-                                    parentnode.nodes[i] = nextnode;
-                                    parentnode.nodes[i + 1] = temp;
-                                    break;
-                                }
-                            }
-                            editNode(parentnode.nodeId, { node: parentnode });
-                            //var $node = $(".node-selected", $("#orgList>ul")),
-                            //    $nodeClone = $node.clone(true);
-                            //$node.next().after($nodeClone).end().remove();
-                            break;
-                    }
+                    var node = getSelectedNode();
+                    exchangeNode(node, tp);
+                    //switch (tp)
+                    //{
+                    //    case "up":
+                    //        var node = getSelectedNode();
+                    //        exchangeNode(node, tp);
+                    //        //node = prenode;
+                    //        //prenode = temp;
+
+                    //        //editNode(nodeId, { node: node });
+                    //        //editNode(prenodeId, { node: prenode });
+                    //        //var $node = $(".node-selected", $("#orgList>ul")),
+                    //        //    $nodeClone = $node.clone(true);
+                    //        //$node.prev().before($nodeClone).end().remove();
+                    //        break;
+                    //    case "down":
+                    //        var node = getSelectedNode();
+                    //        exchangeNode(node, "down");
+                    //        //    temp = node,
+                    //        //    parentnode = getNode(node.parentId);
+                    //        //for (var i = 0, _l = parentnode.nodes.length; i < _l; i++) {
+                    //        //    if (parentnode.nodes[i].nodeId == node.nodeId) {
+                    //        //        parentnode.nodes[i] = nextnode;
+                    //        //        parentnode.nodes[i + 1] = temp;
+                    //        //        break;
+                    //        //    }
+                    //        //}
+                    //        //editNode(parentnode.nodeId, { node: parentnode });
+                    //        //var $node = $(".node-selected", $("#orgList>ul")),
+                    //        //    $nodeClone = $node.clone(true);
+                    //        //$node.next().after($nodeClone).end().remove();
+                    //        break;
+                    //}
                     var $selectedNode = $(".node-selected", $("#orgList")),
                         _X = $selectedNode.offset().left + $selectedNode.width() + 50,
                          _Y = $selectedNode.offset().top;
@@ -267,7 +262,30 @@
         return $("#orgList").treeview("getSelected")[0];
     }
 
-
+    function exchangeNode(n1, _tp) {
+        if (!n1.parentId) { console.warn("未能找到父节点"); return;}
+        var pNode = getNode(n1.parentId),
+            n2Id;
+        switch (_tp) {
+            case "up":
+                for (var i = 0, _l = pNode.nodes.length; i < _l; i++) {
+                    if (pNode.nodes[i].nodeId == n1.nodeId) {
+                        n2Id = pNode.nodes[i-1].nodeId;
+                        break;
+                    }
+                }
+                break;
+            case "down":
+                for (var i = 0, _l = pNode.nodes.length; i < _l; i++) {
+                    if (pNode.nodes[i].nodeId == n1.nodeId) {
+                        n2Id = pNode.nodes[i+1].nodeId;
+                        break;
+                    }
+                }
+                break;
+        }
+        $("#orgList").treeview("exchangeNode", [pNode.nodeId, { node: pNode }, n1.nodeId,n2Id]);
+    }
 
     function SaveData(_code) {
         $.web.postWithOption({
@@ -372,9 +390,9 @@
             .treeview({ data: getTree() })
             .on("nodeSelected", function (e, d) {
                 var $selectedNode = $("#orgList>ul>li[data-nodeid='" + d.nodeId + "']"),
-                    _X = $selectedNode.offset().left + $selectedNode.width()+50,
+                    _X = $selectedNode.offset().left + $selectedNode.width() + 50,
                     _Y = $selectedNode.offset().top;
-                _ParentCode=d.state.orgcode
+                _ParentCode = d.state.orgcode
                 RightMouseMenu(_X, _Y);
             })
             .on("nodeExpanded", function (e, node) {
@@ -386,12 +404,14 @@
                     $.each(treeData, function (_i, _t) {
                         addNode(node.nodeId, { "node": _t });
                     });
-                    $node.nodes =treeData.length==0?null:treeData;
+                    $node.nodes = treeData.length == 0 ? null : treeData;
                 }
                 else {
                     console.log("已经加载过数据");
                 }
-            });
+            })
+           .treeview('expandNode', [0, { silent: false }]);
+        ;
 
         $("#btnOrgSave").click(function () {
             var _err = [];

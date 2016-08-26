@@ -3,6 +3,7 @@
     Layout = null;
 }
 
+@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
 <style type="text/css">
     table.table td {line-height: 30px;padding: 0;}
     table.table td.text-left {line-height: 20px;}
@@ -52,11 +53,11 @@
         </tr>
         <tr>
             <td><input type="text" /></td>
-            <td colspan="2"><input type="text" /></td>
-            <td colspan="2"><input type="text" /></td>
+            <td colspan="2"><input type="text" readonly class="datepicker"/></td>
+            <td colspan="2"><input type="text" readonly class="datepicker" /></td>
             <td><input type="text" /></td>
-            <td><input type="text" /></td>
-            <td><input type="text" /></td>
+            <td><input type="text" readonly class="datepicker" /></td>
+            <td><input type="text" readonly class="datepicker" /></td>
         </tr>
         <tr class="text-bold">
             <td>政治面貌</td>
@@ -97,3 +98,17 @@
             <td colspan="7" class="text-left"><textarea></textarea></td>
         </tr>
     </table>
+@Scripts.Render("~/Scripts/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js")
+@Scripts.Render("~/Scripts/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js")
+
+<script type="text/javascript">
+    $(function () {
+        $(".datepicker").datetimepicker({
+            language: 'zh-CN',
+            format: "yyyy-MM-dd",
+            showMeridian: true,
+            autoclose: true,
+            todayBtn: true
+        });
+    });
+</script>

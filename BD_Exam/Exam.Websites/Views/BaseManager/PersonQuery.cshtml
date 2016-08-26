@@ -45,9 +45,15 @@
                         <input type="text" class="form-control" aria-label="..."
                                placeholder="请选择单位">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-sm">
-                                选择单位 
-                            </button>
+                            <a class="btn btn-primary btn-sm" id="btnOrgSel"
+                               role="button"
+                               href="@(Url.Content("~/BaseManager/OrgDatas"))"
+                               data-ajax-id="OrgDatas"
+                               data-ajax-update="#modal-OrgData-Content"
+                               data-ajax="true"
+                               data-modal-for=".modal-OrgData">
+                                选择单位
+                            </a>
                         </div>
                     </div>
                 </td>

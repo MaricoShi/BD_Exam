@@ -16,6 +16,14 @@ namespace Exam.Websites.Models
         /// </summary>
         public string OrgName { get; set; }
         /// <summary>
+        /// 机构简称
+        /// </summary>
+        public string ShortName { get; set; }
+        /// <summary>
+        /// 排序号
+        /// </summary>
+        public int SortCode { get; set; }
+        /// <summary>
         /// 是否拥有子集
         /// </summary>
         public bool HasChildren { get; set; }
