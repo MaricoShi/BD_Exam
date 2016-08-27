@@ -10,6 +10,7 @@ using System.Web.Security;
 namespace Exam.Websites.Controllers
 {
     [AppAuth]
+    [ExceFilter]
     public class BaseController : Controller
     {
         //当前上下文
