@@ -2,8 +2,120 @@
 
 @{
     ViewBag.Title = "错误";
+    Layout = null;
 }
 
-<h1 class="text-danger">错误。</h1>
-<h2 class="text-danger">处理你的请求时出错。</h2>
+@*@Html.Raw(ViewData["ErrorMessage"])*@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>您访问的页面不存在</title>
+    <style type=text/css>
+        #error {
+            font-size: 9pt;
+            color: #842b00;
+            line-height: 16pt;
+            font-family: "tahoma", "宋体";
+            text-decoration: none;
+        }
 
+            #error table {
+                font-size: 9pt;
+                color: #842b00;
+                line-height: 16pt;
+                font-family: "tahoma", "宋体";
+                text-decoration: none;
+            }
+
+            #error td {
+                font-size: 9pt;
+                color: #842b00;
+                line-height: 16pt;
+                font-family: "tahoma", "宋体";
+                text-decoration: none;
+            }
+
+        #error {
+            scrollbar-highlight-color: buttonface;
+            scrollbar-shadow-color: buttonface;
+            scrollbar-3dlight-color: buttonhighlight;
+            scrollbar-track-color: #eeeeee;
+            background-color: #ffffff;
+        }
+
+            #error a {
+                font-size: 9pt;
+                color: #842b00;
+                line-height: 16pt;
+                font-family: "tahoma", "宋体";
+                text-decoration: none;
+            }
+
+                #error a:hover {
+                    font-size: 9pt;
+                    color: #0188d2;
+                    line-height: 16pt;
+                    font-family: "tahoma", "宋体";
+                    text-decoration: underline;
+                }
+
+            #error h1 {
+                font-size: 9pt;
+                font-family: "tahoma", "宋体";
+            }
+    </style>
+
+</head>
+<body id="error">
+    <table cellspacing=0 width=600 align=center border=0 cepadding="0">
+        <tbody>
+            <tr colspan="2">
+                <td valign=top>
+                    <img height=100 src="~/Images/404.jpg"
+                         width=100 border=0 />
+                <td>
+                <td>
+                    <!--------system return begin------------>
+                    <h1><font color="#666666">无法找到该页</font></h1>
+                    <font color="#666666">
+                        错误的请求 500：您正在搜索的页面可能已经删除、更名或暂时不可用。
+                    </font>
+                    <hr />
+
+                    <p><font color="#666666">☉ 请尝试以下操作：</font></p>
+                    <ul>
+                        <li>
+                            <font color="#666666">
+                                确保浏览器的地址栏中显示的网站地址的拼写和格式正确无误。
+                            </font>
+                        <li>
+                            <font color="#666666">
+                                如果通过单击链接而到达了该网页，请与网站管理员联系，通知他们该链接的格式不正确。
+
+                            </font>
+                        <li>
+                            <font color="#666666">单击</font>
+                            <a href="javascript:history.back(1)">
+                                <font color=#0000ff>后退</font>
+                            </a><font color="#666666">按钮尝试另一个链接。 </font>
+                        </li>
+                    </ul>
+                    <hr />
+
+                    <p>
+                        <font color="#666666">
+                            ☉ 如果您对本站有任何疑问、意见、建议、咨询，请联系管理员！
+                        </font>
+                    </p>
+                    <!------------end this!--------------->
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
