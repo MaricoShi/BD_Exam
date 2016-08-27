@@ -189,8 +189,8 @@ i.fa { font-size: 14px; }
 .seekask-sidebar { border-right: 1px solid #DDD; padding-bottom: 50px; }
 .seekask-sidebar .nav { margin-right: 4px; }
 .seekask-sidebar .nav li { padding: 4px 0px; border-bottom: 1px solid #DDD; position: relative; line-height: 1.428571429; }
-.seekask-sidebar .nav li a { color: #333; padding: 6px 16px; border-left: 2px solid #FFF; }
-.seekask-sidebar .nav li a span.fa { position: absolute; left: 0; top: 8px; font-size: 14px; color: #999; }
+.seekask-sidebar .nav li a { color: #333; padding: 6px 18px; border-left: 2px solid #FFF; }
+.seekask-sidebar .nav li a span.fa { position: absolute; left: 3px; top: 8px; font-size: 14px; color: #999; }
 .seekask-sidebar .nav li a:hover { border-left: 2px solid #F90; }
 .seekask-sidebar .nav .nav li { border-bottom: 0px; }
 .seekask-sidebar .nav .nav li a { padding-left: 28px; }
