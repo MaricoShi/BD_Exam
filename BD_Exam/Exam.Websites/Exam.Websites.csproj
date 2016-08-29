@@ -208,11 +208,14 @@
     <Content Include="Images\article-ico.png" />
     <Content Include="Images\body-bg.png" />
     <Content Include="Images\CustomOrg%4048x.png" />
+    <Content Include="Images\favicon.ico" />
     <Content Include="Images\img_customs_header.png" />
     <Content Include="Images\line_bg.gif" />
     <Content Include="Images\logo.ico" />
+    <Content Include="Images\logoout.ico" />
     <Content Include="Images\new2.gif" />
     <Content Include="Images\no_images.png" />
+    <Content Include="Images\thead_bg.gif" />
     <Content Include="Images\Upload\.gif\2f27d03b0ca6449a879209f85bc12d2d.gif" />
     <Content Include="Images\Upload\.gif\47fb6d5c88ef4276853826abffeddfb7..gif" />
     <Content Include="Images\Upload\.gif\93b28db30c104d3b8b21f99c81364a13.gif" />

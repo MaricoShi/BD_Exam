@@ -4,18 +4,228 @@
 }
 
 <div>
-    <div>
-        <div class="seekask-title">
-            <h4 class="cl_cc00">专业科目配置</h4>
-        </div>
-        <hr class="mg_t_10 mg_b_10" />
-        <div class="pull-right">
+    <div class="seekask-title">
+        <h4 class="cl_cc00">专业科目配置</h4>
 
-        </div>
+        @*<div class="pull-right">
+            <button class="btn btn-primary pd_x_0310 mg_r_10" id="btnProfessionInfoSave">
+                <i class="fa fa-save"></i>&nbsp;&nbsp;保存更改&nbsp;
+            </button>
+            <button class="btn btn-danger pd_x_0310 mg_r_10" id="btnProfessionInfoReset">
+                <i class="fa fa-recycle"></i>&nbsp;&nbsp;重置更改&nbsp;
+            </button>
+        </div>*@
     </div>
+    <hr class="mg_t_10 mg_b_10" />
 
-    <div class="mg_t_20">
+    <table style="width:100%;border-left:0px;">
+        <tr>
+            <td valign="top" style="width:27%;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-list"></i>&nbsp;
+                        专业列表
+                        <div class="pull-right" style="margin-top:-7px;">
+                            <button class="btn btn-primary pd_x_0310">
+                                <i class="fa fa-plus"></i>&nbsp;&nbsp;添加&nbsp;
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-body pd_0" style="min-height:420px;">
+                        <table class="table-s01" cellpadding="0" cellspacing="0"
+                               style="width:100%;line-height:30px;" id="tbProfessionInfo">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>专业代码</th>
+                                    <th>专业名称</th>
+                                    <th class="no-right">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
 
-    </div>
+                    </div>
+                </div>
+            </td>
+            <td width="10px"></td>
+            <td valign="top">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-list"></i>&nbsp;
+                        专业项目配置 (点击左侧专业,显示对应项目配置)
+                        <div class="pull-right" style="margin-top:-7px;">
+                            <button class="btn btn-primary pd_x_0310 mg_r_10">
+                                <i class="fa fa-plus"></i>&nbsp;&nbsp;添加&nbsp;
+                            </button>
+                            <button class="btn btn-primary pd_x_0310 mg_r_10" id="btnProfessionProjectSave">
+                                <i class="fa fa-save"></i>&nbsp;&nbsp;保存更改&nbsp;
+                            </button>
+                            <button class="btn btn-danger pd_x_0310 " id="btnProfessionProjectReset">
+                                <i class="fa fa-recycle"></i>&nbsp;&nbsp;重置更改&nbsp;
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-body pd_0" style="min-height:420px;">
+                        <table class="table-s01" cellpadding="0" cellspacing="0"
+                               style="width:100%;line-height:30px;" id="ProfessionProject">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>专业名称</th>
+                                    <th>项目代码</th>
+                                    <th>项目名称</th>
+                                    <th>成绩占专业比例(%)</th>
+                                    <th>维护人员</th>
+                                    <th>维护时间</th>
+                                    <th class="no-right">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 
 </div>
+
+<script>
+    $('#btnProfessionProjectSave').unbind("click").bind("click", function () {
+        antd.Modal.confirm({
+            title: '您是否确认保存当前所做的更改',
+            content: '确认后立即更新',
+            onOk: function () {
+
+            },
+            onCancel: function () { },
+        });
+    });
+    $('#btnProfessionProjectReset').unbind("click").bind("click", function () {
+        antd.Modal.confirm({
+            title: '您是否需要重置回初始状态',
+            content: '确认后立即还原初始状态',
+            onOk: function () {
+
+            },
+            onCancel: function () { },
+        });
+    });
+
+    function fnProfessionProjectInit(_ProfessionInfo) {
+        if (_ProfessionInfo == null) return;
+        $('body').blockUI();
+        $.ajax({
+            type: "get",
+            url: document.weburl + "odata/EConfigProfessionProject?$filter=ProfessionCode eq '" +
+                _ProfessionInfo.ProfessionCode + "' and IsDeleted eq false&$inlinecount=allpages",
+            async: false
+        }).success(function (res) {
+            if (res == null || res.value == null) return;
+            var xhr = res.value;
+            $('#ProfessionProject tbody').empty();
+            for (var i = 0; i < xhr.length; i++) {
+                var pfinfo = xhr[i];
+                if (pfinfo == null) continue;
+                var _updTime = pfinfo.ModifyTime == null ? pfinfo.CreateTime : pfinfo.ModifyTime;
+                var _updName = pfinfo.ModifyByName == null ? pfinfo.CreateByName : pfinfo.ModifyByName;
+
+                var _inputNum = React.createElement(antd.InputNumber, {
+                    id: "PP_TakeRate",
+                    min: 0, 
+                    max: 100,
+                    step: 10,
+                    defaultValue: pfinfo.TakeRate,
+                    onChange: function (iNvalue) {
+                        console.log(iNvalue);
+                    }
+                });
+                var _inputName = React.createElement(antd.Input, {
+                    id: "PP_ProjectName",
+                    placeholder: "请输入项目名称",
+                    defaultValue: pfinfo.ProjectName,
+                    onChange: function (iNvalue) {
+                        //console.log(iNvalue);
+                    }
+                });
+
+                var $td1 = $('<th>', { 'class': 'text-center', 'width': '35px' }).text((i + 1));
+                var $td2 = $('<td>', { 'class': 'bdb text-center' }).text(_ProfessionInfo.ProfessionName);
+                var $td3 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.ProjectCode);
+                var $td4 = $('<td>', { 'class': 'bdb text-center' });
+                var $td5 = $('<td>', { 'class': 'bdb text-center' });
+                var $td6 = $('<td>', { 'class': 'bdb text-center' }).text(_updName);
+                var $td7 = $('<td>', { 'class': 'bdb text-center' }).text(_updTime);
+                var $td8 = $('<td>', { 'class': 'bdb text-center no-right', 'width': '80px' })
+                    .append($('<a>', { 'href': 'javascript:;' }).css({ 'margin-right': '6px' }).text('上移'))
+                    .append($('<a>', { 'href': 'javascript:;' }).text('移除'));
+
+                ReactDOM.render(_inputNum, $td5[0]);
+                ReactDOM.render(_inputName, $td4[0]);
+
+                var $tr = $('<tr>').append($td1).append($td2).append($td3).append($td4)
+                    .append($td5).append($td6).append($td7).append($td8);
+                $tr.data('rowData', pfinfo);
+                $('#ProfessionProject tbody').append($tr);
+            }
+        }).error(function (res) {
+            antd.notification['error']({
+                message: '您的请求出现异常',
+                duration: 4,
+                description: '异常：' + res.responseText,
+            });
+        }).complete(function () {
+            $('body').unblockUI();
+        });
+    }
+
+    function fnProfessionInfoInit() {
+        $('body').blockUI();
+        $.ajax({
+            type: "get",
+            url: document.weburl + "odata/EBasProfessionInfo?$filter=IsDeleted eq false",
+            async:false
+        }).success(function (res) {
+            if (res == null || res.value == null) return;
+            var xhr = res.value;
+            $('#tbProfessionInfo tbody').empty();
+            for (var i = 0; i < xhr.length; i++) {
+                var pfinfo = xhr[i];
+                if (pfinfo == null) continue;
+                var $td1 = $('<th>', { 'class': 'text-center', 'width': '35px' }).text((i + 1));
+                var $td2 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.ProfessionCode);
+                var $td3 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.ProfessionName);
+                var $td4 = $('<td>', { 'class': 'bdb text-center no-right', 'width': '80px' })
+                    .append($('<a>', { 'href': 'javascript:;' }).css({'margin-right':'6px'}).text('编辑'))
+                    .append($('<a>', { 'href': 'javascript:;' }).text('移除'));
+                var $tr = $('<tr>').append($td1).append($td2).append($td3).append($td4);
+                $tr.data('rowData', pfinfo);
+                $tr.click(function () {
+                    var $activetr = $('#tbProfessionInfo tbody tr.item-active');
+                    if ($activetr.length>0 && $activetr.data('rowData').ProfessionCode ==
+                        $(this).data('rowData').ProfessionCode) {
+                        return false;
+                    }
+
+                    $activetr.removeClass('item-active');
+                    $(this).addClass('item-active');
+                    fnProfessionProjectInit($(this).data('rowData'))
+                });
+                $('#tbProfessionInfo tbody').append($tr);
+            }
+        }).error(function (res) {
+            antd.notification['error']({
+                message: '您的请求出现异常',
+                duration: 4,
+                description: '异常：' + res.responseText,
+            });
+        }).complete(function () {
+            $('body').unblockUI();
+        });
+    }
+
+    fnProfessionInfoInit();
+</script>

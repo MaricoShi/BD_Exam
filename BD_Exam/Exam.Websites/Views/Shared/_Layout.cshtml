@@ -38,7 +38,7 @@
     <div class="seekask-topbar bg_c6">
         <div class="seekask-topbar-logo">
             <a class="seekask-header-logo-icon" href="javascript:;"></a>
-            <a href="javascript:;" class="seekask-header-logo-text" target="_self"><em>海军雷达兵第一旅成绩管理系统</em></a>
+            <a href="javascript:;" class="seekask-header-logo-text" target="_self"><em>成绩管理系统</em></a>
         </div>
         <div class="seekask-topbar-info">
             <!-- ngIf: showGlobalSearch -->
@@ -114,7 +114,7 @@
     <div class="pd_lr_15">
         <hr class="mg_0" />
         <footer class="text-center pd_tb_10">
-            <p>&copy; 2016 - 海军雷达兵第一旅</p>
+            <p>&copy; 2016 - 所有者</p>
         </footer>
     </div>
     
@@ -122,10 +122,10 @@
     <script>
 
         function fnAjaxError(xhr, status, error) {
-            antd.notification[type]({
+            antd.notification['error']({
                 message: '您的请求出现异常',
                 duration: 4,
-                description: '异常：',
+                description: '异常：' + xhr.responseText,
             });
         }
 
