@@ -30,7 +30,11 @@
                 </a>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="@(Url.Content("~/BaseManager/ProfessionInfo"))"
+                   data-ajax-id="OrgQuery"
+                   data-ajax-update="#BaseManager_Layout_Content"
+                   data-ajax="true" data-ajax-failure="fnAjaxError"
+                   data-ajax-success="fnAjaxSuccess">
                     <span class="fa fa-building-o"></span> 专业科目室
                 </a>
             </li>

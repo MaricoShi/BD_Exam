@@ -31,6 +31,16 @@ namespace Exam.Websites.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 专业配置
+        /// </summary>
+        /// <returns></returns>
+        [IsAjaxRedirectFilter(_RedirectUrl = "~/BaseManager/Index")]
+        public ActionResult ProfessionInfo() 
+        {
+            return View();
+        }
+
         #region 单位档案室页面
         /// <summary>
         /// 单位档案室

@@ -331,6 +331,7 @@
     <Content Include="Views\BaseManager\OrgDatas.cshtml" />
     <Content Include="Views\BaseManager\PerSonDetail.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\BaseManager\ProfessionInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
