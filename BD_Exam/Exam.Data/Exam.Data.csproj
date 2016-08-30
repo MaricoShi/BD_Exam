@@ -51,6 +51,10 @@
     <Compile Include="Migrations\201608240450559_Init.Designer.cs">
       <DependentUpon>201608240450559_Init.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608301052506_UpdProject.cs" />
+    <Compile Include="Migrations\201608301052506_UpdProject.Designer.cs">
+      <DependentUpon>201608301052506_UpdProject.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\EAbsentPersonInfo.cs" />
     <Compile Include="Models\EBasOrg.cs" />
@@ -80,6 +84,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201608240450559_Init.resx">
       <DependentUpon>201608240450559_Init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608301052506_UpdProject.resx">
+      <DependentUpon>201608301052506_UpdProject.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

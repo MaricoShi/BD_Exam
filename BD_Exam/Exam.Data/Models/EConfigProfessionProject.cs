@@ -23,6 +23,7 @@ namespace Exam.Data.Models
         public string ProjectCode { get; set; }
         public string ProjectName { get; set; }
         public decimal TakeRate { get; set; }
+        public int SortIndex { get; set; }
         public string Remark { get; set; }
         public string CreateByCode { get; set; }
         public string CreateByName { get; set; }

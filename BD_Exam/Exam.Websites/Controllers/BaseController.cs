@@ -16,6 +16,10 @@ namespace Exam.Websites.Controllers
         //当前上下文
         protected ExamEntities CurrentContext = new ExamEntities();
 
+        //操作反馈定义
+        protected HandleRetBackModel _RetBack = 
+            new HandleRetBackModel() { retCode = "ERR001", retMsg = "操作过程出错" };
+
         /// <summary>
         /// 获取当前用户信息
         /// </summary>
@@ -78,5 +82,24 @@ namespace Exam.Websites.Controllers
             }
             base.Dispose(disposing);
         }
+    }
+
+    /// <summary>
+    /// 处理返回实体
+    /// </summary>
+    public class HandleRetBackModel
+    {
+        /// <summary>
+        /// 返回代码，000000成功
+        /// </summary>
+        public string retCode { get; set; }
+        /// <summary>
+        /// 返回消息
+        /// </summary>
+        public string retMsg { get; set; }
+        /// <summary>
+        /// 返回数据
+        /// </summary>
+        public object retData { get; set; }
     }
 }

@@ -26,7 +26,7 @@
                         <i class="fa fa-list"></i>&nbsp;
                         专业列表
                         <div class="pull-right" style="margin-top:-7px;">
-                            <button class="btn btn-primary pd_x_0310">
+                            <button class="btn btn-primary pd_x_0310" id="btnProfessionInfoAdd">
                                 <i class="fa fa-plus"></i>&nbsp;&nbsp;添加&nbsp;
                             </button>
                         </div>
@@ -37,7 +37,7 @@
                             <thead>
                                 <tr>
                                     <th>序号</th>
-                                    <th>专业代码</th>
+                                    <th width="80px;">专业代码</th>
                                     <th>专业名称</th>
                                     <th class="no-right">操作</th>
                                 </tr>
@@ -56,15 +56,15 @@
                         <i class="fa fa-list"></i>&nbsp;
                         专业项目配置 (点击左侧专业,显示对应项目配置)
                         <div class="pull-right" style="margin-top:-7px;">
-                            <button class="btn btn-primary pd_x_0310 mg_r_10">
+                            <button class="btn btn-primary pd_x_0310 mg_r_10" id="btnProfessionProjectAdd">
                                 <i class="fa fa-plus"></i>&nbsp;&nbsp;添加&nbsp;
                             </button>
-                            <button class="btn btn-primary pd_x_0310 mg_r_10" id="btnProfessionProjectSave">
+                            <button class="btn btn-danger pd_x_0310" id="btnProfessionProjectSave">
                                 <i class="fa fa-save"></i>&nbsp;&nbsp;保存更改&nbsp;
                             </button>
-                            <button class="btn btn-danger pd_x_0310 " id="btnProfessionProjectReset">
+                            @*<button class="btn btn-danger pd_x_0310 " id="btnProfessionProjectReset">
                                 <i class="fa fa-recycle"></i>&nbsp;&nbsp;重置更改&nbsp;
-                            </button>
+                            </button>*@
                         </div>
                     </div>
                     <div class="panel-body pd_0" style="min-height:420px;">
@@ -76,7 +76,7 @@
                                     <th>专业名称</th>
                                     <th>项目代码</th>
                                     <th>项目名称</th>
-                                    <th>成绩占专业比例(%)</th>
+                                    <th width="110px;">成绩占专业比例(%)</th>
                                     <th>维护人员</th>
                                     <th>维护时间</th>
                                     <th class="no-right">操作</th>
@@ -94,12 +94,32 @@
 </div>
 
 <script>
+    $('#btnProfessionInfoAdd').unbind("click").bind("click", function () {
+        var $tr = fnProfessionInfoTr({}, $('#tbProfessionInfo tbody tr').length);
+        $('#tbProfessionInfo tbody').append($tr);
+        return false;
+    });
+
+    $('#btnProfessionProjectAdd').unbind("click").bind("click", function () {
+        var $activetr = $('#tbProfessionInfo tbody tr.item-active');
+        if ($activetr.length == 0 || $activetr.data('rowData') == null) {
+            antd.message.warning('请先选择一项专业！！！', 5);
+            return false;
+        }
+        var _ProfessionName = $activetr.find("input#PP_ProfessionName").val();
+        var pfinfo = { ProfessionName: _ProfessionName };
+        fnProfessionProjectTr(pfinfo, $('#ProfessionProject tbody tr').length);
+    });
+
     $('#btnProfessionProjectSave').unbind("click").bind("click", function () {
+        var info = {} ;
+        if (fnGetProfessionInfoSaveData(info) != true) return false;
+
         antd.Modal.confirm({
             title: '您是否确认保存当前所做的更改',
-            content: '确认后立即更新',
+            content: '确认后立即更新，取消后不做任何操作',
             onOk: function () {
-
+                fnProfessionInfoSave(info);
             },
             onCancel: function () { },
         });
@@ -109,20 +129,227 @@
             title: '您是否需要重置回初始状态',
             content: '确认后立即还原初始状态',
             onOk: function () {
-
+                debugger;
             },
             onCancel: function () { },
         });
     });
 
+    $('#ProfessionProject').on('change', 'input#PP_ProjectName', function () {
+        _ProfessionProjectIsUpd = true;
+        $(this).css({ "border": '1px solid red' });
+    });
+    $('#tbProfessionInfo').on('change', 'input#PP_ProfessionName', function () {
+        _ProfessionProjectIsUpd = true;
+        $(this).css({ "border": '1px solid red' });
+    });
+
+    var _ProfessionProjectIsUpd = false; //是否有变动
+
+    //获取保存的数据
+    function fnGetProfessionInfoSaveData(info) {
+        var $activetr = $('#tbProfessionInfo tbody tr.item-active');
+        if ($activetr.length == 0 || $activetr.data('rowData') == null) {
+            antd.message.warning('请先选择一项专业！！！', 5);
+            return false;
+        }
+        if (_ProfessionProjectIsUpd == false) {
+            antd.message.warning('当前暂无需要修改的项！！！', 5);
+            return false;
+        }
+        var _ProfessionInfo = $activetr.data('rowData');
+        if (_ProfessionInfo == null) {
+            antd.message.warning('出现异常，请重新进入该功能页面！！！', 5);
+            return false;
+        }
+
+        info["ProfessionCode"] = _ProfessionInfo.ProfessionCode;
+        info["ProfessionName"] = $activetr.find("input#PP_ProfessionName").val();
+        info["EConfigProfessionProjects"] = null;
+        
+        if (info.ProfessionName == null || $.trim(info.ProfessionName) == "") {
+            antd.message.warning('专业名称不能为空！！！', 5);
+            return false;
+        }
+
+        var _projectIsNull = false;
+        var _projectSumRate = 0;
+
+        var $projectTrs = $('#ProfessionProject tbody tr');
+        if ($projectTrs.length > 0) {
+            info.EConfigProfessionProjects = [];
+            for (var i = 0; i < $projectTrs.length; i++) {
+                var $pfinfo = $($projectTrs[i]);
+                var pfDt = $pfinfo.data('rowData');
+
+                var ecpp = {
+                    ConfigId: null,
+                    ProjectName: null,
+                    TakeRate: 0,
+                };
+                ecpp.ProjectName = $pfinfo.find("input#PP_ProjectName").val();
+                ecpp.TakeRate = $pfinfo.find("input#PP_TakeRate").val();
+                if (pfDt != null) {
+                    ecpp.ConfigId = pfDt.ConfigId;
+                }
+                info.EConfigProfessionProjects.push(ecpp);
+                if (ecpp.ProjectName == null || $.trim(ecpp.ProjectName) == "") {
+                    _projectIsNull = true;
+                }
+                _projectSumRate += parseFloat(ecpp.TakeRate);
+            }
+        }
+        if (_projectIsNull == true) {
+            antd.message.warning('项目名称不能为空！！！', 5);
+            return false;
+        }
+        if (_projectSumRate != 100) {
+            antd.message.warning('该专业的所有项目“成绩占专业比例”之和不为100%！！！', 5);
+            return false;
+        }
+        return true;
+    }
+
+    //保存数据到服务器
+    function fnProfessionInfoSave(info) {
+        if (info == null) return;
+        $('body').blockUI();
+        $.ajax({
+            type: "post",
+            url: document.weburl + "BaseManager/ProfessionInfoSave",
+            data: mvcParamMatch(info),
+        }).success(function (res) {
+            if (res == null) {
+                antd.message.warning('返回结果为空！！！', 5);
+                return false;
+            };
+            if (res.retCode == '000000') {
+                antd.message.success('保存成功！！！', 5);
+                _ProfessionProjectIsUpd = false;
+                if (res.retData != null) {
+                    var $activetr = $('#tbProfessionInfo tbody tr.item-active');
+                    var $tr = fnProfessionInfoTr(res.retData,
+                        parseInt($activetr.find('th').eq(0).text()) - 1);
+                    $activetr.replaceWith($tr);
+                    $tr.click();
+                }
+                
+            } else {
+                antd.message.warning(res.retMsg, 5);
+            }
+            return false;
+        }).error(function (res) {
+            antd.notification['error']({
+                message: '您的请求出现异常',
+                duration: 4,
+                description: '异常：' + res.responseText,
+            });
+        }).complete(function () {
+            $('body').unblockUI();
+        });
+    }
+    //删除
+    function fnProfessionDelSave($tr, info) {
+        if (info == null) return;
+        $('body').blockUI();
+        $.ajax({
+            type: "post",
+            url: document.weburl + "BaseManager/ProfessionInfoDel",
+            data: info,
+        }).success(function (res) {
+            if (res == null) {
+                antd.message.warning('返回结果为空！！！', 5);
+                return false;
+            };
+            if (res.retCode == '000000') {
+                antd.message.success('删除成功！！！', 5);
+
+                $tr.remove();
+                if (info.pro == "p")
+                    $('#ProfessionProject tbody').empty();
+            } else {
+                antd.message.warning(res.retMsg, 5);
+            }
+            return false;
+        }).error(function (res) {
+            antd.notification['error']({
+                message: '您的请求出现异常',
+                duration: 4,
+                description: '异常：' + res.responseText,
+            });
+        }).complete(function () {
+            $('body').unblockUI();
+        });
+    }
+
+    //创建项目行
+    function fnProfessionProjectTr(pfinfo, i) {
+        if (pfinfo == null) return;
+        var _updTime = pfinfo.ModifyTime == null ? pfinfo.CreateTime : pfinfo.ModifyTime;
+        var _updName = pfinfo.ModifyByName == null ? pfinfo.CreateByName : pfinfo.ModifyByName;
+
+        if (_updTime != null && _updTime != "") {
+            var upddt = new Date(_updTime);
+            _updTime = upddt.getFullYear() + "/" + (upddt.getMonth() + 1) + "/" + upddt.getDate();
+        }
+
+        var _inputNum = React.createElement(antd.InputNumber, {
+            id: "PP_TakeRate",
+            min: 0, 
+            max: 100,
+            step: 10,
+            defaultValue: (pfinfo.TakeRate || 0),
+            onChange: function (iNvalue) {
+                //console.log(iNvalue);
+                _ProfessionProjectIsUpd = true;
+            }
+        });
+        var _inputName = React.createElement(antd.Input, {
+            id: "PP_ProjectName",
+            placeholder: "请输入项目名称",
+            defaultValue: pfinfo.ProjectName
+        });
+
+        var $tr = $('<tr>');
+        var $td1 = $('<th>', { 'class': 'text-center', 'width': '35px' }).text((i + 1));
+        var $td2 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.ProfessionName);
+        var $td3 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.ProjectCode);
+        var $td4 = $('<td>', { 'class': 'bdb text-center' });
+        var $td5 = $('<td>', { 'class': 'bdb text-center' });
+        var $td6 = $('<td>', { 'class': 'bdb text-center' }).text(_updName);
+        var $td7 = $('<td>', { 'class': 'bdb text-center' }).text(_updTime);
+        var $td8 = $('<td>', { 'class': 'bdb text-center no-right', 'width': '80px' })
+            .append($('<a>', { 'href': 'javascript:;' }).css({ 'margin-right': '6px' })
+                .click(function () {
+                    $tr.prev().before($tr);
+                    _ProfessionProjectIsUpd = true;
+                }).text('上移'))
+            .append($('<a>', { 'href': 'javascript:;' }).click(function () {
+                    $tr.remove();
+                    _ProfessionProjectIsUpd = true;
+                }).text('移除'));
+        
+        ReactDOM.render(_inputNum, $td5[0]);
+        ReactDOM.render(_inputName, $td4[0]);
+
+        $tr.append($td1).append($td2).append($td3).append($td4)
+            .append($td5).append($td6).append($td7).append($td8);
+        $tr.data('rowData', pfinfo);
+        $('#ProfessionProject tbody').append($tr);
+    }
+
     function fnProfessionProjectInit(_ProfessionInfo) {
         if (_ProfessionInfo == null) return;
+        if (_ProfessionInfo.ProfessionCode == null) {
+            $('#ProfessionProject tbody').empty();
+            return;
+        }
         $('body').blockUI();
+        _ProfessionProjectIsUpd = false;
         $.ajax({
             type: "get",
             url: document.weburl + "odata/EConfigProfessionProject?$filter=ProfessionCode eq '" +
-                _ProfessionInfo.ProfessionCode + "' and IsDeleted eq false&$inlinecount=allpages",
-            async: false
+                _ProfessionInfo.ProfessionCode + "' and IsDeleted eq false&$orderby=SortIndex&$inlinecount=allpages"
         }).success(function (res) {
             if (res == null || res.value == null) return;
             var xhr = res.value;
@@ -130,46 +357,9 @@
             for (var i = 0; i < xhr.length; i++) {
                 var pfinfo = xhr[i];
                 if (pfinfo == null) continue;
-                var _updTime = pfinfo.ModifyTime == null ? pfinfo.CreateTime : pfinfo.ModifyTime;
-                var _updName = pfinfo.ModifyByName == null ? pfinfo.CreateByName : pfinfo.ModifyByName;
 
-                var _inputNum = React.createElement(antd.InputNumber, {
-                    id: "PP_TakeRate",
-                    min: 0, 
-                    max: 100,
-                    step: 10,
-                    defaultValue: pfinfo.TakeRate,
-                    onChange: function (iNvalue) {
-                        console.log(iNvalue);
-                    }
-                });
-                var _inputName = React.createElement(antd.Input, {
-                    id: "PP_ProjectName",
-                    placeholder: "请输入项目名称",
-                    defaultValue: pfinfo.ProjectName,
-                    onChange: function (iNvalue) {
-                        //console.log(iNvalue);
-                    }
-                });
-
-                var $td1 = $('<th>', { 'class': 'text-center', 'width': '35px' }).text((i + 1));
-                var $td2 = $('<td>', { 'class': 'bdb text-center' }).text(_ProfessionInfo.ProfessionName);
-                var $td3 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.ProjectCode);
-                var $td4 = $('<td>', { 'class': 'bdb text-center' });
-                var $td5 = $('<td>', { 'class': 'bdb text-center' });
-                var $td6 = $('<td>', { 'class': 'bdb text-center' }).text(_updName);
-                var $td7 = $('<td>', { 'class': 'bdb text-center' }).text(_updTime);
-                var $td8 = $('<td>', { 'class': 'bdb text-center no-right', 'width': '80px' })
-                    .append($('<a>', { 'href': 'javascript:;' }).css({ 'margin-right': '6px' }).text('上移'))
-                    .append($('<a>', { 'href': 'javascript:;' }).text('移除'));
-
-                ReactDOM.render(_inputNum, $td5[0]);
-                ReactDOM.render(_inputName, $td4[0]);
-
-                var $tr = $('<tr>').append($td1).append($td2).append($td3).append($td4)
-                    .append($td5).append($td6).append($td7).append($td8);
-                $tr.data('rowData', pfinfo);
-                $('#ProfessionProject tbody').append($tr);
+                pfinfo.ProfessionName = _ProfessionInfo.ProfessionName;
+                fnProfessionProjectTr(pfinfo, i);
             }
         }).error(function (res) {
             antd.notification['error']({
@@ -182,38 +372,103 @@
         });
     }
 
+
+    //创建专业行
+    function fnProfessionInfoTr(pfinfo, i) {
+        if (pfinfo == null) return null;
+
+        pfinfo.jsmID = pfinfo.ProfessionCode + "_" + $.now();
+
+        var _inputName = React.createElement(antd.Input, {
+            id: "PP_ProfessionName",
+            placeholder: "请输入专业名称",
+            defaultValue: pfinfo.ProfessionName
+        });
+
+        var $tr = $('<tr>');
+        var $td1 = $('<th>', { 'class': 'text-center', 'width': '35px' }).text((i + 1));
+        var $td2 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.ProfessionCode);
+        var $td3 = $('<td>', { 'class': 'bdb text-center' });
+        var $td4 = $('<td>', { 'class': 'bdb text-center no-right', 'width': '40px' })
+            .append($('<a>', { 'href': 'javascript:;' })
+                .click(function () {
+                    if ($tr == null) return;
+                    var info = $tr.data("rowData");
+                    if (info != null && info.ProfessionCode != null) {
+                        var PP_ProfessionName = $tr.find('input#PP_ProfessionName').val();
+                        antd.Modal.confirm({
+                            title: '是否确认删除“' + PP_ProfessionName + '”的专业信息',
+                            content: '如果有人员关联了此专业信息将无法成功删除，请先取消人员对应的专业信息！',
+                            onOk: function () {
+                                fnProfessionDelSave($tr, { id: info.ProfessionCode, pro: 'p' });
+                            },
+                            onCancel: function () { },
+                        });
+                    } else {
+                        $tr.remove();
+                        $('#ProfessionProject tbody').empty();
+                    }
+                }).text('移除'));
+
+        ReactDOM.render(_inputName, $td3[0]);
+
+        $tr.append($td1).append($td2).append($td3).append($td4);
+        $tr.data('rowData', pfinfo);
+        $tr.click(fnProfessionInfoClick);
+        return $tr;
+    }
+
+    //专业行单击事件
+    function fnProfessionInfoClick() {
+        var $activetr = $('#tbProfessionInfo tbody tr.item-active');
+        if ($activetr.length > 0 && $activetr.data('rowData').jsmID ==
+            $(this).data('rowData').jsmID) {
+            return false;
+        }
+
+        var _that = this;
+        if (_ProfessionProjectIsUpd == true) {
+            antd.Modal.confirm({
+                title: '是否确认保存当前“配置”所做的更改',
+                content: '确认后立即更新，取消后将撤销所做的更改',
+                okText: "更新",
+                cancelText: "撤销",
+                onOk: function () {
+                    var info = {};
+                    if (fnGetProfessionInfoSaveData(info) != true) return false;
+                    fnProfessionInfoSave(info);
+                },
+                onCancel: function () {
+                    var $tr = fnProfessionInfoTr($activetr.data('rowData'),
+                        parseInt($activetr.find('th').eq(0).text()) - 1);
+                    $activetr.replaceWith($tr);
+                    _ProfessionProjectIsUpd = false;
+                    $(_that).click();
+                },
+            });
+            return false;
+        }
+
+        $activetr.removeClass('item-active');
+        $(this).addClass('item-active');
+        fnProfessionProjectInit($(this).data('rowData'));
+        return false;
+    }
+
     function fnProfessionInfoInit() {
         $('body').blockUI();
         $.ajax({
             type: "get",
-            url: document.weburl + "odata/EBasProfessionInfo?$filter=IsDeleted eq false",
-            async:false
+            url: document.weburl + "odata/EBasProfessionInfo?$filter=IsDeleted eq false&$orderby=ProfessionName",
+            async: false
         }).success(function (res) {
             if (res == null || res.value == null) return;
             var xhr = res.value;
             $('#tbProfessionInfo tbody').empty();
             for (var i = 0; i < xhr.length; i++) {
                 var pfinfo = xhr[i];
-                if (pfinfo == null) continue;
-                var $td1 = $('<th>', { 'class': 'text-center', 'width': '35px' }).text((i + 1));
-                var $td2 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.ProfessionCode);
-                var $td3 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.ProfessionName);
-                var $td4 = $('<td>', { 'class': 'bdb text-center no-right', 'width': '80px' })
-                    .append($('<a>', { 'href': 'javascript:;' }).css({'margin-right':'6px'}).text('编辑'))
-                    .append($('<a>', { 'href': 'javascript:;' }).text('移除'));
-                var $tr = $('<tr>').append($td1).append($td2).append($td3).append($td4);
-                $tr.data('rowData', pfinfo);
-                $tr.click(function () {
-                    var $activetr = $('#tbProfessionInfo tbody tr.item-active');
-                    if ($activetr.length>0 && $activetr.data('rowData').ProfessionCode ==
-                        $(this).data('rowData').ProfessionCode) {
-                        return false;
-                    }
-
-                    $activetr.removeClass('item-active');
-                    $(this).addClass('item-active');
-                    fnProfessionProjectInit($(this).data('rowData'))
-                });
+                //创建行
+                var $tr = fnProfessionInfoTr(pfinfo, i);
                 $('#tbProfessionInfo tbody').append($tr);
             }
         }).error(function (res) {

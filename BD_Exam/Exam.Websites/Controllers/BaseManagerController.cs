@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Exam.Data;
 using Exam.Data.Models;
 using Exam.Websites.Models;
+using System.Data.Entity;
 
 namespace Exam.Websites.Controllers
 {
@@ -39,6 +40,208 @@ namespace Exam.Websites.Controllers
         public ActionResult ProfessionInfo() 
         {
             return View();
+        }
+
+        /// <summary>
+        /// 专业项目配置保存
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult ProfessionInfoSave(EBasProfessionInfo info) 
+        {
+            try
+            {
+                if (info == null)
+                {
+                    _RetBack.retMsg = "保存的数据不能为空！！！";
+                    return Json(_RetBack);
+                }
+                if (string.IsNullOrWhiteSpace(info.ProfessionName))
+                {
+                    _RetBack.retMsg = "专业项目配置中专业名称不能为空值，操作结束！！！";
+                    return Json(_RetBack);
+                }
+
+                var professionInfo = CurrentContext.EBasProfessionInfo.Include(p => p.EConfigProfessionProjects)
+                    .FirstOrDefault(p => p.ProfessionCode == info.ProfessionCode);
+
+                #region 专业的新增修改
+                if (professionInfo == null)
+                {
+                    //专业代码
+                    string professionCode = "ZY" + DateTime.Now.ToString("yy");
+                    int code = 0;
+                    string pcode = CurrentContext.EBasProfessionInfo.Where(p =>
+                        p.ProfessionCode.StartsWith(professionCode)).Max(p => p.ProfessionCode);
+
+                    if (pcode == null || !int.TryParse(pcode.Replace(professionCode, ""), out code))
+                        code = 0;
+                    code++;
+
+                    //新增
+                    professionInfo = new EBasProfessionInfo();
+                    professionInfo.ProfessionCode = professionCode + code.ToString().PadLeft(4, '0');
+                    professionInfo.ProfessionStatus = "00";
+                    professionInfo.CreateByCode = CurrentUserInfo.UserID;
+                    professionInfo.CreateByName = CurrentUserInfo.UserName;
+                    professionInfo.CreateTime = DateTime.Now;
+                    professionInfo.CreateBy = GetIP();
+                    professionInfo.IsDeleted = false;
+
+                    CurrentContext.EBasProfessionInfo.Add(professionInfo);
+                }
+                professionInfo.ProfessionName = info.ProfessionName.Trim();
+                professionInfo.ModifyByCode = CurrentUserInfo.UserID;
+                professionInfo.ModifyByName = CurrentUserInfo.UserName;
+                professionInfo.ModifyTime = DateTime.Now;
+                professionInfo.ModifyBy = GetIP();
+
+                info.ProfessionCode = professionInfo.ProfessionCode;
+                #endregion
+                if (info.EConfigProfessionProjects != null)
+                {
+                    #region 项目配置操作
+                    //更新项目配置，比例之和需为100
+                    decimal sumTakeRate = info.EConfigProfessionProjects.Sum(p => p.TakeRate);
+                    if (sumTakeRate != 100)
+                    {
+                        _RetBack.retMsg = "该专业的所有项目“成绩占专业比例”之和不为100%，操作结束！！！";
+                        return Json(_RetBack);
+                    }
+                    if (info.EConfigProfessionProjects.Any(p => string.IsNullOrWhiteSpace(p.ProjectName)))
+                    {
+                        _RetBack.retMsg = "专业项目配置中项目名称不能为空值，操作结束！！！";
+                        return Json(_RetBack);
+                    }
+                    professionInfo.EConfigProfessionProjects = professionInfo.EConfigProfessionProjects
+                        ?? new List<EConfigProfessionProject>();
+                    //对应专业所有项目置为删除状态
+                    foreach (var item in professionInfo.EConfigProfessionProjects
+                        .Where(p => p.IsDeleted != true))
+                    {
+                        item.IsDeleted = true;
+                    }
+
+                    //项目代码获取
+                    string projectCode = "XM" + DateTime.Now.ToString("yy");
+                    int code = 0;
+                    string pcode = professionInfo.EConfigProfessionProjects.Where(p =>
+                        p.ProjectCode.StartsWith(projectCode)).Max(p => p.ProjectCode);
+
+                    if (pcode == null || !int.TryParse(pcode.Replace(projectCode, ""), out code))
+                        code = 0;
+
+                    int sortIndex = 0;
+                    foreach (var item in info.EConfigProfessionProjects)
+                    {
+                        sortIndex++;
+
+                        var projects = professionInfo.EConfigProfessionProjects
+                            .FirstOrDefault(p => p.ConfigId == item.ConfigId);
+                        #region 项目配置的新增修改
+                        if (projects == null)
+                        {
+                            code++;
+
+                            projects = new EConfigProfessionProject();
+                            projects.ConfigId = Guid.NewGuid().ToString("N");
+                            projects.ProjectCode = projectCode + code.ToString().PadLeft(4, '0');
+
+                            projects.CreateByCode = CurrentUserInfo.UserID;
+                            projects.CreateByName = CurrentUserInfo.UserName;
+                            projects.CreateTime = DateTime.Now;
+                            projects.CreateBy = GetIP();
+                            CurrentContext.EConfigProfessionProject.Add(projects);
+                        }
+                        projects.SortIndex = sortIndex;
+                        projects.ProfessionCode = professionInfo.ProfessionCode;
+                        projects.ProjectName = item.ProjectName.Trim();
+                        projects.TakeRate = item.TakeRate;
+                        projects.ModifyByCode = CurrentUserInfo.UserID;
+                        projects.ModifyByName = CurrentUserInfo.UserName;
+                        projects.ModifyTime = DateTime.Now;
+                        projects.ModifyBy = GetIP();
+                        projects.IsDeleted = false;
+                        #endregion
+                    }
+                    #endregion
+                }
+
+                CurrentContext.SaveChanges();
+                _RetBack.retCode = "000000";
+                _RetBack.retMsg = "保存成功";
+                _RetBack.retData = info;
+            }
+            catch (Exception ex)
+            {
+                _RetBack.retMsg = ex.Message;
+            }
+            
+
+            return Json(_RetBack);
+        }
+
+        /// <summary>
+        /// 专业项目配置信息移除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pro"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult ProfessionInfoDel(string id,string pro) 
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(id) || (pro != "p" && pro != "j"))
+                {
+                    _RetBack.retMsg = "未知的请求";
+                    return Json(_RetBack);
+                }
+                switch (pro)
+                {
+                    case "p":  //专业删除
+                        var profession = CurrentContext.EBasProfessionInfo
+                            .Include(p => p.EConfigProfessionProjects)
+                            .FirstOrDefault(p => p.ProfessionCode == id);
+                        if (profession == null)
+                        {
+                            _RetBack.retMsg = "不存在该专业信息！！！";
+                            return Json(_RetBack);
+                        }
+                        if (CurrentContext.EBasPersonInfo.Any(p => p.IsDeleted == false
+                            && p.ProfessionCode == profession.ProfessionCode)) {
+                                _RetBack.retMsg = "该专业下还有有效人员，无法进行删除！！！";
+                                return Json(_RetBack);
+                        }
+                        foreach (var item in profession.EConfigProfessionProjects.Where(p=>p.IsDeleted != true ))
+                        {
+                            item.IsDeleted = true;
+                        }
+                        profession.IsDeleted = true;
+                        break;
+                    case "j":  //项目配置删除
+                        var project = CurrentContext.EConfigProfessionProject
+                            .FirstOrDefault(p=>p.ConfigId==id);
+                        if (project == null) 
+                        {
+                            _RetBack.retMsg = "不存在该项目配置信息！！！";
+                            return Json(_RetBack);
+                        }
+                        project.IsDeleted = true;
+                        break;
+                    default:
+                        break;
+                }
+                CurrentContext.SaveChanges();
+                _RetBack.retCode = "000000";
+                _RetBack.retMsg = "删除成功";
+            }
+            catch (Exception ex)
+            {
+                _RetBack.retMsg = ex.Message;
+            }
+            return Json(_RetBack);
         }
 
         #region 单位档案室页面

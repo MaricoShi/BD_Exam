@@ -217,7 +217,7 @@ i.fa { font-size: 14px; }
 .table-s01 thead{ background:url(../Images/thead_bg.gif) repeat-x; color:#333;}
 .table-s01 thead th{border-right:1px solid #cdcdcd; border-bottom:1px solid #cdcdcd; text-align: center;font-weight: bold;line-height:28px;height:28px;}
 
-.table-s01 tbody tr{ color:#333}
+.table-s01 tbody tr{ color:#333; cursor:pointer;}
 .table-s01 tbody th{border-right:1px solid #cdcdcd;border-bottom:1px solid #cdcdcd; background-color:#f1f1f1; padding:2px 5px;}
 .table-s01 tbody th span{ display:block; margin-top:10px;}
 .table-s01 tbody th span a{ text-decoration:underline}
