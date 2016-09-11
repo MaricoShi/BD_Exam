@@ -59,6 +59,14 @@
     <Compile Include="Migrations\201609101727145_UpdScore.Designer.cs">
       <DependentUpon>201609101727145_UpdScore.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609110926180_UpdOrg.cs" />
+    <Compile Include="Migrations\201609110926180_UpdOrg.Designer.cs">
+      <DependentUpon>201609110926180_UpdOrg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609111007247_UpdOrg2.cs" />
+    <Compile Include="Migrations\201609111007247_UpdOrg2.Designer.cs">
+      <DependentUpon>201609111007247_UpdOrg2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\EAbsentPersonInfo.cs" />
     <Compile Include="Models\EBasOrg.cs" />
@@ -94,6 +102,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609101727145_UpdScore.resx">
       <DependentUpon>201609101727145_UpdScore.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609110926180_UpdOrg.resx">
+      <DependentUpon>201609110926180_UpdOrg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609111007247_UpdOrg2.resx">
+      <DependentUpon>201609111007247_UpdOrg2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

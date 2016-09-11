@@ -16,10 +16,7 @@ namespace Exam.Websites.Controllers
         {
             try
             {
-                using (ExamEntities _db = new ExamEntities())
-                {
-
-                }
+                
             }
             catch (Exception)
             {

@@ -11,21 +11,265 @@
         <h3 class="text-center mg_t_10">
             人员基本信息登记表
         </h3>
-        @Html.HiddenFor(p => p.PersonId)
 
-        <table class="table-s02 mg_b_10 text-center" cellpadding="0" cellspacing="0"
-               style="width:100%;">
-            <thead>
+        <form id="PersonInfoAddForm" action="javascript:;" method="get">
+            @Html.HiddenFor(p => p.PersonId)
+            <table style="width:900px;margin:0px auto;line-height:30px;">
                 <tr>
-                    <th width="90px">专业</th>
-                    <th width="120px">姓名</th>
-                    <th>原因</th>
-                    <th>备注</th>
+                    <td>
+                        制表人：@(Model.CreateByName)
+                    </td>
+                    <td>
+                        制表时间：@(Model.CreateTime == null
+                    ? "无" : Model.CreateTime.Value.ToString("yyyy-MM-dd HH:mm:ss"))
+                    </td>
+                    <td class="text-right">
+                        <button class="btn btn-primary pd_x_0310" style="margin-bottom:5px;"
+                                onclick="fnSavePersonInfo()">
+                            <i class="fa fa-save"></i>&nbsp;&nbsp;保存&nbsp;
+                        </button>
+                        <button class="btn btn-danger pd_x_0310" style="margin-bottom:5px;">
+                            <i class="fa fa-refresh"></i>&nbsp;&nbsp;重置&nbsp;
+                        </button>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+                <tr>
+                    <td colspan="7">
+                        <table class="table-s02 mg_b_10 text-center" cellpadding="0" cellspacing="0"
+                               style="width:100%">
+                            <tr class="exam-back-title">
+                                <th>姓名</th>
+                                <th>职务</th>
+                                <th>军衔</th>
+                                <th>专业</th>
+                                <th>民族</th>
+                                <th>籍贯</th>
+                                <th colspan="2">单位</th>
+                            </tr>
+                            <tr style="height:30px;">
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="PersonName" id="PersonName" value="@(Model.PersonName)" />
+                                </td>
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="PersonPost" id="PersonPost" value="@(Model.PersonPost)" />
+                                </td>
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="PersonRank" id="PersonRank" value="@(Model.PersonRank)" />
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(p=>p.ProfessionCode)
+                                    <input type="text" class="edit-num-noborder" readonly
+                                           name="ProfessionName" id="ProfessionName" value="@(Model.ProfessionName)" />
+                                </td>
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="Nation" id="Nation" value="@(Model.Nation)" />
+                                </td>
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="Recruitment" id="Recruitment" value="@(Model.Recruitment)" />
+                                </td>
+                                <td colspan="2">
+                                    @Html.HiddenFor(p=>p.OrgCode)
+                                    <input type="text" class="edit-num-noborder" readonly
+                                           name="OrgName" id="OrgName" value="@(Model.OrgName)" />
+                                </td>
+                            </tr>
+                            <tr class="exam-back-title">
+                                <th>学历</th>
+                                <th colspan="2">入伍时间</th>
+                                <th colspan="2">从事专业时间</th>
+                                <th>是否到期</th>
+                                <th>建档时间</th>
+                                <th>退档时间</th>
+                            </tr>
+                            <tr style="height:30px;">
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="Education" id="Education" value="@(Model.Education)" />
+                                </td>
+                                <td colspan="2">
+                                    <input type="text" class="edit-num-noborder"
+                                           name="RecruitTime" id="RecruitTime" value="@(Model.RecruitTime)" />
+                                </td>
+                                <td colspan="2">
+                                    <input type="text" class="edit-num-noborder"
+                                           name="BeProfessionTime" id="BeProfessionTime" value="@(Model.BeProfessionTime)" />
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(p => p.IsEnded, new List<SelectListItem>() {
+                                    new SelectListItem(){ Value = "False",Text="否" },
+                                    new SelectListItem(){ Value = "True",Text="是" }
+                                }, new { @class = "edit-num-noborder" })
+                                </td>
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="ProfileTime" id="ProfileTime" value="@(Model.ProfileTime)" />
+                                </td>
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="TuidangTime" id="TuidangTime" value="@(Model.TuidangTime)" />
+                                </td>
+                            </tr>
+                            <tr class="exam-back-title">
+                                <th>政治面貌</th>
+                                <th>党团时间</th>
+                                <th>训练提纲</th>
+                                <th>训练等级</th>
+                                <th>申报等级</th>
+                                <th>性别</th>
+                                <th colspan="2">士兵证号</th>
+                            </tr>
+                            <tr class="bdb" style="height:30px;">
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="PoliticalStatus" id="PoliticalStatus" value="@(Model.PoliticalStatus)" />
+                                </td>
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="CaucusTime" id="CaucusTime" value="@(Model.CaucusTime)" />
+                                </td>
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="TrainingOutline" id="TrainingOutline" value="@(Model.TrainingOutline)" />
+                                </td>
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="TrainingLevel" id="TrainingLevel" value="@(Model.TrainingLevel)" />
+                                </td>
+                                <td>
+                                    <input type="text" class="edit-num-noborder"
+                                           name="DeclarationLevel" id="DeclarationLevel" value="@(Model.DeclarationLevel)" />
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(p => p.Sex, new List<SelectListItem>() {
+                                    new SelectListItem(){ Value = "00",Text="未定义" },
+                                    new SelectListItem(){ Value = "01",Text="男" },
+                                    new SelectListItem(){ Value = "02",Text="女" }
+                                }, new { @class = "edit-num-noborder" })
+                                </td>
+                                <td colspan="2">
+                                    <input type="text" class="edit-num-noborder"
+                                           name="PersonCode" id="PersonCode" value="@(Model.PersonCode)" />
+                                </td>
+                            </tr>
+                            <tr class="bdb">
+                                <th class="text-center">所掌握武器</th>
+                                <td colspan="7">
+                                    <textarea type="text" class="edit-num-noborder"
+                                              style="text-align:left;min-height:55px;line-height:18px;"
+                                              id="MasterWeapon" name="MasterWeapon">@(Model.MasterWeapon)</textarea>
+                                </td>
+                            </tr>
+                            <tr class="bdb">
+                                <th class="text-center">工作简历</th>
+                                <td colspan="7">
+                                    <textarea type="text" class="edit-num-noborder"
+                                              style="text-align:left;min-height:55px;line-height:18px;"
+                                              id="WorkResume" name="WorkResume">@(Model.WorkResume)</textarea>
+                                </td>
+                            </tr>
+                            <tr class="bdb">
+                                <th class="text-center" style="line-height:1.3;">参加培训<br />集训情况</th>
+                                <td colspan="7">
+                                    <textarea type="text" class="edit-num-noborder"
+                                              style="text-align:left;min-height:55px;line-height:18px;"
+                                              id="JoinTrainCamp" name="JoinTrainCamp">@(Model.JoinTrainCamp)</textarea>
+                                </td>
+                            </tr>
+                            <tr class="bdb">
+                                <th class="text-center" style="line-height:1.3">以往参加重要<br />演习演练情况</th>
+                                <td colspan="7">
+                                    <textarea type="text" class="edit-num-noborder"
+                                              style="text-align:left;min-height:55px;line-height:18px;"
+                                              id="ImportantExercise" name="ImportantExercise">@(Model.ImportantExercise)</textarea>
+                                </td>
+                            </tr>
+                            <tr class="bdb">
+                                <th class="text-center">参加比武情况</th>
+                                <td colspan="7">
+                                    <textarea type="text" class="edit-num-noborder"
+                                              style="text-align:left;min-height:55px;line-height:18px;"
+                                              id="JoinFighting" name="JoinFighting">@(Model.JoinFighting)</textarea>
+                                </td>
+                            </tr>
+                            <tr class="bdb">
+                                <th class="text-center">训练奖惩情况</th>
+                                <td colspan="7">
+                                    <textarea type="text" class="edit-num-noborder"
+                                              style="text-align:left;min-height:55px;line-height:18px;"
+                                              id="TrainRewardsPenalties" name="TrainRewardsPenalties">@(Model.TrainRewardsPenalties)</textarea>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="7" class="text-center pd_tb_10">
+                        <button class="btn btn-primary pd_x_0310 mg_r_25"
+                                onclick="fnSavePersonInfo()">
+                            <i class="fa fa-save"></i>&nbsp;&nbsp;保存&nbsp;
+                        </button>
+                        <button class="btn btn-danger pd_x_0310">
+                            <i class="fa fa-refresh"></i>&nbsp;&nbsp;重置&nbsp;
+                        </button>
+                    </td>
+                </tr>
+            </table>
+
+        </form>
 
     </div>
 </div>
+
+<script>
+    //保存
+    function fnSavePersonInfo() {
+        var personData = $('form#PersonInfoAddForm').serializeArray();
+        console.log(personData);
+        antd.Modal.confirm({
+            title: '您是否确认保存当前所做的更改',
+            content: '确认后立即保存，取消后不做任何操作',
+            onOk: function () {
+                fnPersonInfoSave(personData);
+            },
+            onCancel: function () { },
+        });
+    }
+
+    //保存数据到服务器
+    function fnPersonInfoSave(personData) {
+        if (personData == null) return;
+        $('body').blockUI();
+        personData.push({ name: "X-Requested-With", value: "XMLHttpRequest" });
+        $.ajax({
+            type: "post",
+            url: document.weburl + "BaseManager/PersonInfoSave",
+            data: personData
+        }).success(function (res) {
+            if (res == null) {
+                antd.message.warning('返回结果为空！！！', 5);
+                return false;
+            };
+            if (res.retCode == '000000') {
+                antd.message.success('保存成功！！！', 5);
+
+            } else {
+                antd.message.warning(res.retMsg, 5);
+            }
+            return false;
+        }).error(function (res) {
+            antd.notification['error']({
+                message: '您的请求出现异常',
+                duration: 4,
+                description: '异常：' + res.responseText,
+            });
+        }).complete(function () {
+            $('body').unblockUI();
+        });
+    }
+</script>

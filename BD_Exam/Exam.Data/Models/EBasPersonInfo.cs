@@ -26,13 +26,15 @@ namespace Exam.Data.Models
         public string PersonStatus { get; set; }
         public string PersonPost { get; set; }
         public string PersonRank { get; set; }
+        [Required]
         public string ProfessionCode { get; set; }
         public string ProfessionName { get; set; }
         public string Nation { get; set; }
         public string Recruitment { get; set; }
 
-        [ForeignKey("EBasOrg")]
+        [ForeignKey("EBasOrg"), Required()]
         public string OrgCode { get; set; }
+        public string OrgName { get; set; }
         public string Education { get; set; }
         public Nullable<System.DateTime> RecruitTime { get; set; }
         public Nullable<System.DateTime> BeProfessionTime { get; set; }

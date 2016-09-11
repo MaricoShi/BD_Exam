@@ -515,8 +515,114 @@ namespace Exam.Websites.Controllers
                 _PersonInfo = new EBasPersonInfo();
                 _PersonInfo.PersonId = Guid.NewGuid().ToString("N");
                 _PersonInfo.OrgCode = info.OrgCode;
+
+                _PersonInfo.CreateByCode = CurrentUserInfo.UserID;
+                _PersonInfo.CreateByName = CurrentUserInfo.UserName;
+                _PersonInfo.CreateTime = DateTime.Now;
+                _PersonInfo.CreateBy = GetIP();
+                _PersonInfo.IsDeleted = false;
             }
             return View(_PersonInfo);
+        }
+
+        /// <summary>
+        /// 人员信息保存
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult PersonInfoSave(EBasPersonInfo info) 
+        {
+            try
+            {
+                #region 验证
+                if (info == null)
+                {
+                    _RetBack.retMsg = "保存的数据不能为空！！！";
+                    return Json(_RetBack);
+                }
+                if (string.IsNullOrEmpty(info.PersonId)) {
+                    _RetBack.retMsg = "未知请求！！！";
+                    return Json(_RetBack);
+                }
+                if (!ModelState.IsValid)
+                {
+                    _RetBack.retMsg = "存在必填项未填写，操作结束！！！";
+                    return Json(_RetBack);
+                }
+                #endregion
+
+                var _PersonInfo = CurrentContext.EBasPersonInfo
+                    .FirstOrDefault(p => p.PersonId == info.PersonId);
+
+                #region 人员的新增修改
+                if (_PersonInfo == null)
+                {
+                    #region 新增成绩档案
+                    _PersonInfo = new EBasPersonInfo();
+                    _PersonInfo.PersonId = string.IsNullOrWhiteSpace(info.PersonId) ?
+                        Guid.NewGuid().ToString("N") : info.PersonId;
+                    _PersonInfo.PersonStatus = "00";
+
+                    _PersonInfo.CreateByCode = CurrentUserInfo.UserID;
+                    _PersonInfo.CreateByName = CurrentUserInfo.UserName;
+                    _PersonInfo.CreateTime = DateTime.Now;
+                    _PersonInfo.CreateBy = GetIP();
+                    _PersonInfo.IsDeleted = false;
+
+                    CurrentContext.EBasPersonInfo.Add(_PersonInfo);
+                    #endregion
+                }
+                _PersonInfo.PersonCode = info.PersonCode;
+                _PersonInfo.PersonName = info.PersonName;
+                _PersonInfo.Sex = info.Sex;
+                _PersonInfo.PersonPost = info.PersonPost;
+                _PersonInfo.PersonRank = info.PersonRank;
+                _PersonInfo.ProfessionCode = info.ProfessionCode;
+                _PersonInfo.ProfessionName = CurrentContext.EBasProfessionInfo
+                    .Where(p => p.ProfessionCode == info.ProfessionCode)
+                    .Select(p => p.ProfessionName).FirstOrDefault();
+                _PersonInfo.Nation = info.Nation;
+                _PersonInfo.Recruitment = info.Recruitment;
+                _PersonInfo.OrgCode = info.OrgCode;
+                _PersonInfo.OrgName = CurrentContext.EBasOrg.Where(p => p.OrgCode == info.OrgCode)
+                    .Select(p => p.OrgName).FirstOrDefault();
+                _PersonInfo.Education = info.Education;
+                _PersonInfo.RecruitTime = info.RecruitTime;
+                _PersonInfo.BeProfessionTime = info.BeProfessionTime;
+                _PersonInfo.IsEnded = info.IsEnded;
+                _PersonInfo.ProfileTime = info.ProfileTime;
+                _PersonInfo.TuidangTime = info.TuidangTime;
+                _PersonInfo.PoliticalStatus = info.PoliticalStatus;
+                _PersonInfo.CaucusTime = info.CaucusTime;
+                _PersonInfo.TrainingOutline = info.TrainingOutline;
+                _PersonInfo.TrainingLevel = info.TrainingLevel;
+                _PersonInfo.DeclarationLevel = info.DeclarationLevel;
+                _PersonInfo.MasterWeapon = info.MasterWeapon;
+                _PersonInfo.WorkResume = info.WorkResume;
+                _PersonInfo.JoinTrainCamp = info.JoinTrainCamp;
+                _PersonInfo.ImportantExercise = info.ImportantExercise;
+                _PersonInfo.JoinFighting = info.JoinFighting;
+                _PersonInfo.TrainRewardsPenalties = info.TrainRewardsPenalties;
+
+                _PersonInfo.ModifyByCode = CurrentUserInfo.UserID;
+                _PersonInfo.ModifyByName = CurrentUserInfo.UserName;
+                _PersonInfo.ModifyTime = DateTime.Now;
+                _PersonInfo.ModifyBy = GetIP();
+                #endregion
+
+                CurrentContext.SaveChanges();
+                _RetBack.retCode = "000000";
+                _RetBack.retMsg = "保存成功";
+                //_RetBack.retData = _ScoreFile;
+            }
+            catch (Exception ex)
+            {
+                _RetBack.retMsg = ex.Message;
+            }
+
+
+            return Json(_RetBack);
         }
 
     }

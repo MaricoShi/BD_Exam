@@ -284,13 +284,14 @@
     $('#btnEditPersonQuery').unbind('click').bind('click', function () {
         var _$SelectRows = $('#tb_PersonInfo').bootstrapTable('getSelections');
         if (_$SelectRows && _$SelectRows.length != 1) {
-            antd.message.warning("请选择一条成绩档案信息进行编辑！！！", 5);
+            antd.message.warning("请选择一条人员信息进行编辑！！！", 5);
             return false;
         }
         var _OneSelectRowId = _$SelectRows[0].PersonId;
-        //$('#EScoreFileInputSend', $('#EScoreFileFormSend')).attr('name', 'ScoreFileId');
-        //$('#EScoreFileInputSend', $('#EScoreFileFormSend')).val(_OneSelectRowId);
-        //$('#EScoreFileFormSend').submit();
+        $.utils.formSubmit({
+            action: '@(Url.Content("~/BaseManager/PersonInfoAdd"))',
+            'data-ajax-id': 'test3'
+        }, [{ name: 'PersonId', value: _OneSelectRowId }]);
     });
 
 
