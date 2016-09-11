@@ -402,7 +402,7 @@
                             onOk: function () {
                                 fnProfessionDelSave($tr, { id: info.ProfessionCode, pro: 'p' });
                             },
-                            onCancel: function () { },
+                            onCancel: function () { }
                         });
                     } else {
                         $tr.remove();
@@ -444,7 +444,7 @@
                     $activetr.replaceWith($tr);
                     _ProfessionProjectIsUpd = false;
                     $(_that).click();
-                },
+                }
             });
             return false;
         }
@@ -475,7 +475,7 @@
             antd.notification['error']({
                 message: '您的请求出现异常',
                 duration: 4,
-                description: '异常：' + res.responseText,
+                description: '异常：' + res.responseText
             });
         }).complete(function () {
             $('body').unblockUI();

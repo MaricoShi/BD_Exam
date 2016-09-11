@@ -1,0 +1,327 @@
+﻿@using Exam.Data.Models
+@model Exam.Data.Models.EScoreFile
+@{
+    ViewBag.Title = "成绩录入";
+
+    //缺考人员信息
+    List<EAbsentPersonInfo> lEAbsentPersonInfos = new List<EAbsentPersonInfo>();
+    bool isShowPro = true;
+    var _ScoreFileDetails = Model.EScoreFileDetails.Where(p => p.IsDeleted == false)
+        .OrderBy(p => p.ProfessionCode);
+}
+
+<div class="pd_tb_10 pd_lr_15">
+    <div style="min-height:400px;">
+        <h3 class="text-center">
+            @(Model.OrgName +
+        Model.ExamTime.ToString("yyyy年MM月dd日"))考核成绩登记表（个人）
+        </h3>
+        @Html.HiddenFor(p => p.ScoreFileId)
+        @Html.HiddenFor(p => p.ExamTime)
+        @Html.HiddenFor(p => p.OrgCode)
+        @Html.HiddenFor(p => p.HasChildOrgPerson)
+        <table style="min-width:900px;margin:0px auto;line-height:30px;">
+            <tr>
+                <td>
+                    应考人数：@(Model.TestPersonNum)
+                </td>
+                <td>
+                    参考人数：<span class="_TakeTestPersonNum">@(Model.TakeTestPersonNum)</span>
+                </td>
+                <td>
+                    参考率：<span class="_TakeTestRate">@(Model.TakeTestRate + "%")</span>
+                </td>
+                <td>
+                    单位平均成绩：<span class="_CompanyAvgScore">@(Model.CompanyAvgScore)</span>
+                </td>
+                <td class="text-right">
+                    <button class="btn btn-primary pd_x_0310" style="margin-bottom:5px;"
+                            onclick="fnSaveEScoreFile()">
+                        <i class="fa fa-save"></i>&nbsp;&nbsp;保存&nbsp;
+                    </button>
+                    <button class="btn btn-danger pd_x_0310" style="margin-bottom:5px;">
+                        <i class="fa fa-refresh"></i>&nbsp;&nbsp;重置&nbsp;
+                    </button>
+                </td>
+            </tr>
+            @foreach (var _Detail in _ScoreFileDetails)
+            {
+                var _Projects = _Detail.EScoreProjectInputs.Where(p => p.IsDeleted == false)
+                    .GroupBy(p =>
+                        new { p.ProjectCode, p.ProjectName, p.TakeRate, p.SortIndex }
+                    ).OrderBy(p => p.Key.SortIndex);
+                var _Persons = _Detail.EScoreProjectInputs.Where(p => p.IsDeleted == false)
+                    .GroupBy(p => new { p.PersonId, p.PersonName })
+                    .OrderBy(p => p.Key.PersonName);
+                if (_Detail.EAbsentPersonInfoes.Where(p => p.IsDeleted == false).Count() > 0)
+                {
+                    lEAbsentPersonInfos.AddRange(_Detail.EAbsentPersonInfoes
+                        .Where(p => p.IsDeleted == false));
+                }
+                <tr>
+                    <td colspan="7">
+                        <table class="table-s02 mg_b_10 text-center exam-only-prof-person"
+                               cellpadding="0" cellspacing="0" style="width:100%;"
+                               data-prof-code="@(_Detail.ProfessionCode)"
+                               data-prof-name="@(_Detail.ProfessionName)"
+                               data-prof-proj-count="@(_Detail.ProjectCount)"
+                               data-prof-avg-score="@(_Detail.ProfessionAvgScore)">
+                            <thead>
+                                <tr>
+                                    <th width="90px" rowspan="2">专业</th>
+                                    <th width="120px" rowspan="2">姓名</th>
+                                    <th colspan="@(_Detail.ProjectCount)">成绩</th>
+                                    <th width="120px" rowspan="2">平均分</th>
+                                    @if (isShowPro)
+                                    {
+                                    <th width="60px" rowspan="2">操作</th>
+                                    }
+                                </tr>
+                                <tr>
+                                    @foreach (var _Proj in _Projects)
+                                    {
+                                    <th>@(_Proj.Key.ProjectName + "(" + _Proj.Key.TakeRate.ToString("0") + "%)")</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bdb">
+                                    <td rowspan="@(_Detail.TakeTestPersonNum + 1)">@_Detail.ProfessionName</td>
+                                </tr>
+                                @foreach (var _Person in _Persons)
+                                {
+                                    var _PerProjInputs = _Detail.EScoreProjectInputs
+                                            .Where(p => p.IsDeleted == false
+                                                && p.PersonId == _Person.Key.PersonId);
+                                    var _ProjPersonAvg = _PerProjInputs.Sum(p => p.ExamScore * (p.TakeRate / 100));
+                                <tr class="bdb _exam_person"
+                                    data-person-id="@(_Person.Key.PersonId)"
+                                    data-person-name="@(_Person.Key.PersonName)"
+                                    data-proj-avg-score="@(_ProjPersonAvg)">
+                                    <td>@(_Person.Key.PersonName)</td>
+                                    @foreach (var item in _Projects)
+                                        {
+                                        var _PerProjInfo = _PerProjInputs.FirstOrDefault(p=>p.IsDeleted==false
+                                            && p.ProjectCode==item.Key.ProjectCode);
+                                        if (_PerProjInfo == null) { continue; }
+                                    <td>
+                                        <input type="text" class="edit-num-noborder exam-only-examscore"
+                                               value="@(_PerProjInfo.ExamScore)"
+                                               data-proj-code="@(_PerProjInfo.ProjectCode)"
+                                               data-proj-name="@(_PerProjInfo.ProjectName)"
+                                               data-proj-takerate="@(_PerProjInfo.TakeRate)" />
+                                    </td>
+                                        }
+                                    <td class="exam-only-avg-examscore">@(_ProjPersonAvg.ToString("0.00"))</td>
+                                    @if (isShowPro)
+                                        {
+                                    <td>
+                                        <a href="javascript:;">缺考</a>
+                                    </td>
+                                        }
+                                </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="bdb">
+                                    <td colspan="@(_Detail.ProjectCount + 2)">专业平均成绩</td>
+                                    <td class="cl_cc00 exam-prof-avg-score">@(_Detail.ProfessionAvgScore)</td>
+                                    @if (isShowPro)
+                                    {
+                                        <td></td>
+                                    }
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td colspan="7">
+                    <div class="seekask-title">
+                        <h5>缺考人员登记</h5>
+                    </div>
+                    <hr class="mg_b_10" style="margin-top:5px;" />
+                    <table class="table-s02 mg_b_10 text-center" cellpadding="0" cellspacing="0"
+                           style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th width="90px">专业</th>
+                                <th width="120px">姓名</th>
+                                <th>原因</th>
+                                <th>备注</th>
+                                @if (isShowPro)
+                                {
+                                <th width="60px">操作</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var _AbsentPerson in lEAbsentPersonInfos)
+                            {
+                            <tr class="bdb">
+                                <td>@(_AbsentPerson.EScoreFileDetail.ProfessionName)</td>
+                                <td>@(_AbsentPerson.PersonName)</td>
+                                <td>@(_AbsentPerson.AbsentReason)</td>
+                                <td>@(_AbsentPerson.Remark)</td>
+                                @if (isShowPro)
+                                    {
+                                    <td>
+                                        <a href="javascript:;">应考</a>
+                                    </td>
+                                    }
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+
+
+
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="7" class="text-center pd_tb_10">
+                    <button class="btn btn-primary pd_x_0310 mg_r_25"
+                            onclick="fnSaveEScoreFile()">
+                        <i class="fa fa-save"></i>&nbsp;&nbsp;保存&nbsp;
+                    </button>
+                    <button class="btn btn-danger pd_x_0310">
+                        <i class="fa fa-refresh"></i>&nbsp;&nbsp;重置&nbsp;
+                    </button>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+<script>
+    $("input.exam-only-examscore").onlyNum();
+
+    $('input.exam-only-examscore').change(function () {
+        var $tr = $(this).parent().parent("tr._exam_person");
+        var $inputs = $('.exam-only-examscore[data-proj-takerate]', $tr);
+        var avg_examscore = 0;  //人员平均分
+        $.each($inputs, function (i, v) {
+            var projVal = parseFloat($(this).val() || 0);
+            var projTakeRate = parseFloat($(this).attr('data-proj-takerate'));
+            avg_examscore += projVal * (projTakeRate / 100);
+        });
+        $('.exam-only-avg-examscore', $tr).text(avg_examscore.toFixed(2));
+        $tr.attr('data-proj-avg-score', avg_examscore.toFixed(2));
+
+        var $table = $tr.parent().parent('table.exam-only-prof-person');
+        var $projAvgScores = $('tbody tr[data-proj-avg-score]', $table);
+        var prof_sum_examscore = 0;   //专业平均分
+        var projAvgScoreCount = $projAvgScores.length;
+        $.each($projAvgScores, function (i, v) {
+            var proj_avg_score = parseFloat($(this).attr('data-proj-avg-score'));
+            prof_sum_examscore += proj_avg_score;
+        });
+        var prof_avg_examscore = parseFloat(prof_sum_examscore / projAvgScoreCount).toFixed(2);
+        $('.exam-prof-avg-score', $table).text(prof_avg_examscore);
+        $table.attr('data-prof-avg-score', prof_avg_examscore);
+
+        var $orgTables = $('table[data-prof-avg-score]');
+        var org_sum_examscore = 0;
+        var orgAvgScoreCount = $orgTables.length;
+        $.each($orgTables, function (i, v) {
+            var prof_avg_score = parseFloat($(this).attr('data-prof-avg-score'));
+            org_sum_examscore += prof_avg_score;
+        });
+        var org_avg_examscore = parseFloat(org_sum_examscore / orgAvgScoreCount).toFixed(2);
+        $('span._CompanyAvgScore').text(org_avg_examscore);
+
+
+        antd.notification['info']({
+            message: '修改提示-注意点击保存按钮',
+            duration: 4,
+            description: '您成功修改了“' + $tr.attr('data-person-name')
+                + '”（“' + $(this).attr('data-proj-name') + '”)的成绩为：' + $(this).val() + "分！",
+        });
+    });
+
+    //保存
+    function fnSaveEScoreFile() {
+        var scoreData = fnGetEScoreFileSaveData();
+        //console.log(scoreData);
+        antd.Modal.confirm({
+            title: '您是否确认保存当前所做的更改',
+            content: '确认后立即保存，取消后不做任何操作',
+            onOk: function () {
+                fnEScoreFileSave(scoreData);
+            },
+            onCancel: function () { },
+        });
+    }
+
+    function fnGetEScoreFileSaveData() {
+        var scoreFile = {
+            ScoreFileId: $('input#ScoreFileId').val(),
+            OrgCode: $('input#OrgCode').val(),
+            ExamTime: $('input#ExamTime').val(),
+            HasChildOrgPerson: $('input#HasChildOrgPerson').val(),
+            EScoreFileDetails: []
+        };
+        var $profs = $('table[data-prof-code]');
+        $.each($profs, function (i, v) {
+            var _Details = {
+                ProfessionCode: $(this).attr('data-prof-code'),
+                ProjectCount: $(this).attr('data-prof-proj-count'),
+                EScoreProjectInputs: []
+            };
+
+            scoreFile.EScoreFileDetails.push(_Details);
+            var $persons = $('tbody tr[data-person-id]', $(this));  //该专业人员
+            $.each($persons, function (pi, pv) {
+                var _$that_person = $(this);
+                var $projs = $('td input[data-proj-code]', $(this));   //该专业人员项目成绩
+                $.each($projs, function (ji, jv) {
+                    var _ProjInput = {
+                        PersonId: $(_$that_person).attr('data-person-id'),
+                        ProjectCode: $(this).attr('data-proj-code'),
+                        TakeRate: $(this).attr('data-proj-takerate'),
+                        ExamScore: $(this).val()
+                    };
+                    _Details.EScoreProjectInputs.push(_ProjInput);
+                });
+            });
+
+        });
+
+        return scoreFile;
+    }
+
+    //保存数据到服务器
+    function fnEScoreFileSave(scoreData) {
+        if (scoreData == null) return;
+        $('body').blockUI();
+        $.ajax({
+            type: "post",
+            url: document.weburl + "Exam/EScoreFileSave",
+            data: mvcParamMatch(scoreData),
+        }).success(function (res) {
+            if (res == null) {
+                antd.message.warning('返回结果为空！！！', 5);
+                return false;
+            };
+            if (res.retCode == '000000') {
+                antd.message.success('保存成功！！！', 5);
+
+            } else {
+                antd.message.warning(res.retMsg, 5);
+            }
+            return false;
+        }).error(function (res) {
+            antd.notification['error']({
+                message: '您的请求出现异常',
+                duration: 4,
+                description: '异常：' + res.responseText,
+            });
+        }).complete(function () {
+            $('body').unblockUI();
+        });
+    }
+
+</script>

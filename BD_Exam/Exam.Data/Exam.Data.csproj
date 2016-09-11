@@ -55,6 +55,10 @@
     <Compile Include="Migrations\201608301052506_UpdProject.Designer.cs">
       <DependentUpon>201608301052506_UpdProject.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609101727145_UpdScore.cs" />
+    <Compile Include="Migrations\201609101727145_UpdScore.Designer.cs">
+      <DependentUpon>201609101727145_UpdScore.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\EAbsentPersonInfo.cs" />
     <Compile Include="Models\EBasOrg.cs" />
@@ -87,6 +91,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608301052506_UpdProject.resx">
       <DependentUpon>201608301052506_UpdProject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609101727145_UpdScore.resx">
+      <DependentUpon>201609101727145_UpdScore.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

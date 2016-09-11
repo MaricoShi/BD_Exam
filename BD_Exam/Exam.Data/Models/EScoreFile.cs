@@ -32,6 +32,7 @@ namespace Exam.Data.Models
         public int TestPersonNum { get; set; }
         public int TakeTestPersonNum { get; set; }
         public decimal TakeTestRate { get; set; }
+        public bool HasChildOrgPerson { get; set; }
         public string Remark { get; set; }
         public string CreateByCode { get; set; }
         public string CreateByName { get; set; }

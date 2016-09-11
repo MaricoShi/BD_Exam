@@ -233,8 +233,8 @@ i.fa { font-size: 14px; }
 .table-s02 { border:1px solid #d5d5d6;border-collapse:collapse;}
 .table-s02 caption{font-size:14px; font-weight:bold; color:#909090; text-align:left; margin:0 0 5px 3px;}
 
-.table-s02 thead{ background:url(../Images/thead_bg.gif) repeat-x; color:#333;}
-.table-s02 thead th{ border:1px solid #cdcdcd;text-align: center;font-weight: bold;line-height:28px;height:28px;}
+.table-s02 thead{ background:url(../Images/thead_bg.gif) repeat; color:#333;}
+.table-s02 thead th{ border:1px solid #cdcdcd;text-align: center;font-weight: bold;line-height:28px;height:28px;padding:0px 4px;}
 
 .table-s02 tbody tr{ color:#333}
 .table-s02 tbody th{ border:1px solid #cdcdcd; background-color:#f1f1f1; padding:2px 5px;}
@@ -243,6 +243,9 @@ i.fa { font-size: 14px; }
 .table-s02 tbody th span a:hover{ text-decoration:none; cursor:pointer; color:#9b4848;}
 .table-s02 tbody td{background-color:#f7f7f7; font-weight:normal;padding:2px 5px;border-right:1px solid #cdcdcd}
 .table-s02 tbody .bdb {border-bottom:1px solid #cdcdcd; }
+.table-s02 tfoot td{font-weight:normal;padding:2px 5px;border-right:1px solid #cdcdcd}
+
+input.edit-num-noborder{ border: 0px; background-color: transparent!important; text-align: center; color: #27a9e3; padding:0px; height:auto; width:100%; }
 
 
 

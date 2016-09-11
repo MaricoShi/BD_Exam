@@ -30,6 +30,8 @@ namespace Exam.Data.Models
         public string ProfessionName { get; set; }
         public string Nation { get; set; }
         public string Recruitment { get; set; }
+
+        [ForeignKey("EBasOrg")]
         public string OrgCode { get; set; }
         public string Education { get; set; }
         public Nullable<System.DateTime> RecruitTime { get; set; }
@@ -58,7 +60,7 @@ namespace Exam.Data.Models
         public string ModifyBy { get; set; }
         public Nullable<System.DateTime> ModifyTime { get; set; }
         public Nullable<bool> IsDeleted { get; set; }
-    
+
         public virtual EBasOrg EBasOrg { get; set; }
         public virtual EBasProfessionInfo EBasProfessionInfo { get; set; }
     }

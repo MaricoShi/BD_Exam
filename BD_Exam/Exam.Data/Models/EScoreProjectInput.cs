@@ -24,6 +24,7 @@ namespace Exam.Data.Models
         public string PersonName { get; set; }
         public string ProjectCode { get; set; }
         public string ProjectName { get; set; }
+        public int SortIndex { get; set; }
         public decimal TakeRate { get; set; }
         public decimal ExamScore { get; set; }
         public string Remark { get; set; }

@@ -507,5 +507,17 @@ namespace Exam.Websites.Controllers
         #endregion
         #endregion
 
+        public ActionResult PersonInfoAdd(EBasPersonInfo info) 
+        {
+            EBasPersonInfo _PersonInfo = CurrentContext.EBasPersonInfo
+                .FirstOrDefault(p => p.PersonId == info.PersonId);
+            if (_PersonInfo == null) {
+                _PersonInfo = new EBasPersonInfo();
+                _PersonInfo.PersonId = Guid.NewGuid().ToString("N");
+                _PersonInfo.OrgCode = info.OrgCode;
+            }
+            return View(_PersonInfo);
+        }
+
     }
 }

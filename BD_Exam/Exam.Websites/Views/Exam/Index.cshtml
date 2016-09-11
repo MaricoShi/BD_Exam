@@ -1,0 +1,458 @@
+﻿@{
+    ViewBag.Title = "成绩管理";
+}
+
+
+<div class="col-sm-2 pd_lr_0 pd_tb_10">
+    <div class="seekask-sidebar">
+        <div class="seekask-title">
+            <h5>单位信息</h5>
+
+            <div class="pull-right" style="margin-top:5px;margin-right:5px;">
+                <a href="javascript:;" class="orgtreeRefresh"><i class="fa fa-refresh"></i> 刷新</a>
+            </div>
+        </div>
+        <hr class="mg_b_10" style="margin-top:5px;" />
+        <div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="cbHasChildOrg" checked> 包含子集单位成绩信息
+                </label>
+            </div>
+        </div>
+        <div id="ExamIndexOrgTree" class="pd_b_25" style="overflow-y:auto;overflow-x:auto;">
+
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-10 scp-main-cont pd_tb_10">
+    <div style="min-height:400px;">
+        <div>
+            <div class="seekask-title">
+                <h5>查询条件</h5>
+            </div>
+            <hr class="mg_b_10" style="margin-top:5px;" />
+
+            <table style="width:100%">
+                <tr style="height:40px;">
+                    <td class="text-right pd_r_10">
+                        <label class="control-label">士兵证号：</label>
+                    </td>
+                    <td><input type="text" class="form-control" /></td>
+                    <td class="text-right pd_r_10">
+                        <label class="control-label">人员姓名：</label>
+                    </td>
+                    <td><input type="text" class="form-control" /></td>
+                    <td>
+                        <a href="javascript:;" class="btn btn-primary pd_x_0310 mg_l_25" id="btnSearch">
+                            <i class="fa fa-search"></i>&nbsp;&nbsp;查询&nbsp;
+                        </a>
+                        <a href="javascript:;" class="btn btn-warning pd_x_0310 mg_l_10" id="btnReset">
+                            <i class="fa fa-refresh"></i>&nbsp;&nbsp;重置&nbsp;
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="mg_t_20">
+            <div class="seekask-title mg_b_10">
+                <h5>成绩列表</h5>
+            </div>
+            <hr class="mg_0" style="margin-top:5px;" />
+            <div id="btnExamFileTools">
+                <button class="btn btn-primary pd_x_0310" data-toggle="modal"
+                        data-target="#MyAddEScoreFileModal" data-backdrop="static">
+                    <i class="fa fa-plus"></i>&nbsp;&nbsp;成绩登记&nbsp;
+                </button>
+                <button class="btn btn-danger pd_x_0310" id="btnEditScoreFileInfo">
+                    <i class="fa fa-edit"></i>&nbsp;&nbsp;编辑成绩&nbsp;
+                </button>
+            </div>
+            <table id="tb_EScoreFile"></table>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="MyAddEScoreFileModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@(Url.Content("~/Exam/EScoreFileAdd"))"
+                  data-ajax-id="Test2" id="MyAddEScoreFileModalForm"
+                  data-ajax-update="#seekask-body-content"
+                  data-ajax="true" data-ajax-failure="fnAjaxError"
+                  data-ajax-success="fnAjaxSuccess"
+                  method="get" class="form-horizontal" role="form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title">成绩登记</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">录入单位：</label>
+                        <div class="col-sm-10">
+                            <div class="input-group">
+                                <input type="hidden" name="OrgCode" id="AddExamOrgCode" value="" />
+                                <input type="text" class="form-control" aria-label="..." readonly
+                                       name="AddExamOrgName" id="AddExamOrgName"
+                                       placeholder="请选择录入单位" style="background-color:transparent!important;">
+                                <div class="input-group-btn">
+                                    <a class="btn btn-primary btn-sm"
+                                       role="button">
+                                        选择单位
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">考核时间：</label>
+                        <input type="hidden" name="ExamTime" id="_ExamTime_Picker" value="" />
+                        <div class="col-sm-10" id="ExamTimePicker">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="HasChildOrgPerson" value="true" checked> 包含子集单位人员
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <i class="fa fa-refresh"></i>&nbsp;&nbsp;关闭当前
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="fnAddEscoreFileSubmit()">
+                        <i class="fa fa-save"></i>&nbsp;&nbsp;开始录入
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+    var TableInit = function () {
+        var oTableInit = new Object();
+        oTableInit._SelectOrgCode;
+        //初始化Table
+        oTableInit.Init = {
+            striped: true,
+            cache: false,
+            pagination: true,     //是否显示分页（*）
+            sortable: true,      //是否启用排序
+            sortOrder: "asc",     //排序方式
+            queryParamsType: "limit",
+            queryParams: function (params) {
+                params["$top"] = params.limit;
+                params["$skip"] = (params.offset * params.limit);
+                params["$inlinecount"] = "allpages";
+                params["$filter"] = "IsDeleted eq false";
+                if (oTableInit._SelectOrgCode) {
+                    var isChecked = $('#cbHasChildOrg').is(":checked");
+                    if (isChecked)
+                        params["$filter"] += " and startswith(OrgCode, '" + oTableInit._SelectOrgCode + "') ";
+                    else
+                        params["$filter"] += " and OrgCode eq '" + oTableInit._SelectOrgCode + "' ";
+                }
+                if (params.sort)
+                    params["$orderby"] = params.sort + " " + params.order;
+                return params;
+            },//传递参数（*）
+            undefinedText: "",
+            sidePagination: "server",   //server服务端分页（*）
+            showColumns: true,     //是否显示所有的列
+            showRefresh: true,     //是否显示刷新按钮
+            minimumCountColumns: 2,    //最少允许的列数
+            clickToSelect: true,    //是否启用点击选中行
+            showToggle: true,     //是否显示详细视图和列表视图的切换按钮
+            cardView: false,     //是否显示详细视图
+            detailView: false,     //是否显示父子表
+            dataField: "value",
+            responseHandler: function (res) {
+                if (res && res["odata.count"])
+                    res.total = res["odata.count"];
+                else
+                    res.total = res.value.length;
+                return res;
+            }
+        };
+
+        //得到查询的参数
+        oTableInit.queryParams = function (params) {
+            debugger;
+            var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                limit: params.limit, //页面大小
+                offset: params.offset, //页码
+                departmentname: $("#txt_search_departmentname").val(),
+                statu: $("#txt_search_statu").val()
+            };
+            return temp;
+        };
+        return oTableInit;
+    };
+
+    var ButtonInit = function () {
+        var oInit = new Object();
+        var postdata = {};
+
+        oInit.Init = function () {
+            //初始化页面上面的按钮事件
+        };
+
+        return oInit;
+    };
+
+</script>
+
+<script>
+    //1.初始化Table
+    var oTableInit = new TableInit();
+    function fnInitExamIndexTable() {
+        $EScoreFileBT = $('#tb_EScoreFile').bootstrapTable($.extend(oTableInit.Init, {
+            url: document.weburl + 'odata/EScoreFile',
+            toolbar: '#btnExamFileTools',
+            sortName: 'ModifyTime',
+            sortOrder: 'desc',
+            uniqueId: "ScoreFileId",      //每一行的唯一标识，一般为主键列
+            columns: [{
+                checkbox: true
+            }, {
+                field: 'OrgName', title: '单位名称', halign: 'center', sortable: true
+            }, {
+                field: 'ExamTime', title: '考核时间', halign: 'center', sortable: true, align: 'center',
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return $.utils.dataFormat(value, 'yyyy-MM-dd');
+                    }
+                    return value;
+                }
+            }, {
+                field: 'CompanyAvgScore', title: '平均成绩', halign: 'center', sortable: true, align: 'center'
+            }, {
+                field: 'ProfessionCount', title: '考核专业', halign: 'center', sortable: true, align: 'center'
+            }, {
+                field: 'TestPersonNum', title: '应考人数', halign: 'center', sortable: true, align: 'center'
+            }, {
+                field: 'TakeTestPersonNum', title: '参考人数', halign: 'center', sortable: true, align: 'center'
+            }, {
+                field: 'TakeTestRate', title: '参考率', halign: 'center', sortable: true, align: 'center',
+                formatter: function (value, row, index) {
+                    if (value == null) return "";
+                    return value + "%";
+                }
+            }, {
+                field: 'ModifyByName', title: '维护人员', halign: 'center', sortable: true
+            }, {
+                field: 'ModifyTime', title: '维护时间', halign: 'center', sortable: true, align: 'center',
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return $.utils.dataFormat(value, 'yyyy-MM-dd HH:mm:ss');
+                    }
+                    return value;
+                }
+            }]
+        }));
+    }
+
+    function showExamIndexOrgTree() {
+        $('#ExamIndexOrgTree').jstree({
+            'plugins': ["wholerow", "types"],
+            'core': {
+                "themes": {
+                    "responsive": false
+                },
+                'data': {
+                    "url": document.weburl + "odata/EBasOrg",
+                    "dataType": "json",
+                    'data': function (node) {
+                        if (node.id === "#")
+                            return {
+                                '$filter': "IsDeleted eq false and ParentCode eq null ",
+                                '$orderby': 'SortCode'
+                            };
+                        else
+                            return {
+                                '$filter': "IsDeleted eq false and ParentCode eq '" + node.id + "'",
+                                '$orderby': 'SortCode'
+                            };
+                    },
+                    'success': function (xhr) {
+                        if (xhr && xhr.value) {
+                            var data = [];
+                            for (var i = 0; i < xhr.value.length; i++) {
+                                var xhrVal = {
+                                    'id': xhr.value[i].OrgCode,
+                                    'text': xhr.value[i].OrgName,
+                                    "children": true,
+                                    'dt': xhr.value[i]
+                                };
+                                if (i == 0 && xhr.value[i].ParentCode == null)
+                                    xhrVal["state"] = { 'opened': true };
+                                data.push(xhrVal);
+                            }
+                            xhr.d = data;
+                        }
+                    }
+
+                }
+            },
+            "types": {
+                "default": {
+                    "icon": "fa fa-folder icon-state-warning icon-lg"
+                },
+                "file": {
+                    "icon": "fa fa-file icon-state-warning icon-lg"
+                }
+            }
+        });
+    }
+
+    $('#ExamIndexOrgTree').on('changed.jstree', function (e, data) {
+        if (data.selected.length) {
+            var selectNode = data.instance.get_node(data.selected[0]);
+            oTableInit._SelectOrgCode = selectNode.id;
+            try {
+                $('#tb_EScoreFile').bootstrapTable('refresh');
+                $('#AddExamOrgCode').val(selectNode.id);
+                $('#AddExamOrgName').val(selectNode.text);
+            } catch (e) {
+
+            }
+
+        }
+    });
+
+    $('#cbHasChildOrg').unbind('click').bind('click', function () {
+        $('#tb_EScoreFile').bootstrapTable('refresh');
+
+    });
+    $('#btnEditScoreFileInfo').unbind('click').bind('click', function () {
+        var _$SelectRows = $('#tb_EScoreFile').bootstrapTable('getSelections');
+        if (_$SelectRows && _$SelectRows.length != 1) {
+            antd.message.warning("请选择一条成绩档案信息进行编辑！！！", 5);
+            return false;
+        }
+        var _OneSelectRowId = _$SelectRows[0].ScoreFileId;
+        $.utils.formSubmit({ action: '@(Url.Content("~/Exam/EScoreFileAdd"))' },
+            [{ name: 'ScoreFileId', value: _OneSelectRowId }]);
+    });
+
+    //创建项目行
+    function fnCreateEScoreFileTr(pfinfo, i) {
+        if (pfinfo == null) return;
+        var _updTime = pfinfo.ModifyTime == null ? pfinfo.CreateTime : pfinfo.ModifyTime;
+        var _updName = pfinfo.ModifyByName == null ? pfinfo.CreateByName : pfinfo.ModifyByName;
+
+        if (_updTime != null && _updTime != "") {
+            var upddt = new Date(_updTime);
+            _updTime = upddt.getFullYear() + "/" + (upddt.getMonth() + 1) + "/" + upddt.getDate();
+        }
+
+        var $tr = $('<tr>');
+        var $td1 = $('<th>', { 'class': 'text-center', 'width': '35px' }).text((i + 1));
+        var $td2 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.OrgName);
+        var $td3 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.ExamTime);
+        var $td4 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.CompanyAvgScore);
+        var $td5 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.ProfessionCount);
+        var $td6 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.TestPersonNum);
+        var $td7 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.TakeTestPersonNum);
+        var $td8 = $('<td>', { 'class': 'bdb text-center' }).text(pfinfo.TakeTestRate);
+        var $td9 = $('<td>', { 'class': 'bdb text-center' }).text(_updName || "无");
+        var $td10 = $('<td>', { 'class': 'bdb text-center' }).text(_updTime || "无");
+        var $td11 = $('<td>', { 'class': 'bdb text-center no-right', 'width': '80px' })
+            .append($('<a>', { 'href': 'javascript:;' }).css({ 'margin-right': '6px' })
+                .click(function () {
+
+                }).text('编辑'))
+            .append($('<a>', { 'href': 'javascript:;' }).click(function () {
+
+            }).text('删除'));
+
+        $tr.append($td1).append($td2).append($td3).append($td4)
+            .append($td5).append($td6).append($td7).append($td8)
+            .append($td9).append($td10).append($td11);
+        $tr.data('rowData', pfinfo);
+        $('#tbEScoreFile tbody').append($tr);
+    }
+
+    function fnEScoreFileInit() {
+        $('body').blockUI();
+        $.ajax({
+            type: "get",
+            url: document.weburl + "odata/EScoreFile?$filter=IsDeleted eq false&$inlinecount=allpages"
+        }).success(function (res) {
+
+            if (res == null || res.value == null) return;
+            var xhr = res.value;
+            $('#tbEScoreFile tbody').empty();
+            $('#EScoreFileCount').text(res["odata.count"]);
+            for (var i = 0; i < xhr.length; i++) {
+                var pfinfo = xhr[i];
+                if (pfinfo == null) continue;
+
+                fnCreateEScoreFileTr(pfinfo, i);
+            }
+        }).error(function (res) {
+            antd.notification['error']({
+                message: '您的请求出现异常',
+                duration: 4,
+                description: '异常：' + res.responseText,
+            });
+        }).complete(function () {
+            $('body').unblockUI();
+        });
+    }
+
+    function fnAddEscoreFileSubmit() {
+        var time = $('#ExamTimePicker input', $('#MyAddEScoreFileModal')).val();
+        $('input#_ExamTime_Picker', $('#MyAddEScoreFileModal')).val(time);
+
+
+        $('#MyAddEScoreFileModal').modal('hide');
+        $('body .modal-backdrop').remove();
+
+        $('form#MyAddEScoreFileModalForm').submit();
+        return false;
+    }
+
+    showExamIndexOrgTree();
+    fnInitExamIndexTable();
+    fncreateRangePicker();
+
+    // 考核日期选择框
+    function fncreateRangePicker() {
+
+        var _ExamTime = antd.DatePicker;
+        var _examTimePicker = React.createElement(_ExamTime, {
+            style: { width: '100%' },
+            defaultValue: new Date(),
+            format: "yyyy-MM-dd",
+            placeholder: "请选择时间",
+            disabledDate: function (current) {
+                return current && current.getTime() > Date.now();
+            },
+            onChange: function (value, dateString) {
+                //console.log('From: ', value[0], ', to: ', value[1]);
+                //console.log('From: ', dateString[0], ', to: ', dateString[1]);
+            },
+        });
+
+        ReactDOM.render(_examTimePicker, document.getElementById('ExamTimePicker'));
+    }
+
+
+</script>
+
+

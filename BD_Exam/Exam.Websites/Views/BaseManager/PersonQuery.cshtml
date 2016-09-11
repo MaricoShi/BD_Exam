@@ -4,309 +4,297 @@
     string _ActionName = ViewBag.ActionName ?? "PerSonDetail";
 }
 
-<style type="text/css">
-    #btPersonQuerySearch {
-        word-spacing: 5px;
-    }
-
-    .modal-PersonAdd table.table td {
-        line-height: 30px;
-        padding: 0;
-    }
-
-        .modal-PersonAdd table.table td.text-left {
-            line-height: 20px;
-        }
-
-    .modal-PersonAdd table.table input,
-    .modal-PersonAdd table.table select,
-    .modal-PersonAdd table.table textarea {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-</style>
-
-<div>
-    <div>
+<div class="col-sm-2 pd_lr_0">
+    <div class="seekask-sidebar">
         <div class="seekask-title">
-            <h4 class="cl_cc00">人员查询</h4>
-        </div>
-        <hr class="mg_t_10 mg_b_10" />
-        <table style="width:100%">
-            <tr style="height:40px;">
-                <td class="text-right pd_r_10">
-                    <label class="control-label">单位：&nbsp;</label>
-                </td>
-                <td class="col-sm-3 pd_0">
-                    <div class="input-group">
-                        <input type="text" class="form-control" aria-label="..."
-                               placeholder="请选择单位">
-                        <div class="input-group-btn">
-                            <a class="btn btn-primary btn-sm" id="btnOrgSel"
-                               role="button"
-                               href="@(Url.Content("~/BaseManager/OrgDatas"))"
-                               data-ajax-id="OrgDatas"
-                               data-ajax-update="#modal-OrgData-Content"
-                               data-ajax="true"
-                               data-modal-for=".modal-OrgData">
-                                选择单位
-                            </a>
-                        </div>
-                    </div>
-                </td>
-                <td class="text-right pd_r_10">
-                    <label class="control-label">子集单位信息：</label>
-                </td>
-                <td><span id="ChildrenOrg"></span></td>
-            </tr>
-            <tr style="height:40px;">
-                <td class="text-right pd_r_10">
-                    <label class="control-label">士兵证号：</label>
-                </td>
-                <td><input type="text" class="form-control" /></td>
-                <td class="text-right pd_r_10">
-                    <label class="control-label">人员姓名：</label>
-                </td>
-                <td><input type="text" class="form-control" /></td>
-                <td>
-                    <a href="javascript:;" class="btn btn-primary pd_x_0310 mg_l_25" id="btnSearch">
-                        <i class="fa fa-search"></i>&nbsp;&nbsp;查询&nbsp;
-                    </a>
-                    <a href="javascript:;" class="btn btn-warning pd_x_0310 mg_l_10" id="btnReset">
-                        <i class="fa fa-refresh"></i>&nbsp;&nbsp;重置&nbsp;
-                    </a>
-                </td>
-            </tr>
-        </table>
-    </div>
+            <h5>单位信息</h5>
 
-    <div class="mg_t_20">
-        <div class="seekask-title">
-            <h4 class="cl_cc00">人员列表</h4>
-            <span class="cl_cc00">&nbsp;共&nbsp;<span class="panel-title"><b>1</b></span>&nbsp;条</span>
-
-            <div class="pull-right">
-                <a class="btn btn-info pd_x_0310 mg_r_10" id="btPersonAdd"
-                   href="@(Url.Content("~/BaseManager/PerSonDetail"))"
-                   data-ajax-id="PerSonDetail"
-                   data-ajax-update="#modal-PersonAdd-Content"
-                   data-ajax="true"
-                   data-modal-for=".modal-PersonAdd">
-                    <i class="fa fa-plus"></i>&nbsp;&nbsp;新增&nbsp;
-                </a>
-                <a class="btn btn-danger pd_x_0310 mg_r_10" id="btPersonAdd"
-                   href="@(Url.Content("~/BaseManager/PerSonDetail"))"
-                   data-ajax-id="PerSonDetail"
-                   data-ajax-update="#modal-PersonAdd-Content"
-                   data-ajax="true"
-                   data-modal-for=".modal-PersonAdd">
-                    <i class="fa fa-close"></i>&nbsp;&nbsp;删除&nbsp;
-                </a>
-                
+            <div class="pull-right" style="margin-top:5px;margin-right:5px;">
+                <a href="javascript:;" class="orgtreeRefresh"><i class="fa fa-refresh"></i> 刷新</a>
             </div>
         </div>
-        
-        <hr class="mg_t_10" style="margin-bottom:0px;" />
-        <div id="tbPersonQuery">
+        <hr class="mg_b_10" style="margin-top:5px;" />
+        <div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="cbPersonHasChildOrg" checked> 包含子集单位成绩信息
+                </label>
+            </div>
+        </div>
+        <div id="PersonQueryOrgTree" class="pd_b_25" style="overflow-y:auto;overflow-x:auto;">
 
         </div>
     </div>
-
-    
 </div>
 
-<div class="modal fade modal-PersonAdd">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">新增用户</h4>
+<div class="col-sm-10 scp-main-cont">
+    <div style="min-height:400px;">
+        <div>
+            <div class="seekask-title">
+                <h5>查询条件</h5>
             </div>
-            <div class="modal-body" id="modal-PersonAdd-Content"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info">保存</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+            <hr class="mg_b_10" style="margin-top:5px;" />
 
+            <table style="width:100%">
+                <tr style="height:40px;">
+                    <td class="text-right pd_r_10">
+                        <label class="control-label">士兵证号：</label>
+                    </td>
+                    <td><input type="text" class="form-control" /></td>
+                    <td class="text-right pd_r_10">
+                        <label class="control-label">人员姓名：</label>
+                    </td>
+                    <td><input type="text" class="form-control" /></td>
+                    <td>
+                        <a href="javascript:;" class="btn btn-primary pd_x_0310 mg_l_25" id="btnSearch">
+                            <i class="fa fa-search"></i>&nbsp;&nbsp;查询&nbsp;
+                        </a>
+                        <a href="javascript:;" class="btn btn-warning pd_x_0310 mg_l_10" id="btnReset">
+                            <i class="fa fa-refresh"></i>&nbsp;&nbsp;重置&nbsp;
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-<div class="modal fade modal-OrgData">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">机构选择</h4>
+        <div class="mg_t_20">
+            <div class="seekask-title mg_b_10">
+                <h5>成绩列表</h5>
             </div>
-            <div class="modal-body" id="modal-OrgData-Content"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info">确认</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <hr class="mg_0" style="margin-top:5px;" />
+            <div id="btnPersonQueryTools">
+                <button class="btn btn-primary pd_x_0310" onclick="$.utils.formSubmit({ action: '@(Url
+                    .Content("~/BaseManager/PersonInfoAdd"))','data-ajax-id':'test3' },null);">
+                    <i class="fa fa-plus"></i>&nbsp;&nbsp;录入&nbsp;
+                </button>
+                <button class="btn btn-info pd_x_0310" id="btnEditPersonQuery">
+                    <i class="fa fa-edit"></i>&nbsp;&nbsp;编辑&nbsp;
+                </button>
+                <button class="btn btn-danger pd_x_0310" id="btnEditPersonQuery">
+                    <i class="fa fa-remove"></i>&nbsp;&nbsp;删除&nbsp;
+                </button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+            <table id="tb_PersonInfo"></table>
+        </div>
 
+    </div>
+</div>
 
 <script>
-    function success() {
-        antd.Modal.success({
-            title: '编辑成功',
-            content: '成功编辑1条信息！',
-        });
-    }
 
-    function msgSuccess() {
-        antd.message.success('你点击了搜索', 5);
+    var TableInit = function () {
+        var oTableInit = new Object();
+        oTableInit._SelectOrgCode;
+        //初始化Table
+        oTableInit.Init = {
+            striped: true,
+            cache: false,
+            pagination: true,     //是否显示分页（*）
+            sortable: true,      //是否启用排序
+            sortOrder: "asc",     //排序方式
+            queryParamsType: "limit",
+            queryParams: function (params) {
+                params["$top"] = params.limit;
+                params["$skip"] = (params.offset * params.limit);
+                params["$inlinecount"] = "allpages";
+                params["$filter"] = "IsDeleted eq false";
+                if (oTableInit._SelectOrgCode) {
+                    var isChecked = $('#cbPersonHasChildOrg').is(":checked");
+                    if (isChecked)
+                        params["$filter"] += " and startswith(OrgCode, '" + oTableInit._SelectOrgCode + "') ";
+                    else
+                        params["$filter"] += " and OrgCode eq '" + oTableInit._SelectOrgCode + "' ";
+                }
+                if (params.sort)
+                    params["$orderby"] = params.sort + " " + params.order;
+                return params;
+            },//传递参数（*）
+            undefinedText: "",
+            sidePagination: "server",   //server服务端分页（*）
+            showColumns: true,     //是否显示所有的列
+            showRefresh: true,     //是否显示刷新按钮
+            minimumCountColumns: 2,    //最少允许的列数
+            clickToSelect: true,    //是否启用点击选中行
+            showToggle: true,     //是否显示详细视图和列表视图的切换按钮
+            cardView: false,     //是否显示详细视图
+            detailView: false,     //是否显示父子表
+            dataField: "value",
+            responseHandler: function (res) {
+                if (res && res["odata.count"])
+                    res.total = res["odata.count"];
+                else
+                    res.total = res.value.length;
+                return res;
+            }
+        };
+
+        //得到查询的参数
+        oTableInit.queryParams = function (params) {
+            debugger;
+            var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                limit: params.limit, //页面大小
+                offset: params.offset, //页码
+                departmentname: $("#txt_search_departmentname").val(),
+                statu: $("#txt_search_statu").val()
+            };
+            return temp;
+        };
+        return oTableInit;
     };
 
-    function openNotificationWithIcon(type) {
-        antd.notification[type]({
-            message: '这是标题',
-            duration: 4,
-            description: '这是提示框的文案这是提示框示框的文案这是提示是提示框的文案这是提示框的文案',
-        });
+    var ButtonInit = function () {
+        var oInit = new Object();
+        var postdata = {};
+
+        oInit.Init = function () {
+            //初始化页面上面的按钮事件
+        };
+
+        return oInit;
     };
-
-    //新增
-    $("#btPersonAdd,#btnOrgSel").click(function () {
-        $($(this).attr("data-modal-for")).modal("show");
-    });
-
-    //查询
-    $('#btPersonQuerySearch').on('click', function () {
-        //success();
-        msgSuccess();
-        //openNotificationWithIcon('success');
-    });
-
-
-    var columns = [
-      { title: '姓名', dataIndex: 'name', key: 'name', width: 100 },
-      { title: '年龄', dataIndex: 'age', key: 'age', width: 100 },
-      { title: '列1', dataIndex: 'address', key: '1', width: 150 },
-      { title: '列2', dataIndex: 'address', key: '2', width: 150 },
-      { title: '列3', dataIndex: 'address', key: '3', width: 150 },
-      { title: '列4', dataIndex: 'address', key: '4', width: 150 },
-      { title: '列5', dataIndex: 'address', key: '5', width: 150 },
-      { title: '列6', dataIndex: 'address', key: '6', width: 150 },
-      { title: '列7', dataIndex: 'address', key: '7', width: 150 },
-      { title: '列8', dataIndex: 'address', key: '8', width: 150 },
-      {
-          title: '操作',
-          key: 'operation',
-          fixed: 'right',
-          width: 120,
-          render: function () {
-              var _edit = React.createElement('a', { href: 'javascript:;' }, '编辑');
-              var _delete = React.createElement('a', { href: 'javascript:;', className: 'mg_l_10' }, '删除');
-              var _select = React.createElement('a', { href: 'javascript:;', className: 'mg_l_10' }, '查看');
-              return React.createElement('div', null, _edit, _delete, _select);;
-          }
-      }
-    ];
-
-    var data = [];
-    for (var i = 0; i < 100; i++) {
-        data.push({
-            key: i,
-            name: '李大嘴' + i,
-            age: Math.floor(Math.random() * 100),
-            address: '西湖区湖底公园' + i + '号',
-        });
-    }
-    //data = [];
-
-
-
-    // 通过 rowSelection 对象表明需要行选择
-    var rowSelection = {
-        onChange: function (selectedRowKeys, selectedRows) {
-            console.log('selectedRowKeys: ${selectedRowKeys}', 'selectedRows: ', selectedRows);
-        },
-        onSelect: function (record, selected, selectedRows) {
-            console.log(record, selected, selectedRows);
-        },
-        onSelectAll: function (selected, selectedRows, changeRows) {
-            console.log(selected, selectedRows, changeRows);
-        },
-    };
-
-    // 范围日期选择框
-    //function fncreateRangePicker() {
-
-    //    var RangePicker = antd.DatePicker.RangePicker;
-    //    var _rangePicker = React.createElement(RangePicker, {
-    //        style: { width: 184 },
-    //        onChange: function (value, dateString) {
-    //            //console.log('From: ', value[0], ', to: ', value[1]);
-    //            //console.log('From: ', dateString[0], ', to: ', dateString[1]);
-    //        },
-    //    });
-
-    //    ReactDOM.render(_rangePicker, document.getElementById('dateRangePiker'));
-    //}
-
-    function fnSearchBox() {
-        //初始化 antd组件
-        //var antdInput = antd.Input,
-        //    antdForm = antd.Form,
-        //    antdFormItem = antdForm.Item,
-        //    antdRow = antd.Row,
-        //    antdCol = antd.Col,
-        //    antdOption = antd.Select.Option,
-        //    antdRadio = antd.Radio,
-        //    antdRadioButton = antdRadio.Button,
-        //    antdRadioGroup = antdRadio.Group;
-
-    }
-
-    function fncreateChildrenOrg() {
-        var antdRadio = antd.Radio,
-            antdRadioButton = antdRadio.Button,
-            antdRadioGroup = antdRadio.Group;
-
-        var _RadioButtonY = React.createElement(antdRadioButton, {
-            value: "Y"
-        }, "是"),
-        _RadioButtonN = React.createElement(antdRadioButton, {
-            value: "N"
-        }, "否"),
-            _RadioGroup = React.createElement(antdRadioGroup, {
-                defaultValue: "Y"
-            }, _RadioButtonY, _RadioButtonN
-        );
-
-        ReactDOM.render(_RadioGroup, document.getElementById('ChildrenOrg'));
-    }
-
-
-    //人员tabel数据
-    function fncreateDataTable() {
-        var antdTable = antd.Table,
-            _table = React.createElement(antdTable, {
-                rowSelection: rowSelection,
-                columns: columns,
-                dataSource: data,
-                scroll: { x: 1 }
-            });
-        //_Input = React.createElement(antdInput, null);
-        var _div = React.createElement('div', null, _table);
-        ReactDOM.render(_div, document.getElementById('tbPersonQuery'));
-    }
-
-    function InitPersonQueryPage() {
-        fncreateChildrenOrg();//是否包含子集单位信息
-        fncreateDataTable();//人员tabel数据
-    }
-
-    InitPersonQueryPage();//初始化
-
-
 
 </script>
 
+<script>
+    //1.初始化Table
+    var oTableInit = new TableInit();
+    function fnInitPersonQueryTable() {
+        $('#tb_PersonInfo').bootstrapTable($.extend(oTableInit.Init, {
+            url: document.weburl + 'odata/EBasPersonInfo',
+            toolbar: '#btnPersonQueryTools',
+            sortName: 'ModifyTime',
+            sortOrder: 'desc',
+            uniqueId: "PersonId",      //每一行的唯一标识，一般为主键列
+            columns: [{ checkbox: true },
+            { field: 'OrgName', title: '单位名称', halign: 'center', sortable: true },
+            {
+                field: 'PersonStatus', title: '人员状态', halign: 'center', sortable: true, align: 'center',
+                formatter: function (value, row, index) {
+                    switch (value) {
+                        case "00": return "有效";
+                        case "01": return "无效";
+                        default:
+                            return value;
+                    }
+                }
+            },
+            { field: 'PersonCode', title: '士兵证号', halign: 'center', sortable: true, align: 'center' },
+            { field: 'PersonName', title: '人员姓名', halign: 'center', sortable: true, align: 'center' },
+            {
+                field: 'Sex', title: '性别', halign: 'center', sortable: true, align: 'center',
+                formatter: function (value, row, index) {
+                    switch (value) {
+                        case "00": return "未定义";
+                        case "01": return "男";
+                        case "02": return "女";
+                        default:
+                            return value;
+                    }
+                }
+            },
+            { field: 'ProfessionName', title: '专业名称', halign: 'center', sortable: true, align: 'center' },
+            { field: 'Nation', title: '民  族', halign: 'center', sortable: true, align: 'center' },
+            { field: 'Recruitment', title: '籍  贯', halign: 'center', sortable: true, align: 'center' },
+            { field: 'Education', title: '学  历', halign: 'center', sortable: true, align: 'center' },
+            { field: 'PersonPost', title: '职  务', halign: 'center', sortable: true, align: 'center' },
+            { field: 'PersonRank', title: '军  衔', halign: 'center', sortable: true, align: 'center' },
+            { field: 'ModifyByName', title: '维护人员', halign: 'center', sortable: true },
+            {
+                field: 'ModifyTime', title: '维护时间', halign: 'center', sortable: true, align: 'center',
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return $.utils.dataFormat(value, 'yyyy-MM-dd HH:mm:ss');
+                    }
+                    return value;
+                }
+            }]
+        }));
+    }
+
+    function showPersonQueryOrgTree() {
+        $('#PersonQueryOrgTree').jstree({
+            'plugins': ["wholerow", "types"],
+            'core': {
+                "themes": {
+                    "responsive": false
+                },
+                'data': {
+                    "url": document.weburl + "odata/EBasOrg",
+                    "dataType": "json",
+                    'data': function (node) {
+                        if (node.id === "#")
+                            return {
+                                '$filter': "IsDeleted eq false and ParentCode eq null ",
+                                '$orderby': 'SortCode'
+                            };
+                        else
+                            return {
+                                '$filter': "IsDeleted eq false and ParentCode eq '" + node.id + "'",
+                                '$orderby': 'SortCode'
+                            };
+                    },
+                    'success': function (xhr) {
+                        if (xhr && xhr.value) {
+                            var data = [];
+                            for (var i = 0; i < xhr.value.length; i++) {
+                                var xhrVal = {
+                                    'id': xhr.value[i].OrgCode,
+                                    'text': xhr.value[i].OrgName,
+                                    "children": true,
+                                    'dt': xhr.value[i]
+                                };
+                                if (i == 0 && xhr.value[i].ParentCode == null)
+                                    xhrVal["state"] = { 'opened': true };
+                                data.push(xhrVal);
+                            }
+                            xhr.d = data;
+                        }
+                    }
+
+                }
+            },
+            "types": {
+                "default": {
+                    "icon": "fa fa-folder icon-state-warning icon-lg"
+                },
+                "file": {
+                    "icon": "fa fa-file icon-state-warning icon-lg"
+                }
+            }
+        });
+    }
+
+    $('#PersonQueryOrgTree').on('changed.jstree', function (e, data) {
+        if (data.selected.length) {
+            var selectNode = data.instance.get_node(data.selected[0]);
+            oTableInit._SelectOrgCode = selectNode.id;
+            try {
+                $('#tb_PersonInfo').bootstrapTable('refresh');
+            } catch (e) {
+
+            }
+
+        }
+    });
+
+    $('#cbPersonHasChildOrg').unbind('click').bind('click', function () {
+        $('#tb_PersonInfo').bootstrapTable('refresh');
+
+    });
+    $('#btnEditPersonQuery').unbind('click').bind('click', function () {
+        var _$SelectRows = $('#tb_PersonInfo').bootstrapTable('getSelections');
+        if (_$SelectRows && _$SelectRows.length != 1) {
+            antd.message.warning("请选择一条成绩档案信息进行编辑！！！", 5);
+            return false;
+        }
+        var _OneSelectRowId = _$SelectRows[0].PersonId;
+        //$('#EScoreFileInputSend', $('#EScoreFileFormSend')).attr('name', 'ScoreFileId');
+        //$('#EScoreFileInputSend', $('#EScoreFileFormSend')).val(_OneSelectRowId);
+        //$('#EScoreFileFormSend').submit();
+    });
+
+
+    showPersonQueryOrgTree();
+    fnInitPersonQueryTable();
+
+</script>
