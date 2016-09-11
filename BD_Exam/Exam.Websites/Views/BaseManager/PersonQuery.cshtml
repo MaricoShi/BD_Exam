@@ -94,7 +94,6 @@
             sortOrder: "asc",     //排序方式
             queryParamsType: "limit",
             queryParams: function (params) {
-                debugger;
                 params["$top"] = params.limit;
                 params["$skip"] = params.offset;
                 params["$inlinecount"] = "allpages";
