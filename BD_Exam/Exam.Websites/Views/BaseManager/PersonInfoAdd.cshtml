@@ -31,8 +31,9 @@
                                 onclick="fnSavePersonInfo()">
                             <i class="fa fa-save"></i>&nbsp;&nbsp;保存&nbsp;
                         </button>
-                        <button class="btn btn-danger pd_x_0310" style="margin-bottom:5px;">
-                            <i class="fa fa-refresh"></i>&nbsp;&nbsp;重置&nbsp;
+                        <button class="btn btn-danger pd_x_0310" style="margin-bottom:5px;"
+                                onclick="fnNextAddPersonInfo()">
+                            <i class="fa fa-plus"></i>&nbsp;&nbsp;继续登记&nbsp;
                         </button>
                     </td>
                 </tr>
@@ -229,8 +230,8 @@
                                 onclick="fnSavePersonInfo()">
                             <i class="fa fa-save"></i>&nbsp;&nbsp;保存&nbsp;
                         </button>
-                        <button class="btn btn-danger pd_x_0310">
-                            <i class="fa fa-refresh"></i>&nbsp;&nbsp;重置&nbsp;
+                        <button class="btn btn-danger pd_x_0310" onclick="fnNextAddPersonInfo()">
+                            <i class="fa fa-plus"></i>&nbsp;&nbsp;继续登记&nbsp;
                         </button>
                     </td>
                 </tr>
@@ -276,7 +277,7 @@
 </div>
 
 <script>
-
+    var _IsSave = false;
     //保存
     function fnSavePersonInfo() {
         var personData = $('form#PersonInfoAddForm').serializeArray();
@@ -305,6 +306,7 @@
                 return false;
             };
             if (res.retCode == '000000') {
+                _IsSave = true;
                 antd.message.success('保存成功！！！', 5);
 
             } else {
@@ -353,4 +355,27 @@
         $('#MySelectProfModal').modal('hide');
         $('body .modal-backdrop').remove();
     });
+
+    function fnNextAddPersonInfo() {
+        if (!_IsSave) {
+            antd.Modal.confirm({
+                title: '当前人员登记未保存！',
+                content: '确认后当前所做的更改全部撤销并进行新的人员登记，取消后不做任何操作',
+                okText: '继续登记',
+                onOk: function () {
+                    $.utils.formSubmit({
+                        action: '@(Url.Content("~/BaseManager/PersonInfoAdd"))',
+                        'data-ajax-id': 'test3'
+                    }, [{ name: 'OrgCode', value: $('#OrgCode').val() }]);
+                },
+                onCancel: function () { },
+            });
+        } else {
+            $.utils.formSubmit({
+                action: '@(Url.Content("~/BaseManager/PersonInfoAdd"))',
+                'data-ajax-id': 'test3'
+            }, [{ name: 'OrgCode', value: $('#OrgCode').val() }]);
+        }
+        
+    }
 </script>
