@@ -515,6 +515,9 @@ namespace Exam.Websites.Controllers
                 _PersonInfo = new EBasPersonInfo();
                 _PersonInfo.PersonId = Guid.NewGuid().ToString("N");
                 _PersonInfo.OrgCode = info.OrgCode;
+                _PersonInfo.OrgName = CurrentContext.EBasOrg
+                    .Where(p => p.OrgCode == info.OrgCode)
+                    .Select(p => p.OrgName).FirstOrDefault();
 
                 _PersonInfo.CreateByCode = CurrentUserInfo.UserID;
                 _PersonInfo.CreateByName = CurrentUserInfo.UserName;
@@ -522,6 +525,8 @@ namespace Exam.Websites.Controllers
                 _PersonInfo.CreateBy = GetIP();
                 _PersonInfo.IsDeleted = false;
             }
+            ViewData["_EBasProfessionInfos"] = CurrentContext.EBasProfessionInfo
+                .Where(p => p.IsDeleted == false).OrderBy(p => p.ProfessionName).ToList();
             return View(_PersonInfo);
         }
 

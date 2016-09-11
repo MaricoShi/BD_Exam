@@ -13,6 +13,7 @@
     @Styles.Render("~/Content/jstree/style.min.css")
     @Styles.Render("~/Content/exam.ui.css")
     @Styles.Render("~/Content/bootstrap-table.min.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
     <link href="~/Content/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <!--[if lte IE 7]>
         <link href="~/Content/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" />
@@ -26,10 +27,11 @@
         //当前网站路径
         document.weburl = "@(Url.Content("~/"))";
     </script>
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/Scripts/jstree.min.js")
+    @Scripts.Render("~/Scripts/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js")
+    @Scripts.Render("~/Scripts/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js")
     @Scripts.Render("~/Scripts/bootstrap-table.js")
     @Scripts.Render("~/Scripts/bootstrap-table-zh-CN.min.js")
     @Scripts.Render("~/Scripts/app.js")

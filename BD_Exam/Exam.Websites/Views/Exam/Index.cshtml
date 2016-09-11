@@ -156,7 +156,7 @@
             queryParamsType: "limit",
             queryParams: function (params) {
                 params["$top"] = params.limit;
-                params["$skip"] = (params.offset * params.limit);
+                params["$skip"] = params.offset;
                 params["$inlinecount"] = "allpages";
                 params["$filter"] = "IsDeleted eq false";
                 if (oTableInit._SelectOrgCode) {

@@ -63,14 +63,13 @@
             </div>
             <hr class="mg_0" style="margin-top:5px;" />
             <div id="btnPersonQueryTools">
-                <button class="btn btn-primary pd_x_0310" onclick="$.utils.formSubmit({ action: '@(Url
-                    .Content("~/BaseManager/PersonInfoAdd"))','data-ajax-id':'test3' },null);">
+                <button class="btn btn-primary pd_x_0310" id="btnAddPersonQuery">
                     <i class="fa fa-plus"></i>&nbsp;&nbsp;录入&nbsp;
                 </button>
                 <button class="btn btn-info pd_x_0310" id="btnEditPersonQuery">
                     <i class="fa fa-edit"></i>&nbsp;&nbsp;编辑&nbsp;
                 </button>
-                <button class="btn btn-danger pd_x_0310" id="btnEditPersonQuery">
+                <button class="btn btn-danger pd_x_0310" id="btnDelPersonQuery">
                     <i class="fa fa-remove"></i>&nbsp;&nbsp;删除&nbsp;
                 </button>
             </div>
@@ -84,6 +83,7 @@
 
     var TableInit = function () {
         var oTableInit = new Object();
+        oTableInit._SelectOrTree;
         oTableInit._SelectOrgCode;
         //初始化Table
         oTableInit.Init = {
@@ -94,8 +94,9 @@
             sortOrder: "asc",     //排序方式
             queryParamsType: "limit",
             queryParams: function (params) {
+                debugger;
                 params["$top"] = params.limit;
-                params["$skip"] = (params.offset * params.limit);
+                params["$skip"] = params.offset;
                 params["$inlinecount"] = "allpages";
                 params["$filter"] = "IsDeleted eq false";
                 if (oTableInit._SelectOrgCode) {
@@ -268,6 +269,7 @@
         if (data.selected.length) {
             var selectNode = data.instance.get_node(data.selected[0]);
             oTableInit._SelectOrgCode = selectNode.id;
+            oTableInit._SelectOrTree = selectNode;
             try {
                 $('#tb_PersonInfo').bootstrapTable('refresh');
             } catch (e) {
@@ -280,6 +282,20 @@
     $('#cbPersonHasChildOrg').unbind('click').bind('click', function () {
         $('#tb_PersonInfo').bootstrapTable('refresh');
 
+    });
+    $('#btnAddPersonQuery').unbind('click').bind('click', function () {
+        var addopts = null;
+        if(oTableInit._SelectOrTree==null){
+            antd.message.warning("请选择一家单位信息进行人员录入！！！", 5);
+            return false;
+        }
+        if(oTableInit._SelectOrTree != null){
+            addopts = [{name: 'OrgCode', value: oTableInit._SelectOrTree.id}];
+        }
+        $.utils.formSubmit({
+            action: '@(Url.Content("~/BaseManager/PersonInfoAdd"))',
+            'data-ajax-id': 'test3'
+        }, addopts);
     });
     $('#btnEditPersonQuery').unbind('click').bind('click', function () {
         var _$SelectRows = $('#tb_PersonInfo').bootstrapTable('getSelections');

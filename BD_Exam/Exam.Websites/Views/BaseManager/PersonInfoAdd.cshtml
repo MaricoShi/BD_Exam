@@ -4,6 +4,9 @@
     ViewBag.Title = "人员信息录入";
 
     bool isShowPro = true;
+
+    List<EBasProfessionInfo> _EBasProfessionInfos =
+        ViewData["_EBasProfessionInfos"] as List<EBasProfessionInfo>;
 }
 
 <div class="pd_tb_10 pd_lr_15">
@@ -92,11 +95,11 @@
                                            name="Education" id="Education" value="@(Model.Education)" />
                                 </td>
                                 <td colspan="2">
-                                    <input type="text" class="edit-num-noborder"
+                                    <input type="text" class="edit-num-noborder exam-datetime"
                                            name="RecruitTime" id="RecruitTime" value="@(Model.RecruitTime)" />
                                 </td>
                                 <td colspan="2">
-                                    <input type="text" class="edit-num-noborder"
+                                    <input type="text" class="edit-num-noborder exam-datetime"
                                            name="BeProfessionTime" id="BeProfessionTime" value="@(Model.BeProfessionTime)" />
                                 </td>
                                 <td>
@@ -106,11 +109,11 @@
                                 }, new { @class = "edit-num-noborder" })
                                 </td>
                                 <td>
-                                    <input type="text" class="edit-num-noborder"
+                                    <input type="text" class="edit-num-noborder exam-datetime"
                                            name="ProfileTime" id="ProfileTime" value="@(Model.ProfileTime)" />
                                 </td>
                                 <td>
-                                    <input type="text" class="edit-num-noborder"
+                                    <input type="text" class="edit-num-noborder exam-datetime"
                                            name="TuidangTime" id="TuidangTime" value="@(Model.TuidangTime)" />
                                 </td>
                             </tr>
@@ -121,7 +124,7 @@
                                 <th>训练等级</th>
                                 <th>申报等级</th>
                                 <th>性别</th>
-                                <th colspan="2">士兵证号</th>
+                                <th colspan="2">士兵/军官证号</th>
                             </tr>
                             <tr class="bdb" style="height:30px;">
                                 <td>
@@ -129,7 +132,7 @@
                                            name="PoliticalStatus" id="PoliticalStatus" value="@(Model.PoliticalStatus)" />
                                 </td>
                                 <td>
-                                    <input type="text" class="edit-num-noborder"
+                                    <input type="text" class="edit-num-noborder exam-datetime"
                                            name="CaucusTime" id="CaucusTime" value="@(Model.CaucusTime)" />
                                 </td>
                                 <td>
@@ -159,49 +162,61 @@
                             <tr class="bdb">
                                 <th class="text-center">所掌握武器</th>
                                 <td colspan="7">
-                                    <textarea type="text" class="edit-num-noborder"
-                                              style="text-align:left;min-height:55px;line-height:18px;"
-                                              id="MasterWeapon" name="MasterWeapon">@(Model.MasterWeapon)</textarea>
+                                    @Html.TextAreaFor(p => p.MasterWeapon, new
+                               {
+                                   @class = "edit-num-noborder",
+                                   @style = "text-align:left;min-height:55px;line-height:18px;"
+                               })
                                 </td>
                             </tr>
                             <tr class="bdb">
                                 <th class="text-center">工作简历</th>
                                 <td colspan="7">
-                                    <textarea type="text" class="edit-num-noborder"
-                                              style="text-align:left;min-height:55px;line-height:18px;"
-                                              id="WorkResume" name="WorkResume">@(Model.WorkResume)</textarea>
+                                    @Html.TextAreaFor(p => p.WorkResume, new
+                                   {
+                                       @class = "edit-num-noborder",
+                                       @style = "text-align:left;min-height:55px;line-height:18px;"
+                                   })
                                 </td>
                             </tr>
                             <tr class="bdb">
                                 <th class="text-center" style="line-height:1.3;">参加培训<br />集训情况</th>
                                 <td colspan="7">
-                                    <textarea type="text" class="edit-num-noborder"
-                                              style="text-align:left;min-height:55px;line-height:18px;"
-                                              id="JoinTrainCamp" name="JoinTrainCamp">@(Model.JoinTrainCamp)</textarea>
+                                    @Html.TextAreaFor(p => p.JoinTrainCamp, new
+                                   {
+                                       @class = "edit-num-noborder",
+                                       @style = "text-align:left;min-height:55px;line-height:18px;"
+                                   })
                                 </td>
                             </tr>
                             <tr class="bdb">
                                 <th class="text-center" style="line-height:1.3">以往参加重要<br />演习演练情况</th>
                                 <td colspan="7">
-                                    <textarea type="text" class="edit-num-noborder"
-                                              style="text-align:left;min-height:55px;line-height:18px;"
-                                              id="ImportantExercise" name="ImportantExercise">@(Model.ImportantExercise)</textarea>
+                                    @Html.TextAreaFor(p => p.ImportantExercise, new
+                                   {
+                                       @class = "edit-num-noborder",
+                                       @style = "text-align:left;min-height:55px;line-height:18px;"
+                                   })
                                 </td>
                             </tr>
                             <tr class="bdb">
                                 <th class="text-center">参加比武情况</th>
                                 <td colspan="7">
-                                    <textarea type="text" class="edit-num-noborder"
-                                              style="text-align:left;min-height:55px;line-height:18px;"
-                                              id="JoinFighting" name="JoinFighting">@(Model.JoinFighting)</textarea>
+                                    @Html.TextAreaFor(p => p.JoinFighting, new
+                                   {
+                                       @class = "edit-num-noborder",
+                                       @style = "text-align:left;min-height:55px;line-height:18px;"
+                                   })
                                 </td>
                             </tr>
                             <tr class="bdb">
                                 <th class="text-center">训练奖惩情况</th>
                                 <td colspan="7">
-                                    <textarea type="text" class="edit-num-noborder"
-                                              style="text-align:left;min-height:55px;line-height:18px;"
-                                              id="TrainRewardsPenalties" name="TrainRewardsPenalties">@(Model.TrainRewardsPenalties)</textarea>
+                                    @Html.TextAreaFor(p => p.TrainRewardsPenalties, new
+                                   {
+                                       @class = "edit-num-noborder",
+                                       @style = "text-align:left;min-height:55px;line-height:18px;"
+                                   })
                                 </td>
                             </tr>
                         </table>
@@ -226,11 +241,45 @@
     </div>
 </div>
 
+<div class="modal fade" id="MySelectProfModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">专业列表选择</h4>
+            </div>
+            <div class="modal-body">
+                <div class="list-group">
+                    @{ _EBasProfessionInfos = _EBasProfessionInfos ?? new List<EBasProfessionInfo>();}
+                    @if (_EBasProfessionInfos.Count == 0) { 
+                    <div class="text-center">暂无专业信息，请赶紧去专业项目中配置吧！</div>
+                    }
+                    @foreach (var item in _EBasProfessionInfos)
+                    {
+                        <a href="javascript:;" class="list-group-item" 
+                           data-professioncode="@(item.ProfessionCode)">@(item.ProfessionName)</a>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    <i class="fa fa-refresh"></i>&nbsp;&nbsp;取消关闭
+                </button>
+                <button type="button" class="btn btn-primary btn-modal-ok" >
+                    <i class="fa fa-save"></i>&nbsp;&nbsp;确认选择
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+
     //保存
     function fnSavePersonInfo() {
         var personData = $('form#PersonInfoAddForm').serializeArray();
-        console.log(personData);
         antd.Modal.confirm({
             title: '您是否确认保存当前所做的更改',
             content: '确认后立即保存，取消后不做任何操作',
@@ -272,4 +321,36 @@
             $('body').unblockUI();
         });
     }
+
+    $('.exam-datetime').datetimepicker({
+        format: 'yyyy-mm-dd',
+        minView: 'month',
+        autoclose: true,
+        language: 'zh-CN'
+    });
+
+    $('#ProfessionName').focus(function () {
+        $('#MySelectProfModal').modal({})
+    })
+    $('#ProfessionName').click(function () {
+        $('#MySelectProfModal').modal({})
+    });
+
+    $('.list-group-item', $('#MySelectProfModal')).click(function () {
+        $('.list-group-item.active', $('#MySelectProfModal'))
+            .not($(this)).removeClass('active');
+        $(this).addClass('active');
+    });
+
+    $('button.btn-modal-ok', $('#MySelectProfModal')).click(function () {
+        var _$SelectItem = $('.list-group-item.active', $('#MySelectProfModal'));
+        if (_$SelectItem && _$SelectItem.length == 0) {
+            antd.message.warning("请选择一条专业信息！！！", 5);
+            return false;
+        }
+        $('input#ProfessionCode').val(_$SelectItem.attr('data-professioncode'));
+        $('input#ProfessionName').val(_$SelectItem.text());
+        $('#MySelectProfModal').modal('hide');
+        $('body .modal-backdrop').remove();
+    });
 </script>
