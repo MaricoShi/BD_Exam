@@ -5,6 +5,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+using System.Data.Entity;
+
 namespace Exam.Websites.Controllers
 {
     public class ExamController : BaseController
@@ -24,17 +26,18 @@ namespace Exam.Websites.Controllers
             
             }
 
-            EScoreFile _EScoreFileInfo = CurrentContext.EScoreFile.FirstOrDefault(p =>
-                p.ScoreFileId == _ScoreFile.ScoreFileId);
+            EScoreFile _EScoreFileInfo = CurrentContext.EScoreFile.Include(p => p.EScoreFileDetails)
+                .FirstOrDefault(p => p.ScoreFileId == _ScoreFile.ScoreFileId);
             if (_EScoreFileInfo == null)
             {
                 //应考人员信息
-                var _ExamPerson = CurrentContext.EBasPersonInfo.Where(p => p.IsDeleted == false
+                var _ExamPersonE = CurrentContext.EBasPersonInfo.Where(p => p.IsDeleted == false
                     && p.PersonStatus == "00" && p.OrgCode != null && p.OrgCode.StartsWith(_ScoreFile.OrgCode));
                 if (_ScoreFile.HasChildOrgPerson == false)
                 { //不包含子集单位人员
-                    _ExamPerson = _ExamPerson.Where(p => p.OrgCode == _ScoreFile.OrgCode);
+                    _ExamPersonE = _ExamPersonE.Where(p => p.OrgCode == _ScoreFile.OrgCode);
                 }
+                var _ExamPerson = _ExamPersonE.ToList();
                 //涉及的专业信息
                 var _ProfessionInfos = _ExamPerson.Where(p => p.EBasProfessionInfo != null)
                     .GroupBy(p => p.EBasProfessionInfo).ToList();
@@ -49,7 +52,7 @@ namespace Exam.Websites.Controllers
                 _EScoreFileInfo.ExamTime = _ScoreFile.ExamTime;
                 _EScoreFileInfo.CompanyAvgScore = 0;  //连队平均成绩
                 _EScoreFileInfo.ProfessionCount = _ProfessionInfos.Count();
-                _EScoreFileInfo.TestPersonNum = _ExamPerson.Count();  //应考人数
+                _EScoreFileInfo.TestPersonNum = _ExamPerson.Count;  //应考人数
                 _EScoreFileInfo.TakeTestPersonNum = _EScoreFileInfo.TestPersonNum;  //参考人数
                 _EScoreFileInfo.TakeTestRate = 100;
                 _EScoreFileInfo.IsDeleted = false;
@@ -61,10 +64,10 @@ namespace Exam.Websites.Controllers
                 {
                     var _Prof = _ProfKey.Key;
                     //当前专业对应的有效项目信息
-                    var _ProjectInfos = _Prof.EConfigProfessionProjects.Where(p => p.IsDeleted == false)
-                        .OrderBy(p => p.SortIndex);
+                    var _ProjectInfos = _Prof.EConfigProfessionProjects.Where(p => p.IsDeleted == false )
+                        .OrderBy(p => p.SortIndex).ToList();
                     //当前专业对应的人员信息
-                    var _ProfPersons = _ExamPerson.Where(p => p.ProfessionCode == _Prof.ProfessionCode);
+                    var _ProfPersons = _ExamPerson.Where(p => p.ProfessionCode == _Prof.ProfessionCode).ToList();
 
                     EScoreFileDetail _Detail = new EScoreFileDetail(); //成绩档案明细
                     _Detail.ScoreFileDetailId = Guid.NewGuid().ToString("N");
@@ -96,6 +99,22 @@ namespace Exam.Websites.Controllers
 
                             _Detail.EScoreProjectInputs.Add(_ProjInput);
                         }
+                    }
+                    #endregion
+
+                    #region 添加专业对应项目
+                    foreach (var _proj in _ProjectInfos)
+                    {
+                        EScoreFileProject _FileProj = new EScoreFileProject();
+                        _FileProj.ProjectId = Guid.NewGuid().ToString("N");
+                        _FileProj.ScoreFileDetailId = _Detail.ScoreFileDetailId;
+                        _FileProj.ConfigId = _proj.ConfigId;
+                        _FileProj.ProjectCode = _proj.ProjectCode;
+                        _FileProj.ProjectName = _proj.ProjectName;
+                        _FileProj.SortIndex = _proj.SortIndex;
+                        _FileProj.TakeRate = _proj.TakeRate;
+                        _FileProj.IsDeleted = false;
+                        _Detail.EScoreFileProjects.Add(_FileProj);
                     }
                     #endregion
                 }
@@ -184,6 +203,11 @@ namespace Exam.Websites.Controllers
                         {
                             CurrentContext.EAbsentPersonInfo.Remove(_absent);
                         }
+                        var _EScoreFileProjects = _Detail.EScoreFileProjects.ToList();
+                        foreach (var _fileProj in _EScoreFileProjects)
+                        {
+                            CurrentContext.EScoreFileProject.Remove(_fileProj);
+                        }
                         CurrentContext.EScoreFileDetail.Remove(_Detail);
                     }
                 }
@@ -210,15 +234,15 @@ namespace Exam.Websites.Controllers
                     _Detail.ProfessionName = CurrentContext.EBasProfessionInfo
                         .Where(p => p.ProfessionCode == _DetailInfo.ProfessionCode)
                         .Select(p => p.ProfessionName).FirstOrDefault();
-                    _Detail.ProjectCount = _DetailInfo.EScoreProjectInputs
-                        .GroupBy(p => p.ProjectCode).Count();
+                    _Detail.ProjectCount = _DetailInfo.EScoreFileProjects.Count();
                     _Detail.TakeTestPersonNum = _DetailInfo.EScoreProjectInputs
                         .GroupBy(p => p.PersonId).Count();
                     _Detail.AbsentPersonNum = _DetailInfo.EAbsentPersonInfoes.Count;
 
-                    _Detail.ProfessionAvgScore = _DetailInfo.EScoreProjectInputs
-                        .Sum(p => p.ExamScore * (p.TakeRate / 100))
-                        / _Detail.TakeTestPersonNum;
+                    if (_Detail.TakeTestPersonNum != 0)
+                        _Detail.ProfessionAvgScore = _DetailInfo.EScoreProjectInputs
+                            .Sum(p => p.ExamScore * (p.TakeRate / 100))
+                            / _Detail.TakeTestPersonNum;
 
                     _Detail.CreateByCode = CurrentUserInfo.UserID;
                     _Detail.CreateByName = CurrentUserInfo.UserName;
@@ -298,6 +322,36 @@ namespace Exam.Websites.Controllers
                     }
                     #endregion
 
+                    #region 新增专业项目历史配置
+                    foreach (var _FileProjInfo in _DetailInfo.EScoreFileProjects)
+                    {
+                        var _Project = CurrentContext.EConfigProfessionProject
+                            .Where(p => p.ConfigId == _FileProjInfo.ConfigId)
+                            .Select(p => new { p.ProjectName, p.SortIndex }).FirstOrDefault();
+
+                        EScoreFileProject _FileProj = new EScoreFileProject();
+                        _FileProj.ProjectId = Guid.NewGuid().ToString("N");
+                        _FileProj.ScoreFileDetailId = _Detail.ScoreFileDetailId;
+                        _FileProj.ConfigId = _FileProjInfo.ConfigId;
+                        _FileProj.ProjectCode = _FileProjInfo.ProjectCode;
+                        _FileProj.ProjectName = _Project.ProjectName;
+                        _FileProj.SortIndex = _Project.SortIndex;
+                        _FileProj.TakeRate = _FileProjInfo.TakeRate;
+
+                        _FileProj.CreateByCode = CurrentUserInfo.UserID;
+                        _FileProj.CreateByName = CurrentUserInfo.UserName;
+                        _FileProj.CreateTime = DateTime.Now;
+                        _FileProj.CreateBy = GetIP();
+                        _FileProj.ModifyByCode = CurrentUserInfo.UserID;
+                        _FileProj.ModifyByName = CurrentUserInfo.UserName;
+                        _FileProj.ModifyTime = DateTime.Now;
+                        _FileProj.ModifyBy = GetIP();
+                        _FileProj.IsDeleted = false;
+
+                        CurrentContext.EScoreFileProject.Add(_FileProj);
+                    }
+                    #endregion
+
                     _ScoreFile.TestPersonNum += _Detail.TakeTestPersonNum + _Detail.AbsentPersonNum;
                     _ScoreFile.TakeTestPersonNum += _Detail.TakeTestPersonNum;
                     SumProfAvgScore += _Detail.ProfessionAvgScore;
@@ -307,7 +361,7 @@ namespace Exam.Websites.Controllers
                 if (_ScoreFile.ProfessionCount != 0)
                     _ScoreFile.CompanyAvgScore = SumProfAvgScore / _ScoreFile.ProfessionCount;
                 if (_ScoreFile.TestPersonNum != 0)
-                    _ScoreFile.TakeTestRate = (_ScoreFile.TakeTestPersonNum 
+                    _ScoreFile.TakeTestRate = ((decimal)_ScoreFile.TakeTestPersonNum 
                         / _ScoreFile.TestPersonNum) * 100;
 
                 #endregion

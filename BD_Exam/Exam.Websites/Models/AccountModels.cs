@@ -20,4 +20,25 @@ namespace Exam.Websites.Models
         [Display(Name = "记住我?")]
         public bool RememberMe { get; set; }
     }
+
+    public class UpdPwdModel {
+        [Required]
+        public string UserId { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "原密码")]
+        public string OldPassword { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "新密码")]
+        public string NewPassword { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "重新输入新密码")]
+        public string ConfNewPassword { get; set; }
+
+    }
 }

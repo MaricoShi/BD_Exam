@@ -19,6 +19,7 @@ namespace Exam.Data
         public ExamEntities()
             : base("name=ExamEntities")
         {
+            this.Database.CommandTimeout = 180;
         }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -32,6 +33,7 @@ namespace Exam.Data
         public virtual DbSet<EConfigProfessionProject> EConfigProfessionProject { get; set; }
         public virtual DbSet<EScoreFile> EScoreFile { get; set; }
         public virtual DbSet<EScoreFileDetail> EScoreFileDetail { get; set; }
+        public virtual DbSet<EScoreFileProject> EScoreFileProject { get; set; }
         public virtual DbSet<EScoreProjectInput> EScoreProjectInput { get; set; }
         public virtual DbSet<ESysData> ESysData { get; set; }
         public virtual DbSet<ESysDataType> ESysDataType { get; set; }

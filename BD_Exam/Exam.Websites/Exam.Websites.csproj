@@ -307,6 +307,7 @@
     <Content Include="Views\Exam\EScoreFileAdd.cshtml" />
     <Content Include="Views\BaseManager\PersonQuery1.cshtml" />
     <Content Include="Views\BaseManager\PersonInfoAdd.cshtml" />
+    <Content Include="Views\Account\UpdPwd.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

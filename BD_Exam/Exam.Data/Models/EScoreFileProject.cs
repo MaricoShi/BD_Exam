@@ -14,25 +14,17 @@ namespace Exam.Data.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("EScoreFileDetail")]
-    public partial class EScoreFileDetail
+    [Table("EScoreFileProject")]
+    public partial class EScoreFileProject
     {
-        public EScoreFileDetail()
-        {
-            this.EAbsentPersonInfoes = new HashSet<EAbsentPersonInfo>();
-            this.EScoreProjectInputs = new HashSet<EScoreProjectInput>();
-            this.EScoreFileProjects = new HashSet<EScoreFileProject>();
-        }
-    
         [Key]
+        public string ProjectId { get; set; }
         public string ScoreFileDetailId { get; set; }
-        public string ScoreFileId { get; set; }
-        public string ProfessionCode { get; set; }
-        public string ProfessionName { get; set; }
-        public decimal ProfessionAvgScore { get; set; }
-        public int ProjectCount { get; set; }
-        public int TakeTestPersonNum { get; set; }
-        public int AbsentPersonNum { get; set; }
+        public string ConfigId { get; set; }
+        public string ProjectCode { get; set; }
+        public string ProjectName { get; set; }
+        public int SortIndex { get; set; }
+        public decimal TakeRate { get; set; }
         public string Remark { get; set; }
         public string CreateByCode { get; set; }
         public string CreateByName { get; set; }
@@ -44,10 +36,6 @@ namespace Exam.Data.Models
         public Nullable<System.DateTime> ModifyTime { get; set; }
         public Nullable<bool> IsDeleted { get; set; }
     
-        public virtual ICollection<EAbsentPersonInfo> EAbsentPersonInfoes { get; set; }
-        public virtual EScoreFile EScoreFile { get; set; }
-        public virtual ICollection<EScoreProjectInput> EScoreProjectInputs { get; set; }
-
-        public virtual ICollection<EScoreFileProject> EScoreFileProjects { get; set; }
+        public virtual EScoreFileDetail EScoreFileDetail { get; set; }
     }
 }

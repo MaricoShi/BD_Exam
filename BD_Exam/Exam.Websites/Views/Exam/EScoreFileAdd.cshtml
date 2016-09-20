@@ -7,7 +7,7 @@
     List<EAbsentPersonInfo> lEAbsentPersonInfos = new List<EAbsentPersonInfo>();
     bool isShowPro = true;
     var _ScoreFileDetails = Model.EScoreFileDetails.Where(p => p.IsDeleted == false)
-        .OrderBy(p => p.ProfessionCode);
+        .OrderBy(p => p.ProfessionCode).ToList();
 }
 
 <div class="pd_tb_10 pd_lr_15">
@@ -20,7 +20,7 @@
         @Html.HiddenFor(p => p.ExamTime)
         @Html.HiddenFor(p => p.OrgCode)
         @Html.HiddenFor(p => p.HasChildOrgPerson)
-        <table style="min-width:900px;margin:0px auto;line-height:30px;">
+        <table style="min-width:900px;margin:0px auto;line-height:30px;" id="tbEScoreFileAddView">
             <tr>
                 <td>
                     应考人数：@(Model.TestPersonNum)
@@ -46,17 +46,21 @@
             </tr>
             @foreach (var _Detail in _ScoreFileDetails)
             {
-                var _Projects = _Detail.EScoreProjectInputs.Where(p => p.IsDeleted == false)
-                    .GroupBy(p =>
-                        new { p.ProjectCode, p.ProjectName, p.TakeRate, p.SortIndex }
-                    ).OrderBy(p => p.Key.SortIndex);
+                //var _Projects = _Detail.EScoreProjectInputs.Where(p => p.IsDeleted == false)
+                //    .GroupBy(p =>
+                //        new { p.ProjectCode, p.ProjectName, p.TakeRate, p.SortIndex }
+                //    ).OrderBy(p => p.Key.SortIndex);
+                var _Projects = _Detail.EScoreFileProjects.Where(p => p.IsDeleted == false)
+                    .OrderBy(p => p.SortIndex).ToList();
+                _Detail.ProjectCount = _Projects.Count;
+                
                 var _Persons = _Detail.EScoreProjectInputs.Where(p => p.IsDeleted == false)
                     .GroupBy(p => new { p.PersonId, p.PersonName })
-                    .OrderBy(p => p.Key.PersonName);
+                    .OrderBy(p => p.Key.PersonName).ToList();
                 if (_Detail.EAbsentPersonInfoes.Where(p => p.IsDeleted == false).Count() > 0)
                 {
                     lEAbsentPersonInfos.AddRange(_Detail.EAbsentPersonInfoes
-                        .Where(p => p.IsDeleted == false));
+                        .Where(p => p.IsDeleted == false).ToList());
                 }
                 <tr>
                     <td colspan="7">
@@ -77,54 +81,63 @@
                                     <th width="60px" rowspan="2">操作</th>
                                     }
                                 </tr>
-                                <tr>
+                                <tr class="exam-only-prof-proj-list">
                                     @foreach (var _Proj in _Projects)
                                     {
-                                    <th>@(_Proj.Key.ProjectName + "(" + _Proj.Key.TakeRate.ToString("0") + "%)")</th>
+                                        <th data-proj-configid="@(_Proj.ConfigId)"
+                                            data-proj-code="@(_Proj.ProjectCode)"
+                                            data-proj-name="@(_Proj.ProjectName)"
+                                            data-proj-takerate="@(_Proj.TakeRate)"
+                                            >@(_Proj.ProjectName + "(" + _Proj.TakeRate.ToString("0") + "%)")</th>
                                     }
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="bdb">
+                                @if (_Persons.Count() != 0) { 
+                                <tr class="bdb _exam_person_prof">
                                     <td rowspan="@(_Detail.TakeTestPersonNum + 1)">@_Detail.ProfessionName</td>
                                 </tr>
+                                }
                                 @foreach (var _Person in _Persons)
                                 {
                                     var _PerProjInputs = _Detail.EScoreProjectInputs
                                             .Where(p => p.IsDeleted == false
                                                 && p.PersonId == _Person.Key.PersonId);
                                     var _ProjPersonAvg = _PerProjInputs.Sum(p => p.ExamScore * (p.TakeRate / 100));
-                                <tr class="bdb _exam_person"
-                                    data-person-id="@(_Person.Key.PersonId)"
-                                    data-person-name="@(_Person.Key.PersonName)"
-                                    data-proj-avg-score="@(_ProjPersonAvg)">
-                                    <td>@(_Person.Key.PersonName)</td>
-                                    @foreach (var item in _Projects)
+                                    <tr class="bdb _exam_person"
+                                        data-person-id="@(_Person.Key.PersonId)"
+                                        data-person-name="@(_Person.Key.PersonName)"
+                                        data-prof-id="@(_Detail.ProfessionCode)"
+                                        data-prof-name="@(_Detail.ProfessionName)"
+                                        data-proj-avg-score="@(_ProjPersonAvg)">
+                                        <td>@(_Person.Key.PersonName)</td>
+                                        @foreach (var item in _Projects)
                                         {
-                                        var _PerProjInfo = _PerProjInputs.FirstOrDefault(p=>p.IsDeleted==false
-                                            && p.ProjectCode==item.Key.ProjectCode);
-                                        if (_PerProjInfo == null) { continue; }
-                                    <td>
-                                        <input type="text" class="edit-num-noborder exam-only-examscore"
-                                               value="@(_PerProjInfo.ExamScore)"
-                                               data-proj-code="@(_PerProjInfo.ProjectCode)"
-                                               data-proj-name="@(_PerProjInfo.ProjectName)"
-                                               data-proj-takerate="@(_PerProjInfo.TakeRate)" />
-                                    </td>
+                                            var _PerProjInfo = _PerProjInputs.FirstOrDefault(p => p.IsDeleted == false
+                                                && p.ProjectCode == item.ConfigId);
+                                            if (_PerProjInfo == null) { continue; }
+                                            <td>
+                                                <input type="text" class="edit-num-noborder exam-only-examscore"
+                                                       value="@(_PerProjInfo.ExamScore)"
+                                                       data-proj-code="@(_PerProjInfo.ProjectCode)"
+                                                       data-proj-name="@(_PerProjInfo.ProjectName)"
+                                                       data-proj-takerate="@(_PerProjInfo.TakeRate)" />
+                                            </td>
                                         }
-                                    <td class="exam-only-avg-examscore">@(_ProjPersonAvg.ToString("0.00"))</td>
-                                    @if (isShowPro)
+                                        <td class="exam-only-avg-examscore">@(_ProjPersonAvg.ToString("0.00"))</td>
+                                        @if (isShowPro)
                                         {
-                                    <td>
-                                        <a href="javascript:;">缺考</a>
-                                    </td>
+                                            <td>
+                                                <a href="javascript:;" class="exam-prof-quekao">缺考</a>
+                                            </td>
                                         }
-                                </tr>
+                                    </tr>
                                 }
                             </tbody>
                             <tfoot>
                                 <tr class="bdb">
-                                    <td colspan="@(_Detail.ProjectCount + 2)">专业平均成绩</td>
+                                    <td colspan="@((_Detail.ProjectCount == 0 
+                                    ? 1 : _Detail.ProjectCount) + 2)">专业平均成绩</td>
                                     <td class="cl_cc00 exam-prof-avg-score">@(_Detail.ProfessionAvgScore)</td>
                                     @if (isShowPro)
                                     {
@@ -143,12 +156,12 @@
                     </div>
                     <hr class="mg_b_10" style="margin-top:5px;" />
                     <table class="table-s02 mg_b_10 text-center" cellpadding="0" cellspacing="0"
-                           style="width:100%;">
+                           style="width:100%;" id="tbEScoreFileAbsentView">
                         <thead>
                             <tr>
                                 <th width="90px">专业</th>
                                 <th width="120px">姓名</th>
-                                <th>原因</th>
+                                <th>缺考原因</th>
                                 <th>备注</th>
                                 @if (isShowPro)
                                 {
@@ -159,19 +172,29 @@
                         <tbody>
                             @foreach (var _AbsentPerson in lEAbsentPersonInfos)
                             {
-                            <tr class="bdb">
-                                <td>@(_AbsentPerson.EScoreFileDetail.ProfessionName)</td>
-                                <td>@(_AbsentPerson.PersonName)</td>
-                                <td>@(_AbsentPerson.AbsentReason)</td>
-                                <td>@(_AbsentPerson.Remark)</td>
-                                @if (isShowPro)
-                                    {
+                                <tr class="bdb"
+                                    data-person-id="@(_AbsentPerson.PersonId)"
+                                    data-person-name="@(_AbsentPerson.PersonName)"
+                                    data-prof-id="@(_AbsentPerson.EScoreFileDetail.ProfessionCode)">
+                                    <td>@(_AbsentPerson.EScoreFileDetail.ProfessionName)</td>
+                                    <td>@(_AbsentPerson.PersonName)</td>
                                     <td>
-                                        <a href="javascript:;">应考</a>
+                                        <input type="text" class="edit-num-noborder exam-absent-reason"
+                                               value="@(_AbsentPerson.AbsentReason)" />
                                     </td>
+                                    <td>
+                                        <input type="text" class="edit-num-noborder exam-absent-remark"
+                                               value="@(_AbsentPerson.Remark)" />
+                                    </td>
+                                    @if (isShowPro)
+                                    {
+                                        <td>
+                                            <a href="javascript:;" class="exam-prof-yingkao">应考</a>
+                                        </td>
                                     }
-                            </tr>
+                                </tr>
                             }
+
                         </tbody>
                     </table>
 
@@ -197,9 +220,71 @@
 </div>
 
 <script>
-    $("input.exam-only-examscore").onlyNum();
+    var isShowPro = "@(isShowPro?"true":"false")";
+    //$("input.exam-only-examscore").onlyNum();
 
-    $('input.exam-only-examscore').change(function () {
+    $("#tbEScoreFileAddView").on('input', 'input.exam-only-examscore', function (event) {
+        var objstr = $(this).val();
+        objstr = objstr.replace(/[^\d.]/g, ""); //清除"数字"和"."以外的字符
+        objstr = objstr.replace(/^\./g, ""); //验证第一个字符是数字而不是
+        objstr = objstr.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
+        objstr = objstr.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+        objstr = objstr.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+        $(this).val(objstr);
+        return false;
+
+        var eventObj = event || e;
+        var keyCode = eventObj.keyCode || eventObj.which;
+        if (keyCode == 46 && !isNaN(parseFloat($(this).val()))
+            && !(/\./.test($(this).val())))
+            return true;
+        if ((keyCode >= 48 && keyCode <= 57))
+            return true;
+        else
+            return false;
+    })
+        .on('focus', 'input.exam-only-examscore', function () {
+            //禁用输入法
+            this.style.imeMode = 'disabled';
+        })
+        .on('paste', 'input.exam-only-examscore', function () {
+            //获取剪切板的内容
+            var clipboard = window.clipboardData.getData("Text");
+            if (/^\d+$/.test(clipboard))
+                return true;
+            else
+                return false;
+        });
+
+    //更新专业及单位平均分
+    function fnUpdTableAvg($table) {
+        var $projAvgScores = $('tbody tr[data-proj-avg-score]', $table);
+        var prof_sum_examscore = 0;   //专业平均分
+        var projAvgScoreCount = $projAvgScores.length;
+        $.each($projAvgScores, function (i, v) {
+            var proj_avg_score = parseFloat($(this).attr('data-proj-avg-score'));
+            prof_sum_examscore += proj_avg_score;
+        });
+        var prof_avg_examscore = 0;
+        if (projAvgScoreCount != 0)
+            prof_avg_examscore = parseFloat(prof_sum_examscore / projAvgScoreCount);
+        $('.exam-prof-avg-score', $table).text(prof_avg_examscore.toFixed(2));
+        $table.attr('data-prof-avg-score', prof_avg_examscore.toFixed(2));
+
+        var $orgTables = $('table[data-prof-avg-score]');
+        var org_sum_examscore = 0;
+        var orgAvgScoreCount = $orgTables.length;
+        $.each($orgTables, function (i, v) {
+            var prof_avg_score = parseFloat($(this).attr('data-prof-avg-score'));
+            org_sum_examscore += prof_avg_score;
+        });
+        var org_avg_examscore = 0;
+        if (orgAvgScoreCount != 0)
+            org_avg_examscore = parseFloat(org_sum_examscore / orgAvgScoreCount);
+        $('span._CompanyAvgScore').text(org_avg_examscore.toFixed(2));
+    }
+
+    $('#tbEScoreFileAddView').on('change', 'input.exam-only-examscore', function () {
         var $tr = $(this).parent().parent("tr._exam_person");
         var $inputs = $('.exam-only-examscore[data-proj-takerate]', $tr);
         var avg_examscore = 0;  //人员平均分
@@ -212,26 +297,7 @@
         $tr.attr('data-proj-avg-score', avg_examscore.toFixed(2));
 
         var $table = $tr.parent().parent('table.exam-only-prof-person');
-        var $projAvgScores = $('tbody tr[data-proj-avg-score]', $table);
-        var prof_sum_examscore = 0;   //专业平均分
-        var projAvgScoreCount = $projAvgScores.length;
-        $.each($projAvgScores, function (i, v) {
-            var proj_avg_score = parseFloat($(this).attr('data-proj-avg-score'));
-            prof_sum_examscore += proj_avg_score;
-        });
-        var prof_avg_examscore = parseFloat(prof_sum_examscore / projAvgScoreCount).toFixed(2);
-        $('.exam-prof-avg-score', $table).text(prof_avg_examscore);
-        $table.attr('data-prof-avg-score', prof_avg_examscore);
-
-        var $orgTables = $('table[data-prof-avg-score]');
-        var org_sum_examscore = 0;
-        var orgAvgScoreCount = $orgTables.length;
-        $.each($orgTables, function (i, v) {
-            var prof_avg_score = parseFloat($(this).attr('data-prof-avg-score'));
-            org_sum_examscore += prof_avg_score;
-        });
-        var org_avg_examscore = parseFloat(org_sum_examscore / orgAvgScoreCount).toFixed(2);
-        $('span._CompanyAvgScore').text(org_avg_examscore);
+        fnUpdTableAvg($table);
 
 
         antd.notification['info']({
@@ -239,6 +305,130 @@
             duration: 4,
             description: '您成功修改了“' + $tr.attr('data-person-name')
                 + '”（“' + $(this).attr('data-proj-name') + '”)的成绩为：' + $(this).val() + "分！",
+        });
+    });
+
+    //缺考事件触发
+    $('#tbEScoreFileAddView').on('click', 'a.exam-prof-quekao', function () {
+        var $tr = $(this).parent().parent("tr._exam_person");  //行
+        var $table = $tr.parent().parent('table.exam-only-prof-person');  //专业对应的表格
+
+        //移除当前人员到缺考行列
+        $tr.remove();
+        var trpersonC = $table.find('tbody tr._exam_person').length;
+        $table.find('tbody tr._exam_person_prof td').attr('rowspan', trpersonC + 1);
+        if (trpersonC == 0)
+            $table.find('tbody').empty();
+
+        //更新专业平均分，及单位平均分
+        fnUpdTableAvg($table);
+
+        //新增人员缺考
+        var _$tbAbsent = $('#tbEScoreFileAbsentView tbody');
+        var _$trAbsent = $('<tr>', {
+            'class': 'bdb',
+            'data-person-id': $tr.attr('data-person-id'),
+            'data-person-name': $tr.attr('data-person-name'),
+            'data-prof-id': $tr.attr('data-prof-id')
+        });
+        var _$tdProfAbsent = $('<td>').text($tr.attr('data-prof-name'));
+        var _$tdPersonAbsent = $('<td>').text($tr.attr('data-person-name'));
+        var _$tdReasonAbsent = $('<td>').append($('<input>', {
+            'type': 'text', 'class': 'edit-num-noborder exam-absent-reason', 'value': ''
+        }));
+        var _$tdRemarkAbsent = $('<td>').append($('<input>', {
+            'type': 'text', 'class': 'edit-num-noborder exam-absent-remark', 'value': ''
+        }));
+        var _$tdPropAbsent = $('<td>').append($('<a>', {
+            'href': 'javascript:;',
+            'class':'exam-prof-yingkao'
+        }).text('应考'));
+
+        _$trAbsent.append(_$tdProfAbsent).append(_$tdPersonAbsent)
+            .append(_$tdReasonAbsent).append(_$tdRemarkAbsent);
+        if (isShowPro == "true") {
+            _$trAbsent.append(_$tdPropAbsent);
+        }
+
+        _$tbAbsent.append(_$trAbsent);
+
+        antd.notification['info']({
+            message: '缺考提示-注意点击保存按钮',
+            duration: 4,
+            description: '您成功修改了“' + $tr.attr('data-person-name')
+                + '”的成绩为“已缺考”！',
+        });
+    });
+
+    //应考事件触发
+    $('#tbEScoreFileAbsentView').on('click', 'a.exam-prof-yingkao', function () {
+        //缺考行 data-person-id、data-person-name、data-prof-id
+        var $tr = $(this).parent().parent("tr[data-person-id]");
+        //专业列表 data-prof-（code、name、proj-count、avg-score）
+        var $table = $('table.exam-only-prof-person[data-prof-code=' +
+            $tr.attr('data-prof-id') + ']');
+        if ($table.length == 0) {
+            antd.message.error('异常情况', 5);
+            return false;
+        }
+
+        //对应专业的所有项目配置(data-proj-) configid、code、name、takerate
+        var $thProjs = $('thead tr.exam-only-prof-proj-list th[data-proj-configid]', $table);
+        //合并的专业名称列
+        var $first_tbody_tr = $('tbody tr._exam_person_prof', $table);
+        //不存在专业名称列新增
+        if ($first_tbody_tr.length == 0) {
+            $('<tr>').addClass('bdb _exam_person_prof')
+                .append($('<td>', { 'rowspan': 2 }).text($table.attr('data-prof-name')))
+                .appendTo($('tbody', $table));
+            $first_tbody_tr = $('tbody tr._exam_person_prof', $table);
+        }
+        var $trPerson = $('<tr>', {
+            'class': 'bdb _exam_person',
+            'data-person-id': $tr.attr('data-person-id'),
+            'data-person-name': $tr.attr('data-person-name'),
+            'data-prof-id': $table.attr('data-prof-code'),
+            'data-prof-name': $table.attr('data-prof-name'),
+            'data-proj-avg-score': '0'
+        });
+        var $tdPersonName = $('<td>').text($tr.attr('data-person-name'));
+        $trPerson.append($tdPersonName);
+        $.each($thProjs, function (pi, pv) {
+            var $tdProj = $('<td>').append($('<input>', {
+                'type': 'text',
+                'class': 'edit-num-noborder exam-only-examscore',
+                'value': '0',
+                'data-proj-code': $(this).attr('data-proj-configid'),
+                'data-proj-name': $(this).attr('data-proj-name'),
+                'data-proj-takerate': $(this).attr('data-proj-takerate')
+            }));
+            $trPerson.append($tdProj);
+        });
+
+        var $tdAvg = $('<td>').addClass('exam-only-avg-examscore').text('0.00');
+        $trPerson.append($tdAvg);
+        var _$tdPropProf = $('<td>').append($('<a>', {
+            'href': 'javascript:;',
+            'class':'exam-prof-quekao'
+        }).text('缺考'));
+        if (isShowPro == "true") {
+            $trPerson.append(_$tdPropProf);
+        }
+        $('tbody', $table).append($trPerson);
+
+        //更新合并行
+        $first_tbody_tr.find('td').attr('rowspan', $('tbody tr', $table).length + 1);
+
+        //移除当前缺考人员到成绩输入行列
+        $tr.remove();
+        //更新专业及单位平均分
+        fnUpdTableAvg($table);
+
+        antd.notification['info']({
+            message: '应考提示-注意点击保存按钮',
+            duration: 4,
+            description: '您成功撤销了“' + $tr.attr('data-person-name')
+                + '”的缺考记录！',
         });
     });
 
@@ -269,7 +459,9 @@
             var _Details = {
                 ProfessionCode: $(this).attr('data-prof-code'),
                 ProjectCount: $(this).attr('data-prof-proj-count'),
-                EScoreProjectInputs: []
+                EScoreProjectInputs: [],
+                EAbsentPersonInfoes: [],
+                EScoreFileProjects: []
             };
 
             scoreFile.EScoreFileDetails.push(_Details);
@@ -288,6 +480,27 @@
                 });
             });
 
+            var _$tbAbsent = $('#tbEScoreFileAbsentView tbody tr[data-prof-id=' +
+                _Details.ProfessionCode + ']');  //该专业缺考人员
+            $.each(_$tbAbsent, function (ai, av) {
+                var _AbsentInfo = {
+                    PersonId: $(this).attr('data-person-id'),
+                    AbsentReason: $(this).find('input.exam-absent-reason').val(),
+                    Remark: $(this).find('input.exam-absent-remark').val()
+                };
+                _Details.EAbsentPersonInfoes.push(_AbsentInfo);
+            });
+
+
+            var $fileProj = $('thead tr.exam-only-prof-proj-list th', $(this));  //该专业录入项目
+            $.each($fileProj, function (fi, fv) {
+                var _FileProjInfo = {
+                    ConfigId: $(this).attr('data-proj-configid'),
+                    ProjectCode: $(this).attr('data-proj-code'),
+                    TakeRate: $(this).attr('data-proj-takerate')
+                };
+                _Details.EScoreFileProjects.push(_FileProjInfo);
+            });
         });
 
         return scoreFile;

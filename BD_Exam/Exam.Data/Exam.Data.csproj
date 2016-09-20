@@ -67,6 +67,10 @@
     <Compile Include="Migrations\201609111007247_UpdOrg2.Designer.cs">
       <DependentUpon>201609111007247_UpdOrg2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609190534582_AddFileProject.cs" />
+    <Compile Include="Migrations\201609190534582_AddFileProject.Designer.cs">
+      <DependentUpon>201609190534582_AddFileProject.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\EAbsentPersonInfo.cs" />
     <Compile Include="Models\EBasOrg.cs" />
@@ -75,6 +79,7 @@
     <Compile Include="Models\EConfigProfessionProject.cs" />
     <Compile Include="Models\EScoreFile.cs" />
     <Compile Include="Models\EScoreFileDetail.cs" />
+    <Compile Include="Models\EScoreFileProject.cs" />
     <Compile Include="Models\EScoreProjectInput.cs" />
     <Compile Include="Models\ESys.cs" />
     <Compile Include="Models\ESysData.cs" />
@@ -108,6 +113,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609111007247_UpdOrg2.resx">
       <DependentUpon>201609111007247_UpdOrg2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609190534582_AddFileProject.resx">
+      <DependentUpon>201609190534582_AddFileProject.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

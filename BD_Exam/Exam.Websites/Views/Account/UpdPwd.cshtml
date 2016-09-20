@@ -1,0 +1,45 @@
+﻿@model Exam.Websites.Models.UpdPwdModel
+@{
+    ViewBag.Title = "修改密码";
+}
+
+
+<div class="body-content clearfix mg_t_15 mg_b_25 container" style="min-height:400px;">
+    <div class="seekask-title">
+        <h4>修改密码</h4>
+    </div>
+    <hr class="mg_t_10" />
+    @using (Html.BeginForm("UpdPwd", "Account", new { returnUrl = ViewBag.ReturnUrl }, FormMethod.Post,
+            new { id = "updPwdForm", @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(p=>p.UserId)
+        <div class="container pd_b_25" style="max-width:700px">
+            <div class="text-center cl_cc00" style="height:30px; line-height:30px;">@Html.ValidationSummary(true)</div>
+            <div class="form-group">
+                <label for="UserName" class="col-sm-3 control-label"><em>* </em>原密码：</label>
+                <div class="col-sm-7">
+                    @Html.PasswordFor(p => p.OldPassword, new { @placeholder = "请输入原密码", @class = "form-control" })
+                    @*<input type="email" class="form-control" id="inputEmail3" placeholder="个人用户名">*@
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Password" class="col-sm-3 control-label"><em>* </em>新密码：</label>
+                <div class="col-sm-7">
+                    @Html.PasswordFor(p => p.NewPassword, new { @placeholder = "请输入新密码", @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Password" class="col-sm-3 control-label"><em>* </em>确认新密码：</label>
+                <div class="col-sm-7">
+                    @Html.PasswordFor(p => p.ConfNewPassword, new { @placeholder = "请再次输入新密码", @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group mg_b_10 mg_t_10">
+                <div class="col-sm-offset-3 col-sm-7">
+                    <button type="submit" class="btn btn-danger" style="width:100%;"> 修改密码 </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
